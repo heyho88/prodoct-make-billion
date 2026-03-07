@@ -206,10 +206,12 @@
       border-radius: var(--radius);
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       z-index: 1;
+      color-scheme: dark;
     }
 
     body.light #disqus_container {
       box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      color-scheme: light;
     }
   </style>
 </head>
@@ -275,6 +277,16 @@
 
   <script>
     // Disqus 로드
+    function getDisqusConfig(isLight) {
+      return function () {
+        this.page.url = window.location.href;
+        this.page.identifier = 'product-make-billion';
+        this.page.colorScheme = isLight ? 'light' : 'dark';
+      };
+    }
+
+    window.disqus_config = getDisqusConfig(false);
+
     (function() {
       var d = document, s = d.createElement('script');
       s.src = 'https://product-make-billion.disqus.com/embed.js';
@@ -391,19 +403,27 @@
       document.body.classList.toggle('light');
       const isLight = document.body.classList.contains('light');
       localStorage.setItem('re-day-theme', isLight ? 'light' : 'dark');
-      
-      // Disqus 테마 업데이트 유도 (리로드)
+
+      // Disqus 컨테이너 color-scheme 즉시 업데이트
+      const container = document.getElementById('disqus_container');
+      container.style.colorScheme = isLight ? 'light' : 'dark';
+
+      // Disqus 테마 업데이트 (리로드)
+      window.disqus_config = getDisqusConfig(isLight);
       if (typeof DISQUS !== 'undefined') {
-        DISQUS.reset({ reload: true });
+        DISQUS.reset({ reload: true, config: window.disqus_config });
       }
     });
 
     const savedLang = localStorage.getItem('re-day-lang') || 'ko';
     const savedTheme = localStorage.getItem('re-day-theme') || 'dark';
-    
+
     langSelect.value = savedLang;
     updateLanguage(savedLang);
-    if (savedTheme === 'light') document.body.classList.add('light');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light');
+      window.disqus_config = getDisqusConfig(true);
+    }
 
     const groups = document.querySelectorAll('.options');
     groups.forEach(group => {
