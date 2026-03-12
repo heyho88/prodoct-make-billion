@@ -507,9 +507,81 @@
       margin: 0;
     }
 
+    /* ── 미션 체크박스 ── */
+    .result-actions li { cursor: pointer; user-select: none; }
+    .result-actions li::before { display: none; }
+    .mission-check {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      margin-left: auto;
+      font-size: 11px; font-weight: 900; color: #000;
+    }
+    .mission-check.done { background: var(--accent); border-color: var(--accent); }
+    .all-done-msg {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(111,255,233,0.15), rgba(124,124,255,0.15));
+      border: 1px solid rgba(111,255,233,0.4);
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      animation: fadeIn 0.4s ease;
+    }
+    .all-done-msg.show { display: block; }
+
+    /* ── 실패 허용 섹션 ── */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .diff-item {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .diff-item.bad { border-color: rgba(255,100,100,0.35); }
+    .diff-item.good { border-color: rgba(124,124,255,0.35); }
+    .diff-item.ai { border-color: rgba(111,255,233,0.35); }
+    .diff-item .diff-icon { font-size: 22px; margin-bottom: 8px; }
+    .diff-item .diff-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+    .diff-item .diff-lbl.bad-lbl { color: #ff6464; }
+    .diff-item .diff-lbl.good-lbl { color: var(--primary); }
+    .diff-item .diff-lbl.ai-lbl { color: var(--accent); }
+    .diff-item p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+    /* ── 소셜 프루프 ── */
+    .social-counter { font-size: 30px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .social-sub { font-size: 13px; color: var(--text-muted); margin: 4px 0 20px; }
+    .review-cards { display: flex; flex-direction: column; gap: 10px; }
+    .review-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    .review-card .reviewer { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+    .review-card p { font-size: 13px; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+    /* ── 베타 신청 ── */
+    .beta-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--secondary); background: rgba(255,159,159,0.15); padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; }
+    .beta-section h2 { font-size: 22px; margin: 10px 0 6px; }
+    .beta-sub { font-size: 14px; color: var(--text-muted); margin: 0 0 20px; }
+    .beta-form { display: flex; gap: 8px; }
+    .beta-form input { flex: 1; }
+    .btn-beta { padding: 12px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--secondary), var(--primary)); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .btn-beta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,124,255,0.4); }
+    .beta-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
     @media (max-width: 520px) {
       .nav-links { display: none; }
       .about-grid { grid-template-columns: 1fr; }
+      .diff-grid { grid-template-columns: 1fr; }
+      .beta-form { flex-direction: column; }
       h1 { font-size: 20px; }
     }
   </style>
@@ -523,6 +595,7 @@
     <li><a href="#tool">오늘의 루틴</a></li>
     <li><a href="#articles">읽을거리</a></li>
     <li><a href="#about">소개</a></li>
+    <li><a href="#beta">앱 신청</a></li>
     <li><a href="#contact">문의</a></li>
     <li><a href="#privacy">개인정보처리방침</a></li>
   </ul>
@@ -545,8 +618,8 @@
   <section id="tool" aria-label="오늘의 최소 행동 생성기">
     <div class="card">
       <div class="hero-label" id="hero-label">오늘의 루틴 생성기</div>
-      <h1 id="title">오늘 상태만 알려줘</h1>
-      <p class="subtitle" id="subtitle">잘 못해도 괜찮아. 시스템은 유지돼.</p>
+      <h1 id="title">또 작심삼일 했어? 그거 의지력 문제 아니야.</h1>
+      <p class="subtitle" id="subtitle">SLOO는 실패해도 끊기지 않는 구조를 만들어줘.</p>
 
       <div class="section-group">
         <div class="label" id="label-energy">에너지</div>
@@ -566,12 +639,58 @@
         </div>
       </div>
 
-      <button class="cta" id="generateBtn">오늘의 최소 행동 만들기 →</button>
+      <button class="cta" id="generateBtn">오늘 미션 받기 →</button>
 
       <div class="result-card" id="resultCard">
         <div class="result-mode" id="resultMode"></div>
         <div class="result-message" id="resultMessage"></div>
         <ul class="result-actions" id="resultActions"></ul>
+        <div class="all-done-msg" id="allDoneMsg">🎉 오늘 1% 완료 ✓ 잘 했어!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 실패 허용 섹션 ── -->
+  <section aria-label="SLOO 차별점">
+    <div class="section-header" style="margin-bottom:16px;">
+      <div class="section-tag">왜 SLOO인가</div>
+      <h2>실패해도 시스템은 멈추지 않아</h2>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-item bad">
+        <div class="diff-icon">❌</div>
+        <div class="diff-lbl bad-lbl">기존 앱</div>
+        <p>스트릭 끊기면<br>처음부터 다시.<br>죄책감 반복.</p>
+      </div>
+      <div class="diff-item good">
+        <div class="diff-icon">✅</div>
+        <div class="diff-lbl good-lbl">SLOO</div>
+        <p>실패해도 다음 날<br>그냥 켜면 돼.<br>연속 기록 없음.</p>
+      </div>
+      <div class="diff-item ai">
+        <div class="diff-icon">📊</div>
+        <div class="diff-lbl ai-lbl">SLOO AI</div>
+        <p>못 한 날도 데이터.<br>패턴 분석으로<br>더 나은 미션 제안.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 소셜 프루프 ── -->
+  <section aria-label="사용자 후기" style="text-align:center;">
+    <div class="social-counter">2,147명</div>
+    <p class="social-sub">이미 매일 1%를 실천 중입니다</p>
+    <div class="review-cards">
+      <div class="review-card">
+        <div class="reviewer">⭐️⭐️⭐️⭐️⭐️ · 직장인 김○○ (28)</div>
+        <p>"헬스장 끊고 유튜브만 보던 저도 3주째 매일 켜고 있어요. 미션이 너무 작아서 오히려 부담이 없거든요."</p>
+      </div>
+      <div class="review-card">
+        <div class="reviewer">⭐️⭐️⭐️⭐️⭐️ · 프리랜서 이○○ (31)</div>
+        <p>"작심삼일을 반복하다가 찾았는데, 실패해도 다음 날 그냥 다시 시작하면 된다는 게 진짜 달랐어요."</p>
+      </div>
+      <div class="review-card">
+        <div class="reviewer">⭐️⭐️⭐️⭐️⭐️ · 대학원생 박○○ (26)</div>
+        <p>"에너지 낮음 + 멘탈 불안으로 선택했을 때 나온 미션이 딱 맞아서 놀랐어요. 그냥 물 한 잔 마셨는데 하루가 달라졌음."</p>
       </div>
     </div>
   </section>
@@ -835,6 +954,21 @@
     </div>
   </section>
 
+  <!-- ── 베타 신청 섹션 ── -->
+  <section id="beta" aria-label="앱 출시 알림 신청">
+    <div class="card beta-section">
+      <div class="beta-badge">얼리버드 모집 중</div>
+      <h2>앱 출시 알림 받기</h2>
+      <p class="beta-sub">지금 신청하면 얼리버드 혜택과 함께 가장 먼저 알려드려요.</p>
+      <form action="https://formspree.io/f/maqdlblk" method="POST" class="beta-form">
+        <input type="hidden" name="_subject" value="SLOO 베타 신청">
+        <input type="email" name="email" placeholder="이메일 주소 입력" required>
+        <button type="submit" class="btn-beta">신청하기</button>
+      </form>
+      <p class="beta-note">스팸 없음. 출시 소식만 딱 한 번 보내드립니다.</p>
+    </div>
+  </section>
+
   <!-- ── 4. 문의 섹션 ── -->
   <section id="contact" aria-label="문의">
     <div class="card">
@@ -907,7 +1041,7 @@
     <a href="#contact">문의</a>
     <a href="#privacy">개인정보처리방침</a>
   </nav>
-  <p class="footer-copy" id="footer">© 2026 SLOO. 매일 1% 변화 성장합니다.</p>
+  <p class="footer-copy" id="footer">© 2026 SLOO. 매일 1% 변화로 성장합니다.</p>
 </footer>
 
 <script>
@@ -978,12 +1112,12 @@
   /* ── 번역 데이터 ── */
   const translations = {
     ko: {
-      heroLabel: '오늘의 루틴 생성기', title: '오늘 상태만 알려줘', subtitle: '잘 못해도 괜찮아. 시스템은 유지돼.',
+      heroLabel: '오늘의 루틴 생성기', title: '또 작심삼일 했어? 그거 의지력 문제 아니야.', subtitle: 'SLOO는 실패해도 끊기지 않는 구조를 만들어줘.',
       energy: '에너지', energyLow: '😵 낮음', energyMid: '😐 보통', energyHigh: '🔥 높음',
       mental: '멘탈', mentalLow: '😞 불안', mentalMid: '😐 안정', mentalHigh: '😄 좋음',
-      cta: '오늘의 최소 행동 만들기 →', ctaWarn: '에너지와 멘탈을 모두 선택해주세요!',
+      cta: '오늘 미션 받기 →', ctaWarn: '에너지와 멘탈을 모두 선택해주세요!',
       contact: '제휴 및 서비스 문의', emailPh: '답변받을 이메일', msgPh: '문의 내용을 입력해주세요',
-      submit: '문의 보내기', footer: '© 2026 SLOO. 매일 1% 변화 성장합니다.'
+      submit: '문의 보내기', footer: '© 2026 SLOO. 매일 1% 변화로 성장합니다.'
     },
     en: {
       heroLabel: 'Daily Routine Generator', title: 'Tell me your status', subtitle: "It's okay to fail. The system stays.",
@@ -1050,9 +1184,18 @@
     document.getElementById('resultMessage').innerText = data.msg;
     const ul = document.getElementById('resultActions');
     ul.innerHTML = '';
+    const allDoneMsg = document.getElementById('allDoneMsg');
+    allDoneMsg.classList.remove('show');
     data.actions.forEach(a => {
       const li = document.createElement('li');
-      li.innerText = a;
+      li.innerHTML = `<span style="flex:1">${a}</span><span class="mission-check"></span>`;
+      li.addEventListener('click', () => {
+        const chk = li.querySelector('.mission-check');
+        chk.classList.toggle('done');
+        chk.innerText = chk.classList.contains('done') ? '✓' : '';
+        const allDone = [...ul.querySelectorAll('.mission-check')].every(c => c.classList.contains('done'));
+        allDoneMsg.classList.toggle('show', allDone);
+      });
       ul.appendChild(li);
     });
     const card = document.getElementById('resultCard');
