@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /firebase-debug.log
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Naver
+User-agent: Yeti
+Allow: /
+
+Sitemap: https://sloo.kr/sitemap.xml
