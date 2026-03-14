@@ -8,10 +8,10 @@ const state = {
 
 /* ── 공감 메시지 (reason 인덱스 순) ── */
 const empathyMsgs = [
-  "며칠 못 버텨도 괜찮아. SLOO는 연속 기록 없어.",
-  "바쁜 날엔 1분짜리 미션만 해도 충분해.",
-  "SLOO는 스트릭 없어. 오늘 패스해도 내일 그냥 켜면 돼.",
-  "귀찮을 때를 위한 서비스야. 딱 1%만."
+  "며칠 잘 하다 무너졌어도 괜찮아. 오늘 이 미션 하나면 1%야.",
+  "하루가 아무리 바빠도 이 미션은 30초야. 그게 오늘의 1%.",
+  "오늘 하루가 망했어도 괜찮아. 이 미션 하나로 1%는 지켜.",
+  "귀찮은 하루가 맞아. 그래도 이것만. 30초면 돼."
 ];
 
 /* ── 미션 데이터 (에너지 × 멘탈) ── */
@@ -83,8 +83,9 @@ document.getElementById('btn-done').addEventListener('click', () => {
   const days = (parseInt(localStorage.getItem('sloo_days') || '0')) + 1;
   localStorage.setItem('sloo_days', days);
 
+  const mult = Math.pow(1.01, days).toFixed(2);
   const msg = document.getElementById('result-msg');
-  msg.textContent = '🎉 오늘 1% 완료 ✓';
+  msg.innerHTML = `오늘의 1% 완료. 🌱<br><span style="font-size:13px;font-weight:500;opacity:0.85">하루가 어떻든 상관없어. 넌 오늘 1%를 지켰어.</span><br><span style="font-size:13px;font-weight:500;opacity:0.85">현재 ${days}일째. 1.01^${days} = ${mult}배의 당신.</span>`;
   msg.className = 'result-msg done-msg show';
 
   showGrowthCard(days);
@@ -93,7 +94,7 @@ document.getElementById('btn-done').addEventListener('click', () => {
 /* ── 패스 ── */
 document.getElementById('btn-pass').addEventListener('click', () => {
   const msg = document.getElementById('result-msg');
-  msg.textContent = '괜찮아. 내일 또 켜면 돼.';
+  msg.innerHTML = `오늘은 패스. 근데 내일은 꼭 해.<br><span style="font-size:13px;font-weight:500;opacity:0.85">하루 밀려도 괜찮아. 딱 하루만.</span>`;
   msg.className = 'result-msg pass-msg show';
 });
 
