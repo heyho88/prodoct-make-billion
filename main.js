@@ -570,9 +570,9 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   document.getElementById('btn-mission-home').style.display = '';
 });
 
-/* ── 홈으로 돌아가기 (init으로 라우팅) ── */
-document.getElementById('btn-first-home').addEventListener('click', init);
-document.getElementById('btn-mission-home').addEventListener('click', init);
+/* ── 홈으로 돌아가기 → 랜딩으로 이동 ── */
+document.getElementById('btn-first-home').addEventListener('click', showLanding);
+document.getElementById('btn-mission-home').addEventListener('click', showLanding);
 
 /* ── 유지 3일 연속 배너 ── */
 document.getElementById('btn-banner-grow').addEventListener('click', () => {
