@@ -133,7 +133,7 @@ function showDoneToday() {
   const level = LS.getInt('sloo_level', 1);
   const el = document.getElementById('screen-done-today');
   el.querySelector('.done-today-plant').textContent = getPlantIcon(days);
-  el.querySelector('.done-today-days').textContent = days + '일째';
+  el.querySelector('.done-today-days').textContent = days;
   el.querySelector('.done-today-mult').textContent = multStr(days) + '배';
   el.querySelector('.done-today-level').textContent = level;
   showScreen('screen-done-today');
@@ -336,6 +336,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   gc.classList.add('show');
 
   document.getElementById('first-action-btns').style.display = 'none';
+  document.getElementById('btn-first-home').style.display = '';
 });
 
 /* ── 첫 미션: 패스 ── */
@@ -344,6 +345,7 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
   msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
   msg.className = 'result-msg pass-msg show';
   document.getElementById('first-action-btns').style.display = 'none';
+  document.getElementById('btn-first-home').style.display = '';
 });
 
 /* ── 메인: A카드 (성장) ── */
@@ -387,6 +389,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   }
 
   document.getElementById('mission-action-btns').style.display = 'none';
+  document.getElementById('btn-mission-home').style.display = '';
 });
 
 /* ── 미션: 패스 ── */
@@ -395,6 +398,7 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
   msg.className = 'result-msg pass-msg show';
   document.getElementById('mission-action-btns').style.display = 'none';
+  document.getElementById('btn-mission-home').style.display = '';
 });
 
 /* ── 다음 카테고리 추가 ── */
@@ -446,15 +450,34 @@ document.getElementById('nav-logo').addEventListener('click', e => {
   init();
 });
 
-/* ── 초기화 버튼 ── */
+/* ── 초기화 버튼 → 커스텀 모달 ── */
 document.getElementById('btn-reset').addEventListener('click', () => {
-  if (confirm('정말 초기화할까요? 모든 기록이 사라져요.')) {
-    const theme = localStorage.getItem('sloo-theme');
-    localStorage.clear();
-    if (theme) localStorage.setItem('sloo-theme', theme);
-    document.querySelectorAll('.choice-card, .option').forEach(c => c.classList.remove('selected', 'active'));
-    showScreen('screen-landing');
+  document.getElementById('modal-reset').style.display = 'flex';
+});
+document.getElementById('modal-reset-cancel').addEventListener('click', () => {
+  document.getElementById('modal-reset').style.display = 'none';
+});
+document.getElementById('modal-reset-ok').addEventListener('click', () => {
+  document.getElementById('modal-reset').style.display = 'none';
+  const theme = localStorage.getItem('sloo-theme');
+  localStorage.clear();
+  if (theme) localStorage.setItem('sloo-theme', theme);
+  document.querySelectorAll('.choice-card, .option').forEach(c => c.classList.remove('selected', 'active'));
+  showScreen('screen-landing');
+});
+// 모달 바깥 클릭 시 닫기
+document.getElementById('modal-reset').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-reset')) {
+    document.getElementById('modal-reset').style.display = 'none';
   }
+});
+
+/* ── 홈으로 돌아가기 ── */
+document.getElementById('btn-first-home').addEventListener('click', () => {
+  showScreen('screen-landing');
+});
+document.getElementById('btn-mission-home').addEventListener('click', () => {
+  showScreen('screen-landing');
 });
 
 /* ── 테마 ── */

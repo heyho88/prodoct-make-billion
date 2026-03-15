@@ -882,3 +882,83 @@ body:not(.light) #disqus_thread iframe { filter: invert(0.88) hue-rotate(180deg)
   .done-today-plant { font-size: 56px; }
   .done-today-mult { font-size: 28px; }
 }
+
+/* ── screen-compact (done-today) ── */
+.screen-compact {
+  min-height: auto !important;
+  padding: 56px 24px 40px;
+}
+
+/* ── 홈으로 돌아가기 버튼 ── */
+.btn-home {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+.btn-home:hover { color: var(--text); border-color: var(--text-muted); }
+
+/* ── 커스텀 확인 모달 ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-box {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+  animation: screenFadeIn 0.2s ease;
+}
+.modal-msg {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  color: var(--text);
+}
+.modal-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.modal-btn-ok {
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  color: #fff;
+}
+.modal-btn-ok:hover { opacity: 0.9; transform: translateY(-1px); }
+.modal-btn-cancel {
+  background: var(--input-bg);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.modal-btn-cancel:hover { color: var(--text); border-color: var(--text-muted); }

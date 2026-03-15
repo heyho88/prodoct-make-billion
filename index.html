@@ -179,6 +179,7 @@
         <button class="btn-pass" id="btn-first-pass">⏭ 오늘은 패스</button>
       </div>
       <p class="result-msg" id="first-result-msg" aria-live="polite"></p>
+      <button class="btn-home" id="btn-first-home" style="display:none">← 홈으로 돌아가기</button>
       <div class="growth-card" id="first-growth-card">
         <div class="growth-plant-wrap"><span class="growth-plant-icon" id="fg-plant">🌱</span></div>
         <p class="growth-day-line" id="fg-days">당신은 1일째입니다</p>
@@ -232,6 +233,7 @@
         <button class="btn-pass" id="btn-mission-pass">⏭ 오늘은 패스</button>
       </div>
       <p class="result-msg" id="mission-result" aria-live="polite"></p>
+      <button class="btn-home" id="btn-mission-home" style="display:none">← 홈으로 돌아가기</button>
       <div class="growth-card" id="mission-growth-card">
         <div class="growth-plant-wrap"><span class="growth-plant-icon" id="mg-plant">🌱</span></div>
         <p class="growth-day-line" id="mg-days"></p>
@@ -273,14 +275,13 @@
   </div>
 
   <!-- 화면 10: 오늘 이미 완료 -->
-  <div class="screen" id="screen-done-today">
+  <div class="screen screen-compact" id="screen-done-today">
     <div class="screen-content" style="text-align:center; align-items:center;">
       <div class="done-today-plant">🌱</div>
-      <h2 style="margin:12px 0 8px">오늘 1% 완료 ✓</h2>
-      <p class="done-today-days" style="font-size:20px;font-weight:800;margin:0 0 6px">0일째</p>
+      <h2 style="margin:12px 0 8px">오늘 <span class="done-today-days">0</span>일째 1% 완료했어 🌱</h2>
       <p class="done-today-mult">1.00배</p>
-      <p class="done-today-sub">내일 다시 켜봐. 또 1% 기다리고 있어.</p>
-      <div class="level-badge" style="margin-top:16px">레벨 <span class="done-today-level">1</span></div>
+      <div class="level-badge" style="margin-top:12px;margin-bottom:20px">레벨 <span class="done-today-level">1</span></div>
+      <p class="done-today-sub">내일 또 만나 👋</p>
     </div>
   </div>
 
@@ -527,11 +528,6 @@
     </div>
   </section>
 
-  <!-- 초기화 버튼 -->
-  <div style="text-align:center; padding-bottom:8px;">
-    <button id="btn-reset" class="btn-reset">처음부터 다시 시작하기</button>
-  </div>
-
 </div><!-- .page-wrap -->
 </main>
 
@@ -539,6 +535,22 @@
 <div id="disqus_container">
   <h2>댓글</h2>
   <div id="disqus_thread"></div>
+</div>
+
+<!-- 초기화 버튼 (푸터 바로 위) -->
+<div style="text-align:center; padding:16px 0 8px;">
+  <button id="btn-reset" class="btn-reset">처음부터 다시 시작하기</button>
+</div>
+
+<!-- 커스텀 확인 모달 -->
+<div class="modal-overlay" id="modal-reset" style="display:none" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <p class="modal-msg">모든 기록이 사라져요.<br>정말 처음부터 시작할까요?</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-ok" id="modal-reset-ok">네, 초기화할게요</button>
+      <button class="modal-btn modal-btn-cancel" id="modal-reset-cancel">아니요</button>
+    </div>
+  </div>
 </div>
 
 <footer class="site-footer">
