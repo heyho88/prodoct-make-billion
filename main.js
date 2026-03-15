@@ -700,16 +700,22 @@ document.getElementById('modal-reset').addEventListener('click', e => {
   }
 });
 
-/* ── 테마 ── */
-document.getElementById('themeToggle').addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  const isLight = document.body.classList.contains('light');
-  localStorage.setItem('sloo-theme', isLight ? 'light' : 'dark');
-  const dc = document.getElementById('disqus_container');
-  if (dc) dc.style.colorScheme = isLight ? 'light' : 'dark';
-});
-if (localStorage.getItem('sloo-theme') === 'light') {
-  document.body.classList.add('light');
+/* ── 햄버거 메뉴 ── */
+const hamburger = document.getElementById('nav-hamburger');
+const mobileMenu = document.getElementById('mobile-nav-dropdown');
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
 }
 
 /* ════════════════════════
