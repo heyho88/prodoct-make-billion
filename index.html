@@ -67,6 +67,7 @@
     <li><a href="#privacy">개인정보처리방침</a></li>
   </ul>
   <div class="nav-right">
+    <button id="btn-reset" class="btn-reset-nav" title="처음부터 다시 시작하기" aria-label="초기화">↺ 초기화</button>
     <button id="themeToggle" title="테마 전환" aria-label="라이트/다크 테마 전환">🌓</button>
   </div>
 </nav>
@@ -82,6 +83,7 @@
       <div class="brand-logo" aria-hidden="true">SLOO</div>
       <h1 class="main-copy">매일 1%의 성장</h1>
       <p class="sub-copy">딱 하나의 변화만 줘. 그게 1%야.<br>365번 쌓이면 37.78배 성장할 수 있어.</p>
+      <p id="landing-done-msg" class="landing-done-msg" style="display:none">오늘 이미 완료했어 🌱<br>내일 자정 이후에 다시 켜봐</p>
       <button class="cta-main" id="btn-start">오늘 1% 시작하기 →</button>
     </div>
   </div>
@@ -535,11 +537,6 @@
 <div id="disqus_container">
   <h2>댓글</h2>
   <div id="disqus_thread"></div>
-</div>
-
-<!-- 초기화 버튼 (푸터 바로 위) -->
-<div style="text-align:center; padding:16px 0 8px;">
-  <button id="btn-reset" class="btn-reset">처음부터 다시 시작하기</button>
 </div>
 
 <!-- 커스텀 확인 모달 -->
