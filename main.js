@@ -738,7 +738,9 @@ function updateSidebar() {
   if (!sbContent) return;
 
   const dayNames = ['일','월','화','수','목','금','토'];
-  let html = `<div class="sb-section-label" style="margin-bottom:12px">루틴 진행 중</div>`;
+  const todayStr = today();
+  let html = '';
+  let firstActive = true;
 
   CATEGORIES.forEach(cat => {
     const data = getCatData(cat);
@@ -747,40 +749,87 @@ function updateSidebar() {
     const name = getCatName(cat, data?.type) || meta.label;
 
     if (!data || !data.active) {
-      html += `<div class="sb-cat-inactive-block">${icon} ${meta.label} <span style="opacity:0.5;font-size:10px">— 시작 안 함</span></div>`;
+      html += `<div class="sb-cat-inactive-block">${icon} ${meta.label} <span style="font-size:10px">— 미시작</span></div>`;
       return;
     }
 
-    const mult = Math.round(Math.pow(1.01, data.growth_count || 0) * 100) / 100;
-    const levelPct = Math.min(((data.level || 1) / 7) * 100, 100);
+    if (!firstActive) html += `<div class="sb-sect-divider" style="margin:24px 0 0"></div>`;
+    firstActive = false;
 
+    const mult = Math.round(Math.pow(1.01, data.growth_count || 0) * 100) / 100;
+    const level = data.level || 1;
+    const totalCount = data.total_count || 0;
+    const maintainCount = data.maintain_count || 0;
+    const levelPct = Math.min((level / 7) * 100, 100);
+
+    // 마지막 완료 타입으로 성장/유지 판단
+    const lastDone = [...(data.history || [])].reverse().find(h => h.type !== 'pass');
+    const isGrowthMode = !lastDone || lastDone.type === 'growth';
+    const multClass = isGrowthMode ? 'sb-mult-growth' : 'sb-mult-maintain';
+    const statusHtml = isGrowthMode
+      ? `<div class="sb-status-growth">성장 중 🌱</div>`
+      : `<div class="sb-status-maintain">유지 중 🔄</div>`;
+
+    // 다음 레벨 미션
+    let nextMissionHtml = '';
+    if (data.type && MISSIONS[data.type] && level < 7) {
+      nextMissionHtml = `<div class="sb-next-mission">다음 단계: ${MISSIONS[data.type][level]}</div>`;
+    }
+
+    // 7일 히스토리 박스
     const histMap = {};
     (data.history || []).forEach(h => { histMap[h.date] = h.type; });
-    let dotsHtml = '';
+    let dayBoxesHtml = '';
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       const t = histMap[ds];
-      let dotIcon = '·', dotClass = '';
-      if (t === 'growth')  { dotIcon = '✅'; dotClass = 'growth'; }
-      else if (t === 'maintain') { dotIcon = '🔄'; dotClass = 'maintain'; }
-      else if (t === 'pass')     { dotIcon = '⏭'; }
-      dotsHtml += `<div class="sb-mini-hist-dot ${dotClass}" title="${dayNames[d.getDay()]}">${dotIcon}</div>`;
+      const dayLabel = dayNames[d.getDay()];
+      let dayIcon = '·', boxClass = 'sb-day-box-empty';
+      if (t === 'growth')  { dayIcon = '✅'; boxClass = 'sb-day-box-growth'; }
+      else if (t === 'maintain') { dayIcon = '🔄'; boxClass = 'sb-day-box-maintain'; }
+      else if (t === 'pass')     { dayIcon = '⏭'; boxClass = 'sb-day-box-pass'; }
+      const todayClass = ds === todayStr ? ' sb-day-today' : '';
+      dayBoxesHtml += `<div class="sb-day-box ${boxClass}${todayClass}">
+        <div class="sb-day-label">${dayLabel}</div>
+        <div class="sb-day-icon">${dayIcon}</div>
+      </div>`;
     }
 
-    html += `<div class="sb-cat-block">
-      <div class="sb-cat-block-header">
-        <span class="sb-cat-block-icon">${icon}</span>
-        <span class="sb-cat-block-name">${name}</span>
-        <span class="sb-cat-block-mult">${mult.toFixed(2)}배</span>
+    html += `
+      <div class="sb-sect-label">진행 중인 루틴</div>
+      <div class="sb-cat-title">${icon} ${name}</div>
+
+      <div class="sb-sect-divider"></div>
+      <div class="sb-sect-label">현재 성장률</div>
+      <div class="sb-mult-big ${multClass}">${mult.toFixed(2)}<span class="sb-mult-unit">배</span></div>
+      ${statusHtml}
+
+      <div class="sb-sect-divider"></div>
+      <div class="sb-sect-label">레벨 진행</div>
+      <div class="sb-level-display">레벨 ${level} / 7</div>
+      <div class="sb-level-bar-track">
+        <div class="sb-level-bar-fill" style="width:${levelPct}%"></div>
       </div>
-      <div class="sb-cat-block-level">레벨 ${data.level || 1}/7 · 총 ${data.total_count || 0}회</div>
-      <div class="sb-cat-mini-bar-track">
-        <div class="sb-cat-mini-bar-fill" style="width:${levelPct}%"></div>
+      ${nextMissionHtml}
+
+      <div class="sb-sect-divider"></div>
+      <div class="sb-stats-row">
+        <div class="sb-stat-box">
+          <div class="sb-stat-num">${totalCount}</div>
+          <div class="sb-stat-lbl">총 완료</div>
+        </div>
+        <div class="sb-stat-box">
+          <div class="sb-stat-num">${maintainCount}</div>
+          <div class="sb-stat-lbl">연속 유지</div>
+        </div>
       </div>
-      <div class="sb-cat-block-history">${dotsHtml}</div>
-    </div>`;
+
+      <div class="sb-sect-divider"></div>
+      <div class="sb-sect-label">최근 7일</div>
+      <div class="sb-day-row">${dayBoxesHtml}</div>
+    `;
   });
 
   sbContent.innerHTML = html;
