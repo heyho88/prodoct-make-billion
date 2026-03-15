@@ -227,7 +227,13 @@ body {
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 40px;
+  margin-bottom: 12px;
+}
+.landing-tagline {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 28px;
+  white-space: nowrap;
 }
 .main-copy {
   font-size: 58px;
