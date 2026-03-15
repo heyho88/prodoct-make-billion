@@ -530,8 +530,10 @@
 
 <!-- Disqus -->
 <div id="disqus_container">
-  <h2>댓글</h2>
-  <div id="disqus_thread"></div>
+  <button id="disqus-toggle-btn" onclick="toggleDisqus()" aria-expanded="false">댓글 보기 ▼</button>
+  <div id="disqus_wrap" style="max-height:0; overflow:hidden; transition:max-height 0.3s ease;">
+    <div id="disqus_thread"></div>
+  </div>
 </div>
 
 <!-- 커스텀 확인 모달 -->

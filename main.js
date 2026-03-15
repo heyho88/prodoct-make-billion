@@ -924,14 +924,32 @@ function toggleArticle(id, btn) {
   btn.innerText = isOpen ? '접기 ↑' : '더 읽기 ↓';
 }
 
-/* ── Disqus ── */
-window.disqus_config = function () {
-  this.page.url = window.location.href;
-  this.page.identifier = 'sloo-main';
-};
-(function () {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://product-make-billion.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();
+/* ── Disqus lazy load + toggle ── */
+var disqusLoaded = false;
+
+function toggleDisqus() {
+  const btn = document.getElementById('disqus-toggle-btn');
+  const wrap = document.getElementById('disqus_wrap');
+  const isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+  if (isOpen) {
+    wrap.style.maxHeight = '0';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = '댓글 보기 ▼';
+  } else {
+    if (!disqusLoaded) {
+      disqusLoaded = true;
+      window.disqus_config = function () {
+        this.page.url = window.location.href;
+        this.page.identifier = 'sloo-main';
+      };
+      var d = document, s = d.createElement('script');
+      s.src = 'https://product-make-billion.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+    wrap.style.maxHeight = '2000px';
+    btn.setAttribute('aria-expanded', 'true');
+    btn.textContent = '댓글 접기 ▲';
+  }
+}

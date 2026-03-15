@@ -1553,3 +1553,31 @@ input:focus, textarea:focus {
   .home-cat-name { font-size: 15px; }
   .home-cat-icon { font-size: 24px; }
 }
+
+/* ── Disqus 토글 ── */
+#disqus_container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+#disqus-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  margin-bottom: 12px;
+}
+#disqus-toggle-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
+  color: #F97316;
+}
