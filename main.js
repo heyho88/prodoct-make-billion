@@ -198,10 +198,12 @@ function updateSidebar() {
 
 function checkMaintainBanner() {
   const streak   = LS.getInt('sloo_maintain_streak', 0);
-  const lastDate = LS.get('sloo_last_date');
+  // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
+  // const lastDate = LS.get('sloo_last_date');
   const banner   = document.getElementById('maintain-banner');
   if (!banner) return;
-  if (streak >= 3 && lastDate !== today()) {
+  // if (streak >= 3 && lastDate !== today()) {
+  if (streak >= 3) {
     banner.style.display = '';
   } else {
     banner.style.display = 'none';
@@ -212,7 +214,9 @@ function checkMaintainBanner() {
    랜딩 화면 표시
 ════════════════════════ */
 function showLanding() {
-  const alreadyDone = LS.get('sloo_last_date') === today();
+  // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
+  // const alreadyDone = LS.get('sloo_last_date') === today();
+  const alreadyDone = false;
   const btn = document.getElementById('btn-start');
   const msg = document.getElementById('landing-done-msg');
   if (alreadyDone) {
@@ -232,11 +236,12 @@ function init() {
   updateSidebar();
   const lastDate = LS.get('sloo_last_date');
 
+  // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
   // 오늘 이미 완료 → 랜딩 (버튼 비활성)
-  if (lastDate === today()) {
-    showLanding();
-    return;
-  }
+  // if (lastDate === today()) {
+  //   showLanding();
+  //   return;
+  // }
 
   const category = LS.get('sloo_category');
   if (!category) {
@@ -439,15 +444,16 @@ document.getElementById('btn-get-mission').addEventListener('click', () => {
 
 /* ── 첫 미션: 완료 ── */
 document.getElementById('btn-first-done').addEventListener('click', () => {
+  // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
   // 버그2: 중복 완료 차단
-  if (LS.get('sloo_last_date') === today()) {
-    const msg = document.getElementById('first-result-msg');
-    msg.textContent = '오늘은 이미 완료했어 🌱 내일 또 만나';
-    msg.className = 'result-msg done-msg show';
-    document.getElementById('first-action-btns').style.display = 'none';
-    document.getElementById('btn-first-home').style.display = '';
-    return;
-  }
+  // if (LS.get('sloo_last_date') === today()) {
+  //   const msg = document.getElementById('first-result-msg');
+  //   msg.textContent = '오늘은 이미 완료했어 🌱 내일 또 만나';
+  //   msg.className = 'result-msg done-msg show';
+  //   document.getElementById('first-action-btns').style.display = 'none';
+  //   document.getElementById('btn-first-home').style.display = '';
+  //   return;
+  // }
 
   const days = LS.getInt('sloo_days', 0) + 1;
   LS.set('sloo_days', days);
@@ -493,15 +499,16 @@ document.getElementById('choice-b-card').addEventListener('click', () => showMis
 
 /* ── 미션: 완료 ── */
 document.getElementById('btn-mission-done').addEventListener('click', () => {
+  // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
   // 버그2: 중복 완료 차단
-  if (LS.get('sloo_last_date') === today()) {
-    const msg = document.getElementById('mission-result');
-    msg.textContent = '오늘은 이미 완료했어 🌱 내일 또 만나';
-    msg.className = 'result-msg done-msg show';
-    document.getElementById('mission-action-btns').style.display = 'none';
-    document.getElementById('btn-mission-home').style.display = '';
-    return;
-  }
+  // if (LS.get('sloo_last_date') === today()) {
+  //   const msg = document.getElementById('mission-result');
+  //   msg.textContent = '오늘은 이미 완료했어 🌱 내일 또 만나';
+  //   msg.className = 'result-msg done-msg show';
+  //   document.getElementById('mission-action-btns').style.display = 'none';
+  //   document.getElementById('btn-mission-home').style.display = '';
+  //   return;
+  // }
 
   const days = LS.getInt('sloo_days', 0) + 1;
   LS.set('sloo_days', days);
