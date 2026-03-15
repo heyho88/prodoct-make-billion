@@ -1414,9 +1414,8 @@ input:focus, textarea:focus {
 /* ── 비활성 카테고리 ── */
 .sb-cat-inactive-block {
   padding: 8px 0;
-  opacity: 0.35;
   font-size: 13px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.75);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1496,14 +1495,14 @@ input:focus, textarea:focus {
   transform: translateY(-2px);
   box-shadow: 0 8px 40px rgba(249, 115, 22, 0.1), 0 20px 60px rgba(0,0,0,0.3);
 }
-.home-cat-inactive { opacity: 0.6; }
-.home-cat-inactive:hover { opacity: 0.85; transform: translateY(-1px); }
+.home-cat-inactive { opacity: 0.8; }
+.home-cat-inactive:hover { opacity: 1; transform: translateY(-1px); }
 .home-cat-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
 .home-cat-icon { font-size: 28px; flex-shrink: 0; }
 .home-cat-info { flex: 1; min-width: 0; }
 .home-cat-name { font-size: 16px; font-weight: 700; margin-bottom: 3px; letter-spacing: -0.1px; color: var(--text-primary); }
 .home-cat-meta { font-size: 12px; color: var(--accent); font-weight: 600; }
-.home-cat-meta-inactive { color: var(--text-muted); font-weight: 400; }
+.home-cat-meta-inactive { color: rgba(255,255,255,0.85); font-weight: 400; }
 .home-cat-reset-btn {
   padding: 5px 10px; border-radius: 8px;
   border: 1px solid var(--border); background: transparent;
@@ -1528,8 +1527,8 @@ input:focus, textarea:focus {
 .home-cat-mission-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
 .home-cat-add-btn {
   width: 100%; padding: 14px 20px; border-radius: 12px;
-  border: 1px dashed rgba(255,255,255,0.1); background: transparent;
-  color: var(--text-muted); font-size: 14px; font-weight: 500;
+  border: 1px dashed rgba(249,115,22,0.3); background: transparent;
+  color: #F97316; font-size: 14px; font-weight: 500;
   cursor: pointer; transition: all 0.2s; text-align: center;
 }
 .home-cat-add-btn:hover {
