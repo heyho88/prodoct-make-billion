@@ -10,4 +10,4 @@ Allow: /
 User-agent: Yeti
 Allow: /
 
-Sitemap: https://prodoct-make-billion.pages.dev/sitemap.xml
+Sitemap: https://sloo.kr/sitemap.xml
