@@ -194,6 +194,14 @@
   <!-- 화면 7: 2일차+ 메인 (A/B 선택) -->
   <div class="screen" id="screen-main">
     <div class="screen-content">
+      <!-- 유지 3일 연속 성장 제안 배너 -->
+      <div id="maintain-banner" class="maintain-banner" style="display:none">
+        <p class="maintain-banner-text">3일째 잘 지키고 있어. 이제 한 단계 올려볼까? 🌱</p>
+        <div class="maintain-banner-btns">
+          <button id="btn-banner-grow" class="btn-banner-grow">도전할게</button>
+          <button id="btn-banner-stay" class="btn-banner-stay">아직 유지할게</button>
+        </div>
+      </div>
       <div class="main-header">
         <p class="main-days-line"><span class="main-days">0</span>일째. <span class="main-mult">1.00</span>배의 당신.</p>
         <div class="level-badge">레벨 <span class="main-level">1</span></div>
@@ -560,6 +568,33 @@
   </nav>
   <p class="footer-copy">© 2026 SLOO. 매일 1% 변화로 성장합니다.</p>
 </footer>
+
+<!-- 데스크탑 사이드바 -->
+<div id="desktop-sidebar" class="desktop-sidebar">
+  <div class="sb-section">
+    <div class="sb-section-label">루틴 진행 중</div>
+    <div class="sb-routine-name" id="sb-routine-name"></div>
+  </div>
+  <div class="sb-divider"></div>
+  <div class="sb-section">
+    <div class="sb-mult-big" id="sb-mult-big"></div>
+    <div class="sb-counts" id="sb-counts"></div>
+    <div class="sb-level-text" id="sb-level-text"></div>
+    <div class="sb-level-bar-wrap">
+      <div class="sb-level-bar-label" id="sb-level-bar-label"></div>
+      <div class="sb-level-bar-track">
+        <div class="sb-level-bar-fill" id="sb-level-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="sb-next-level" id="sb-next-level"></div>
+    </div>
+    <div class="sb-maintain-streak" id="sb-maintain-streak" style="display:none"></div>
+  </div>
+  <div class="sb-divider"></div>
+  <div class="sb-section">
+    <div class="sb-section-label">최근 7일</div>
+    <div class="sb-history-list" id="sb-history-list"></div>
+  </div>
+</div>
 
 <script src="main.js"></script>
 </body>

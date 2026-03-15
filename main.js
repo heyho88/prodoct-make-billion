@@ -55,7 +55,8 @@ const RESET_KEYS = [
   'sloo_category', 'sloo_type', 'sloo_fail_reason',
   'sloo_level', 'sloo_days', 'sloo_last_date',
   'sloo_completed_today', 'sloo_maintain_count',
-  'sloo_energy', 'sloo_mental'
+  'sloo_energy', 'sloo_mental',
+  'sloo_growth_count', 'sloo_total_count', 'sloo_history', 'sloo_maintain_streak'
 ];
 
 /* ── localStorage 헬퍼 ── */
@@ -98,6 +99,115 @@ function getExerciseMission(type, level) {
   return arr ? arr[Math.min(level - 1, 6)] : '';
 }
 
+/* ── 히스토리 / 성장 추적 헬퍼 ── */
+function addHistory(type) {
+  let history = [];
+  try { history = JSON.parse(LS.get('sloo_history') || '[]'); } catch(e) {}
+  history = history.filter(h => h.date !== today());
+  history.push({ date: today(), type });
+  if (history.length > 7) history = history.slice(-7);
+  LS.set('sloo_history', JSON.stringify(history));
+}
+
+function getHistory() {
+  try { return JSON.parse(LS.get('sloo_history') || '[]'); } catch(e) { return []; }
+}
+
+function getCategoryLabel() {
+  const cat = LS.get('sloo_category');
+  const type = LS.get('sloo_type');
+  if (cat === 'health') {
+    if (type === 'gym') return '🏋️ 헬스장';
+    if (type === 'hometraining') return '🏠 홈트';
+    if (type === 'walking') return '🚶 걷기/달리기';
+  }
+  if (cat === 'sleep') return '😴 수면/기상';
+  if (cat === 'routine') return '📋 루틴/생활습관';
+  return '';
+}
+
+function updateSidebar() {
+  const category = LS.get('sloo_category');
+  const sidebar = document.getElementById('desktop-sidebar');
+  if (!sidebar) return;
+
+  if (!category) {
+    sidebar.classList.remove('sb-active');
+    document.body.classList.remove('has-sidebar');
+    return;
+  }
+  sidebar.classList.add('sb-active');
+  document.body.classList.add('has-sidebar');
+
+  document.getElementById('sb-routine-name').textContent = getCategoryLabel();
+
+  const growthCount = LS.getInt('sloo_growth_count', 0);
+  const totalCount  = LS.getInt('sloo_total_count', 0);
+  const multVal     = Math.round(Math.pow(1.01, growthCount) * 100) / 100;
+  const maintainStreak = LS.getInt('sloo_maintain_streak', 0);
+
+  const multBig = document.getElementById('sb-mult-big');
+  if (maintainStreak > 0) {
+    multBig.textContent = `${multVal.toFixed(2)}배 유지 중`;
+    multBig.className = 'sb-mult-big sb-mult-maintain';
+  } else {
+    multBig.textContent = `${multVal.toFixed(2)}배`;
+    multBig.className = 'sb-mult-big sb-mult-growth';
+  }
+
+  document.getElementById('sb-counts').textContent = `총 ${totalCount}회 완료`;
+  const level = LS.getInt('sloo_level', 1);
+  document.getElementById('sb-level-text').textContent = `레벨 ${level}`;
+  document.getElementById('sb-level-bar-label').textContent = `레벨 ${level} 진행 중`;
+  document.getElementById('sb-level-bar-fill').style.width = `${Math.min((level / 7) * 100, 100)}%`;
+  const stepsLeft = Math.max(7 - level, 0);
+  document.getElementById('sb-next-level').textContent =
+    stepsLeft > 0 ? `다음 레벨까지 ${stepsLeft}단계` : '최고 레벨 달성!';
+
+  const streakEl = document.getElementById('sb-maintain-streak');
+  if (maintainStreak > 0) {
+    streakEl.textContent = `${maintainStreak}일째 유지 중 🔄`;
+    streakEl.style.display = '';
+  } else {
+    streakEl.style.display = 'none';
+  }
+
+  const history = getHistory();
+  const histMap = {};
+  history.forEach(h => { histMap[h.date] = h.type; });
+  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+  let html = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const dayName = dayNames[d.getDay()];
+    const type = histMap[dateStr];
+    let icon = '·', label = '';
+    if (type === 'growth')  { icon = '✅'; label = '성장'; }
+    else if (type === 'maintain') { icon = '🔄'; label = '유지'; }
+    else if (type === 'pass')     { icon = '⏭'; label = '패스'; }
+    html += `<div class="sb-history-row ${type || 'empty'}">
+      <span class="sb-hist-day">${dayName}</span>
+      <span class="sb-hist-icon">${icon}</span>
+      <span class="sb-hist-label">${label}</span>
+    </div>`;
+  }
+  document.getElementById('sb-history-list').innerHTML = html;
+}
+
+function checkMaintainBanner() {
+  const streak   = LS.getInt('sloo_maintain_streak', 0);
+  const lastDate = LS.get('sloo_last_date');
+  const banner   = document.getElementById('maintain-banner');
+  if (!banner) return;
+  if (streak >= 3 && lastDate !== today()) {
+    banner.style.display = '';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
 /* ════════════════════════
    랜딩 화면 표시
 ════════════════════════ */
@@ -119,6 +229,7 @@ function showLanding() {
    앱 진입점
 ════════════════════════ */
 function init() {
+  updateSidebar();
   const lastDate = LS.get('sloo_last_date');
 
   // 오늘 이미 완료 → 랜딩 (버튼 비활성)
@@ -183,6 +294,7 @@ function showMainChoice() {
   const nextMission = level < 7 ? getExerciseMission(type, level + 1) : '최고 레벨! 다음 카테고리를 추가해봐';
   el.querySelector('.card-grow-preview').textContent = nextMission;
   el.querySelector('.card-maintain-preview').textContent = currentMission;
+  checkMaintainBanner();
 
   const aCard = document.getElementById('choice-a-card');
   if (level >= 7) {
@@ -341,6 +453,14 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   LS.set('sloo_days', days);
   LS.set('sloo_last_date', today());
 
+  const gc = LS.getInt('sloo_growth_count', 0) + 1;
+  const tc = LS.getInt('sloo_total_count', 0) + 1;
+  LS.set('sloo_growth_count', gc);
+  LS.set('sloo_total_count', tc);
+  LS.set('sloo_maintain_streak', 0);
+  addHistory('growth');
+  updateSidebar();
+
   const msg = document.getElementById('first-result-msg');
   msg.innerHTML = `오늘 1% 완료 🌱<br><small>${days}일째. 1.01<sup>${days}</sup> = ${multStr(days)}배의 당신.</small>`;
   msg.className = 'result-msg done-msg show';
@@ -357,6 +477,9 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
 
 /* ── 첫 미션: 패스 ── */
 document.getElementById('btn-first-pass').addEventListener('click', () => {
+  addHistory('pass');
+  LS.set('sloo_maintain_streak', 0);
+  updateSidebar();
   const msg = document.getElementById('first-result-msg');
   msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
   msg.className = 'result-msg pass-msg show';
@@ -385,18 +508,36 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   LS.set('sloo_last_date', today());
 
   let level = LS.getInt('sloo_level', 1);
-  if (currentChoice === 'grow' && level < 7) {
-    level += 1;
-    LS.set('sloo_level', level);
+  const tc = LS.getInt('sloo_total_count', 0) + 1;
+  LS.set('sloo_total_count', tc);
+
+  const MAINTAIN_MSGS = {
+    1: '잘 지키고 있어. 이게 습관이 되는 거야.',
+    2: '이틀째야. 흔들리지 않고 있어.',
+    3: '3일째 유지 중. 이 정도면 진짜 잡힌 거야.'
+  };
+
+  let levelMsg;
+  const msg = document.getElementById('mission-result');
+
+  if (currentChoice === 'grow') {
+    if (level < 7) { level += 1; LS.set('sloo_level', level); }
+    const gc = LS.getInt('sloo_growth_count', 0) + 1;
+    LS.set('sloo_growth_count', gc);
+    LS.set('sloo_maintain_streak', 0);
+    addHistory('growth');
+    levelMsg = `레벨 ${level} 달성! 🎉`;
+    msg.innerHTML = `오늘 1% 완료 🌱<br><small>${days}일째. ${multStr(days)}배의 당신. ${levelMsg}</small>`;
+  } else {
+    const mc = LS.getInt('sloo_maintain_streak', 0) + 1;
+    LS.set('sloo_maintain_streak', mc);
+    addHistory('maintain');
+    const subMsg = MAINTAIN_MSGS[mc] || MAINTAIN_MSGS[3];
+    msg.innerHTML = `오늘도 1.01배 유지 완료 🔄<br><small>${subMsg}</small>`;
   }
 
-  const levelMsg = currentChoice === 'grow'
-    ? `레벨 ${level} 달성! 🎉`
-    : '루틴 유지 완료 ✓';
-
-  const msg = document.getElementById('mission-result');
-  msg.innerHTML = `오늘 1% 완료 🌱<br><small>${days}일째. ${multStr(days)}배의 당신. ${levelMsg}</small>`;
   msg.className = 'result-msg done-msg show';
+  updateSidebar();
 
   document.getElementById('mg-plant').textContent = getPlantIcon(days);
   document.getElementById('mg-days').textContent = `당신은 ${days}일째입니다`;
@@ -412,6 +553,9 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
 
 /* ── 미션: 패스 ── */
 document.getElementById('btn-mission-pass').addEventListener('click', () => {
+  addHistory('pass');
+  LS.set('sloo_maintain_streak', 0);
+  updateSidebar();
   const msg = document.getElementById('mission-result');
   msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
   msg.className = 'result-msg pass-msg show';
@@ -422,6 +566,17 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
 /* ── 홈으로 돌아가기 (init으로 라우팅) ── */
 document.getElementById('btn-first-home').addEventListener('click', init);
 document.getElementById('btn-mission-home').addEventListener('click', init);
+
+/* ── 유지 3일 연속 배너 ── */
+document.getElementById('btn-banner-grow').addEventListener('click', () => {
+  document.getElementById('maintain-banner').style.display = 'none';
+  LS.set('sloo_maintain_streak', 0);
+  showMissionScreen('grow');
+});
+document.getElementById('btn-banner-stay').addEventListener('click', () => {
+  document.getElementById('maintain-banner').style.display = 'none';
+  LS.set('sloo_maintain_streak', 0);
+});
 
 /* ── 다음 카테고리 추가 ── */
 document.getElementById('btn-add-category').addEventListener('click', () => {
