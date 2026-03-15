@@ -88,6 +88,19 @@
     </div>
   </div>
 
+  <!-- 홈 화면 — 카테고리 대시보드 -->
+  <div class="screen" id="screen-home">
+    <div class="screen-content home-content">
+      <div class="home-header">
+        <h2 class="home-title">나의 1% 습관</h2>
+        <p class="home-sub">오늘 어떤 카테고리로 시작할까?</p>
+      </div>
+      <div class="home-cards" id="home-cards">
+        <!-- JS로 동적 렌더링 -->
+      </div>
+    </div>
+  </div>
+
   <!-- 화면 2: 온보딩 1 — 뭘 바꾸고 싶어? -->
   <div class="screen" id="screen-ob1">
     <div class="progress-wrap">
@@ -108,8 +121,8 @@
   <!-- 화면 3: 온보딩 2 (운동) — 어떤 운동? -->
   <div class="screen" id="screen-ob2-exercise">
     <div class="progress-wrap">
-      <span class="progress-text">2 / 3</span>
-      <div class="progress-track"><div class="progress-fill" style="width:66%"></div></div>
+      <span class="progress-text" id="ob2ex-step-text">2 / 3</span>
+      <div class="progress-track"><div class="progress-fill" id="ob2ex-step-fill" style="width:66%"></div></div>
     </div>
     <div class="screen-content">
       <h2 class="screen-q">어떤 운동 하고 싶어?</h2>
@@ -571,29 +584,7 @@
 
 <!-- 데스크탑 사이드바 -->
 <div id="desktop-sidebar" class="desktop-sidebar">
-  <div class="sb-section">
-    <div class="sb-section-label">루틴 진행 중</div>
-    <div class="sb-routine-name" id="sb-routine-name"></div>
-  </div>
-  <div class="sb-divider"></div>
-  <div class="sb-section">
-    <div class="sb-mult-big" id="sb-mult-big"></div>
-    <div class="sb-counts" id="sb-counts"></div>
-    <div class="sb-level-text" id="sb-level-text"></div>
-    <div class="sb-level-bar-wrap">
-      <div class="sb-level-bar-label" id="sb-level-bar-label"></div>
-      <div class="sb-level-bar-track">
-        <div class="sb-level-bar-fill" id="sb-level-bar-fill" style="width:0%"></div>
-      </div>
-      <div class="sb-next-level" id="sb-next-level"></div>
-    </div>
-    <div class="sb-maintain-streak" id="sb-maintain-streak" style="display:none"></div>
-  </div>
-  <div class="sb-divider"></div>
-  <div class="sb-section">
-    <div class="sb-section-label">최근 7일</div>
-    <div class="sb-history-list" id="sb-history-list"></div>
-  </div>
+  <div id="sb-content"></div>
 </div>
 
 <script src="main.js"></script>
