@@ -26,6 +26,12 @@ const EMPATHY_MSGS = [
   "귀찮은 하루가 맞아. 그래도 이것만. 30초면 돼."
 ];
 
+const MAINTAIN_MSGS = {
+  1: '잘 지키고 있어. 이게 습관이 되는 거야.',
+  2: '이틀째야. 흔들리지 않고 있어.',
+  3: '3일째 유지 중. 이 정도면 진짜 잡힌 거야.'
+};
+
 /* ── 카테고리 메타 ── */
 const CATEGORIES = ['health', 'sleep', 'routine'];
 const CAT_META = {
@@ -92,6 +98,12 @@ function addCatHistory(cat, type) {
   data.history.push({ date: t, type });
   if (data.history.length > 7) data.history = data.history.slice(-7);
   setCatData(cat, data);
+}
+
+function pushHistory(data, type, t) {
+  data.history = (data.history || []).filter(h => h.date !== t);
+  data.history.push({ date: t, type });
+  if (data.history.length > 7) data.history = data.history.slice(-7);
 }
 
 /* ── 기존 데이터 마이그레이션 ── */
@@ -490,13 +502,12 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
   // if (data.last_date === today()) { ... return; }
 
+  const t = today();
   data.total_count = (data.total_count || 0) + 1;
   data.growth_count = (data.growth_count || 0) + 1;
   data.maintain_count = 0;
-  data.last_date = today();
-  data.history = (data.history || []).filter(h => h.date !== today());
-  data.history.push({ date: today(), type: 'growth' });
-  if (data.history.length > 7) data.history = data.history.slice(-7);
+  data.last_date = t;
+  pushHistory(data, 'growth', t);
   setCatData(cat, data);
   updateSidebar();
 
@@ -522,9 +533,7 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
-    data.history = (data.history || []).filter(h => h.date !== today());
-    data.history.push({ date: today(), type: 'pass' });
-    if (data.history.length > 7) data.history = data.history.slice(-7);
+    pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
   }
@@ -548,15 +557,9 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
   // if (data.last_date === today()) { ... return; }
 
-  const MAINTAIN_MSGS = {
-    1: '잘 지키고 있어. 이게 습관이 되는 거야.',
-    2: '이틀째야. 흔들리지 않고 있어.',
-    3: '3일째 유지 중. 이 정도면 진짜 잡힌 거야.'
-  };
-
+  const t = today();
   data.total_count = (data.total_count || 0) + 1;
-  data.last_date = today();
-  data.history = (data.history || []).filter(h => h.date !== today());
+  data.last_date = t;
 
   const msg = document.getElementById('mission-result');
 
@@ -564,16 +567,15 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
     if (data.level < 7) data.level++;
     data.growth_count = (data.growth_count || 0) + 1;
     data.maintain_count = 0;
-    data.history.push({ date: today(), type: 'growth' });
+    pushHistory(data, 'growth', t);
     msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신. 레벨 ${data.level} 달성! 🎉</small>`;
   } else {
     data.maintain_count = (data.maintain_count || 0) + 1;
-    data.history.push({ date: today(), type: 'maintain' });
+    pushHistory(data, 'maintain', t);
     const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
     msg.innerHTML = `오늘도 1.01배 유지 완료 🔄<br><small>${subMsg}</small>`;
   }
 
-  if (data.history.length > 7) data.history = data.history.slice(-7);
   setCatData(cat, data);
   updateSidebar();
   msg.className = 'result-msg done-msg show';
@@ -596,9 +598,7 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
-    data.history = (data.history || []).filter(h => h.date !== today());
-    data.history.push({ date: today(), type: 'pass' });
-    if (data.history.length > 7) data.history = data.history.slice(-7);
+    pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
   }
