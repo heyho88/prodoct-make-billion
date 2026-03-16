@@ -1371,6 +1371,86 @@ input:focus, textarea:focus {
   body.has-sidebar { padding-right: 300px; }
 }
 
+/* ── 모바일 상단 요약 바 ── */
+.mobile-summary-bar {
+  display: none;
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 150;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.msb-label { font-weight: 500; }
+.msb-mult { color: #F97316; font-weight: 800; letter-spacing: -0.3px; }
+.msb-unit { font-weight: 500; }
+
+/* ── 모바일 📊 플로팅 버튼 ── */
+.mobile-stats-btn {
+  display: none;
+  position: fixed;
+  bottom: 24px; right: 20px;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 150;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s, background 0.2s;
+  align-items: center;
+  justify-content: center;
+}
+.mobile-stats-btn:active { transform: scale(0.94); background: rgba(249, 115, 22, 0.25); }
+
+/* ── 모바일 통계 바텀시트 ── */
+.mobile-stats-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 400;
+  align-items: flex-end;
+}
+.mobile-stats-overlay.open { display: flex; }
+.mobile-stats-sheet {
+  width: 100%;
+  max-height: 82vh;
+  background: #0F1220;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  padding: 0 24px 48px;
+  overflow-y: auto;
+  animation: slideUpSheet 0.28s ease;
+}
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.mobile-stats-handle {
+  width: 40px; height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  margin: 12px auto 20px;
+}
+
+@media (max-width: 767px) {
+  .mobile-summary-bar.visible { display: flex; }
+  .mobile-stats-btn.visible   { display: flex; }
+  body.has-mobile-bar .flow-wrap { margin-top: 104px; }
+}
+
 /* ── 섹션 구분선 ── */
 .sb-sect-divider {
   height: 1px;

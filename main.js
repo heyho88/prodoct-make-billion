@@ -841,6 +841,16 @@ function closeAllMobileMenus() {
   if (ham)  { ham.classList.remove('open'); ham.setAttribute('aria-expanded', 'false'); }
 }
 
+/* ── 모바일 📊 통계 바텀시트 ── */
+document.getElementById('mobile-stats-btn').addEventListener('click', () => {
+  document.getElementById('mobile-stats-overlay').classList.add('open');
+});
+document.getElementById('mobile-stats-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('mobile-stats-overlay')) {
+    document.getElementById('mobile-stats-overlay').classList.remove('open');
+  }
+});
+
 /* ── 햄버거 메뉴 ── */
 const hamburger = document.getElementById('nav-hamburger');
 const mobileMenu = document.getElementById('mobile-nav-dropdown');
@@ -870,6 +880,9 @@ function updateSidebar() {
   if (activeCats.length === 0) {
     sidebar.classList.remove('sb-active');
     document.body.classList.remove('has-sidebar');
+    document.getElementById('mobile-summary-bar')?.classList.remove('visible');
+    document.getElementById('mobile-stats-btn')?.classList.remove('visible');
+    document.body.classList.remove('has-mobile-bar');
     return;
   }
   sidebar.classList.add('sb-active');
@@ -1001,6 +1014,15 @@ function updateSidebar() {
   });
 
   sbContent.innerHTML = html;
+
+  // 모바일 요약 바 & 바텀시트 동기화
+  const msbMult = document.getElementById('msb-mult');
+  if (msbMult) msbMult.textContent = totalMult;
+  document.getElementById('mobile-summary-bar')?.classList.add('visible');
+  document.getElementById('mobile-stats-btn')?.classList.add('visible');
+  document.body.classList.add('has-mobile-bar');
+  const mobileStatsContent = document.getElementById('mobile-stats-content');
+  if (mobileStatsContent) mobileStatsContent.innerHTML = html;
 }
 
 function checkMaintainBanner() {

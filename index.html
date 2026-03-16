@@ -628,6 +628,24 @@
   <div id="sb-content"></div>
 </div>
 
+<!-- 모바일 상단 요약 바 -->
+<div id="mobile-summary-bar" class="mobile-summary-bar" aria-live="polite">
+  <span class="msb-label">누적 성장률</span>
+  <span class="msb-mult" id="msb-mult">1.00</span>
+  <span class="msb-unit">배 🌱</span>
+</div>
+
+<!-- 모바일 📊 플로팅 버튼 -->
+<button class="mobile-stats-btn" id="mobile-stats-btn" aria-label="내 성장 통계 보기">📊</button>
+
+<!-- 모바일 통계 바텀시트 -->
+<div class="mobile-stats-overlay" id="mobile-stats-overlay" role="dialog" aria-modal="true">
+  <div class="mobile-stats-sheet">
+    <div class="mobile-stats-handle"></div>
+    <div id="mobile-stats-content"></div>
+  </div>
+</div>
+
 <script src="main.js"></script>
 </body>
 </html>
