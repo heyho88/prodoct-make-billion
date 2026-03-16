@@ -1378,6 +1378,51 @@ input:focus, textarea:focus {
   margin: 20px 0;
 }
 
+/* ── 오늘의 성장 패널 ── */
+.sb-today-panel {
+  background: rgba(249, 115, 22, 0.06);
+  border: 1px solid rgba(249, 115, 22, 0.18);
+  border-radius: 16px;
+  padding: 18px 20px 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.sb-today-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(249, 115, 22, 0.8);
+  margin-bottom: 10px;
+}
+.sb-today-msg {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.sb-today-mult {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1.5px;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+.sb-today-mult-unit {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.sb-today-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.5px;
+}
+
 /* ── 섹션 라벨 ── */
 .sb-sect-label {
   font-size: 11px;

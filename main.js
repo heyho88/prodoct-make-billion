@@ -866,6 +866,33 @@ function updateSidebar() {
   let html = '';
   let firstActive = true;
 
+  // ── 오늘의 성장 패널 ──
+  const TODAY_PANEL_MSGS = [
+    '아직 시작 전이야. 오늘 1%를 시작해봐. 🌱',
+    '오늘 1% 했어. 충분해. 🌱',
+    '오늘 2% 했어. 욕심쟁이네. 😄',
+    '오늘 3% 했어. 이러다 37.78배 금방 되겠는데. 🔥'
+  ];
+  const completedToday = CATEGORIES.filter(k => {
+    const d = getCatData(k);
+    return d?.active && d?.last_date === todayStr;
+  }).length;
+  const totalGrowth = CATEGORIES.reduce((sum, k) => {
+    const d = getCatData(k);
+    return sum + (d?.growth_count || 0);
+  }, 0);
+  const totalMult = Math.pow(1.01, totalGrowth).toFixed(2);
+  const todayMsg = TODAY_PANEL_MSGS[Math.min(completedToday, 3)];
+  html += `
+    <div class="sb-today-panel">
+      <div class="sb-today-title">오늘의 성장</div>
+      <div class="sb-today-msg">${todayMsg}</div>
+      <div class="sb-today-mult">${totalMult}<span class="sb-today-mult-unit">배</span></div>
+      <div class="sb-today-sub">누적 성장률</div>
+    </div>
+    <div class="sb-sect-divider" style="margin:0 0 20px"></div>
+  `;
+
   CATEGORIES.forEach(cat => {
     const data = getCatData(cat);
     const meta = CAT_META[cat];
