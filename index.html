@@ -157,6 +157,42 @@
     </div>
   </div>
 
+  <!-- 화면: 온보딩 (수면) — 몇 시에 자요? -->
+  <div class="screen" id="screen-ob-sleep-bedtime">
+    <div class="progress-wrap">
+      <span class="progress-text" id="ob-sleep-bt-step-text">2 / 4</span>
+      <div class="progress-track"><div class="progress-fill" id="ob-sleep-bt-step-fill" style="width:50%"></div></div>
+    </div>
+    <div class="screen-content">
+      <h2 class="screen-q">보통 몇 시에 자요?</h2>
+      <p class="screen-sub">지금 기준으로 솔직하게 골라봐</p>
+      <div class="choice-grid">
+        <div class="choice-card ob-sleep-bt-card" data-val="before_midnight" role="radio" tabindex="0">🌙 자정 이전 (11시 이전)</div>
+        <div class="choice-card ob-sleep-bt-card" data-val="midnight_1am" role="radio" tabindex="0">🕛 자정 ~ 1시</div>
+        <div class="choice-card ob-sleep-bt-card" data-val="dawn_1am_2am" role="radio" tabindex="0">🌃 새벽 1시 ~ 2시</div>
+        <div class="choice-card ob-sleep-bt-card" data-val="after_2am" role="radio" tabindex="0">🌄 새벽 2시 이후</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화면: 온보딩 (수면) — 몇 분씩 앞당길까요? -->
+  <div class="screen" id="screen-ob-sleep-advance">
+    <div class="progress-wrap">
+      <span class="progress-text" id="ob-sleep-adv-step-text">3 / 4</span>
+      <div class="progress-track"><div class="progress-fill" id="ob-sleep-adv-step-fill" style="width:75%"></div></div>
+    </div>
+    <div class="screen-content">
+      <h2 class="screen-q">몇 분씩 앞당길까요?</h2>
+      <p class="screen-sub">작을수록 꾸준히 지킬 수 있어</p>
+      <div class="choice-grid">
+        <div class="choice-card ob-sleep-adv-card" data-val="5" role="radio" tabindex="0">⭐ 5분 (추천)</div>
+        <div class="choice-card ob-sleep-adv-card" data-val="10" role="radio" tabindex="0">10분</div>
+        <div class="choice-card ob-sleep-adv-card" data-val="15" role="radio" tabindex="0">15분</div>
+        <div class="choice-card ob-sleep-adv-card" data-val="30" role="radio" tabindex="0">30분</div>
+      </div>
+    </div>
+  </div>
+
   <!-- 화면 4: 온보딩 — 왜 계속 못 했어? (운동: 3/3 / 수면·루틴: 2/3) -->
   <div class="screen" id="screen-ob-reason">
     <div class="progress-wrap">

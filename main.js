@@ -4,7 +4,8 @@
 const MISSIONS = {
   gym:          ["운동복만 갈아입기","운동복 입고 현관까지","집 근처 5분 산책","헬스장 입구까지만","헬스장 들어가서 15분","헬스장 30분","헬스장 1시간"],
   hometraining: ["운동복만 갈아입기","매트 꺼내서 펼치기","스트레칭 3분","유튜브 홈트 영상 틀어놓기","홈트 10분","홈트 20분","홈트 30분"],
-  walking:      ["운동화 꺼내놓기","운동복 입고 현관까지","집 앞 5분 걷기","동네 한 바퀴 (10분)","20분 걷기","30분 걷기 or 10분 달리기","5km"]
+  walking:      ["운동화 꺼내놓기","운동복 입고 현관까지","집 앞 5분 걷기","동네 한 바퀴 (10분)","20분 걷기","30분 걷기 or 10분 달리기","5km"],
+  sleep:        ["오늘 취침 목표 시간 확인하기","목표 시간 30분 전 눕기 준비 시작","목표 시간에 눕기","목표 시간 -5분에 눕기","목표 시간 3일 연속 지키기","목표 시간 5일 연속 지키기","목표 시간 7일 연속 지키기"]
 };
 
 const ENERGY_MISSIONS = {
@@ -250,6 +251,13 @@ function startCatOnboarding(cat) {
     document.getElementById('ob2ex-step-fill').style.width = '50%';
     document.querySelectorAll('.ob2ex-card').forEach(c => c.classList.remove('selected'));
     showScreen('screen-ob2-exercise');
+  } else if (cat === 'sleep') {
+    obSleepBedtime = null;
+    obSleepAdvanceMinutes = null;
+    document.getElementById('ob-sleep-bt-step-text').textContent = '1 / 3';
+    document.getElementById('ob-sleep-bt-step-fill').style.width = '33%';
+    document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
+    showScreen('screen-ob-sleep-bedtime');
   } else {
     document.getElementById('reason-step-text').textContent = '1 / 2';
     document.getElementById('reason-step-fill').style.width = '50%';
@@ -363,6 +371,8 @@ function showFirstMission(energy, mental) {
   let missionText;
   if (cat === 'health') {
     missionText = getExerciseMission(data.type, data.level || 1);
+  } else if (cat === 'sleep') {
+    missionText = getExerciseMission('sleep', data.level || 1);
   } else {
     const e = energy || 'mid';
     const m = mental || 'mid';
@@ -388,6 +398,8 @@ let currentMissionCategory = null;
 let obPendingType = null;
 let obPendingReason = 0;
 let pendingResetCategory = null;
+let obSleepBedtime = null;
+let obSleepAdvanceMinutes = null;
 
 /* 랜딩 → 온보딩 or 홈 */
 document.getElementById('btn-start').addEventListener('click', () => {
@@ -412,6 +424,13 @@ document.querySelectorAll('.ob1-card').forEach(card => {
         document.getElementById('ob2ex-step-fill').style.width = '66%';
         document.querySelectorAll('.ob2ex-card').forEach(c => c.classList.remove('selected'));
         showScreen('screen-ob2-exercise');
+      } else if (card.dataset.val === 'sleep') {
+        obSleepBedtime = null;
+        obSleepAdvanceMinutes = null;
+        document.getElementById('ob-sleep-bt-step-text').textContent = '2 / 4';
+        document.getElementById('ob-sleep-bt-step-fill').style.width = '50%';
+        document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
+        showScreen('screen-ob-sleep-bedtime');
       } else {
         document.getElementById('reason-step-text').textContent = '2 / 3';
         document.getElementById('reason-step-fill').style.width = '66%';
@@ -432,6 +451,40 @@ document.querySelectorAll('.ob2ex-card').forEach(card => {
       // 초기 온보딩: 3/3, 홈에서 추가: 2/2
       const isInit = document.getElementById('ob2ex-step-text').textContent.includes('/ 3');
       document.getElementById('reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+      document.getElementById('reason-step-fill').style.width = '100%';
+      document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
+      showScreen('screen-ob-reason');
+    }, 280);
+  });
+});
+
+/* 온보딩 (수면): 취침 시간 선택 */
+document.querySelectorAll('.ob-sleep-bt-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obSleepBedtime = card.dataset.val;
+    document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      // 초기 온보딩: 2/4 → 3/4, 홈에서 추가: 1/3 → 2/3
+      const isInit = document.getElementById('ob-sleep-bt-step-text').textContent.includes('/ 4');
+      document.getElementById('ob-sleep-adv-step-text').textContent = isInit ? '3 / 4' : '2 / 3';
+      document.getElementById('ob-sleep-adv-step-fill').style.width = isInit ? '75%' : '66%';
+      document.querySelectorAll('.ob-sleep-adv-card').forEach(c => c.classList.remove('selected'));
+      showScreen('screen-ob-sleep-advance');
+    }, 280);
+  });
+});
+
+/* 온보딩 (수면): 앞당길 분 선택 */
+document.querySelectorAll('.ob-sleep-adv-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obSleepAdvanceMinutes = parseInt(card.dataset.val);
+    document.querySelectorAll('.ob-sleep-adv-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      // 초기 온보딩: 3/4 → 4/4, 홈에서 추가: 2/3 → 3/3
+      const isInit = document.getElementById('ob-sleep-adv-step-text').textContent.includes('/ 4');
+      document.getElementById('reason-step-text').textContent = isInit ? '4 / 4' : '3 / 3';
       document.getElementById('reason-step-fill').style.width = '100%';
       document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
       showScreen('screen-ob-reason');
@@ -461,9 +514,10 @@ document.querySelectorAll('.reason-card').forEach(card => {
         obSelections.energy = null;
         obSelections.mental = null;
         document.getElementById('btn-get-mission').disabled = true;
-        // 초기 온보딩: 3/3, 홈에서 추가: 2/2
-        const isSleepInit = document.getElementById('reason-step-text').textContent === '2 / 3';
-        document.querySelector('#screen-ob-state .progress-text').textContent = isSleepInit ? '3 / 3' : '2 / 2';
+        // ob-state 진행 텍스트: reason 단계의 total과 동일하게 맞춤
+        const reasonText = document.getElementById('reason-step-text').textContent;
+        const total = reasonText.split('/')[1]?.trim() || '3';
+        document.querySelector('#screen-ob-state .progress-text').textContent = `${total} / ${total}`;
         document.querySelector('#screen-ob-state .progress-fill').style.width = '100%';
         showScreen('screen-ob-state');
       }
@@ -488,6 +542,11 @@ document.getElementById('btn-get-mission').addEventListener('click', () => {
   const cat = currentOnboardingCategory;
   const obj = newCatObj();
   obj.fail_reason = obPendingReason;
+  if (cat === 'sleep') {
+    obj.type = 'sleep';
+    if (obSleepBedtime !== null)        obj.bedtime_current = obSleepBedtime;
+    if (obSleepAdvanceMinutes !== null) obj.bedtime_target_minutes = obSleepAdvanceMinutes;
+  }
   setCatData(cat, obj);
   currentMissionCategory = cat;
   showFirstMission(obSelections.energy, obSelections.mental);
