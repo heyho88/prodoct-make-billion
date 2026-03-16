@@ -1278,7 +1278,7 @@ input:focus, textarea:focus {
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.50);
+  color: rgba(255, 255, 255, 0.80);
   margin-bottom: 10px;
 }
 
@@ -1310,7 +1310,7 @@ input:focus, textarea:focus {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.sb-mult-maintain { color: #8B83A8; }
+.sb-mult-maintain { color: #B8B0D0; }
 .sb-status-growth {
   display: inline-block;
   font-size: 14px;
@@ -1322,7 +1322,7 @@ input:focus, textarea:focus {
   display: inline-block;
   font-size: 14px;
   font-weight: 500;
-  color: #8B83A8;
+  color: #B8B0D0;
   margin-bottom: 4px;
 }
 
