@@ -967,6 +967,25 @@ input:focus, textarea:focus {
   margin: 0;
   line-height: 1.6;
 }
+.today-summary { margin-top: 20px; text-align: center; }
+.today-summary-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 0 auto 16px;
+}
+.today-summary-msg {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
+}
+.today-summary-mult {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
 
 /* ════════════════════════════════
    반응형 — 모바일
