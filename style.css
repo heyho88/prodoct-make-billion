@@ -1371,6 +1371,70 @@ input:focus, textarea:focus {
   body.has-sidebar { padding-right: 300px; }
 }
 
+/* ── 성장 애니메이션 오버레이 ── */
+.growth-anim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.growth-anim-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.growth-anim-plant {
+  font-size: 120px;
+  line-height: 1;
+  display: block;
+  text-align: center;
+}
+.growth-anim-msg {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin: 0;
+}
+.growth-anim-msg.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 같은 단계: 통통 튀는 pulse */
+@keyframes plantPulse {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.25); }
+  40%  { transform: scale(0.92); }
+  60%  { transform: scale(1.12); }
+  80%  { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+.plant-pulse { animation: plantPulse 1.0s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+/* 레벨업: 커지면서 사라짐 */
+@keyframes plantGrowOut {
+  0%   { transform: scale(1);   opacity: 1; }
+  60%  { transform: scale(1.9); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.plant-grow-out { animation: plantGrowOut 0.48s ease forwards; }
+
+/* 레벨업: 새 식물 등장 */
+@keyframes plantGrowIn {
+  0%   { transform: scale(0.2); opacity: 0; }
+  55%  { transform: scale(1.25); opacity: 1; }
+  75%  { transform: scale(0.9); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+.plant-grow-in { animation: plantGrowIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
 /* ── 모바일 상단 요약 바 ── */
 .mobile-summary-bar {
   display: none;

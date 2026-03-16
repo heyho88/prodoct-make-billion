@@ -160,6 +160,48 @@ function getPlantIcon(n) {
   if (n >= 8)   return "🌿";
   return "🌱";
 }
+function getGrowthStage(n) {
+  if (n >= 61) return { emoji: '✨🌲', stage: 4 };
+  if (n >= 31) return { emoji: '🌲',   stage: 3 };
+  if (n >= 16) return { emoji: '🌳',   stage: 2 };
+  if (n >= 6)  return { emoji: '🌿',   stage: 1 };
+  return           { emoji: '🌱',   stage: 0 };
+}
+
+function showGrowthAnimation(oldGc, newGc, callback) {
+  const oldStage = getGrowthStage(oldGc);
+  const newStage = getGrowthStage(newGc);
+  const levelUp  = newStage.stage > oldStage.stage;
+
+  const overlay  = document.getElementById('growth-anim-overlay');
+  const plantEl  = document.getElementById('growth-anim-plant');
+  const msgEl    = document.getElementById('growth-anim-msg');
+
+  // 초기화
+  plantEl.textContent = oldStage.emoji;
+  plantEl.className   = 'growth-anim-plant';
+  msgEl.textContent   = '';
+  msgEl.className     = 'growth-anim-msg';
+  overlay.style.display = 'flex';
+
+  if (levelUp) {
+    plantEl.classList.add('plant-grow-out');
+    setTimeout(() => {
+      plantEl.textContent = newStage.emoji;
+      plantEl.className   = 'growth-anim-plant plant-grow-in';
+      msgEl.textContent   = '한 단계 성장했어! 🎉';
+      msgEl.classList.add('show');
+    }, 480);
+    setTimeout(() => { overlay.style.display = 'none'; callback(); }, 1400);
+  } else {
+    plantEl.textContent = newStage.emoji;
+    plantEl.classList.add('plant-pulse');
+    msgEl.textContent   = '오늘도 지켰어 💪';
+    msgEl.classList.add('show');
+    setTimeout(() => { overlay.style.display = 'none'; callback(); }, 1300);
+  }
+}
+
 function getNextMissionPreview(data) {
   if (!data.type || !MISSIONS[data.type]) return null;
   const lv = data.level || 1;
@@ -570,33 +612,36 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   // if (data.last_date === today()) { ... return; }
 
   const t = today();
+  const oldGc = data.growth_count || 0;
   data.total_count = (data.total_count || 0) + 1;
-  data.growth_count = (data.growth_count || 0) + 1;
+  data.growth_count = oldGc + 1;
   data.maintain_count = 0;
   data.last_date = t;
   pushHistory(data, 'growth', t);
   setCatData(cat, data);
   updateSidebar();
 
-  const tc = data.total_count;
-  const gc = data.growth_count;
-  const msg = document.getElementById('first-result-msg');
-  msg.innerHTML = `오늘 1% 완료 🌱<br><small>${tc}회째. 1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신.</small>`;
-  msg.className = 'result-msg done-msg show';
-
-  document.getElementById('fg-plant').textContent = getPlantIcon(gc);
-  document.getElementById('fg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
-  document.getElementById('fg-msg').textContent = getGrowthMsg(gc);
-  const fgNext = getNextMissionPreview(data);
-  const fgNextEl = document.getElementById('fg-next-preview');
-  if (fgNext && fgNextEl) {
-    fgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${fgNext}</span>`;
-    fgNextEl.style.display = '';
-  }
-  document.getElementById('first-growth-card').classList.add('show');
-
   document.getElementById('first-action-btns').style.display = 'none';
-  document.getElementById('btn-first-home').style.display = '';
+
+  showGrowthAnimation(oldGc, data.growth_count, () => {
+    const tc = data.total_count;
+    const gc = data.growth_count;
+    const msg = document.getElementById('first-result-msg');
+    msg.innerHTML = `오늘 1% 완료 🌱<br><small>${tc}회째. 1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신.</small>`;
+    msg.className = 'result-msg done-msg show';
+
+    document.getElementById('fg-plant').textContent = getPlantIcon(gc);
+    document.getElementById('fg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
+    document.getElementById('fg-msg').textContent = getGrowthMsg(gc);
+    const fgNext = getNextMissionPreview(data);
+    const fgNextEl = document.getElementById('fg-next-preview');
+    if (fgNext && fgNextEl) {
+      fgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${fgNext}</span>`;
+      fgNextEl.style.display = '';
+    }
+    document.getElementById('first-growth-card').classList.add('show');
+    document.getElementById('btn-first-home').style.display = '';
+  });
 });
 
 /* ── 첫 미션: 패스 ── */
@@ -630,43 +675,48 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   // if (data.last_date === today()) { ... return; }
 
   const t = today();
+  const oldGc = data.growth_count || 0;
   data.total_count = (data.total_count || 0) + 1;
   data.last_date = t;
 
-  const msg = document.getElementById('mission-result');
-
   if (currentChoice === 'grow') {
     if (data.level < 7) data.level++;
-    data.growth_count = (data.growth_count || 0) + 1;
+    data.growth_count = oldGc + 1;
     data.maintain_count = 0;
     pushHistory(data, 'growth', t);
-    msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신. 레벨 ${data.level} 달성! 🎉</small>`;
   } else {
     data.maintain_count = (data.maintain_count || 0) + 1;
     pushHistory(data, 'maintain', t);
-    const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
-    msg.innerHTML = `오늘도 1.01배 유지 완료 🔄<br><small>${subMsg}</small>`;
   }
 
   setCatData(cat, data);
   updateSidebar();
-  msg.className = 'result-msg done-msg show';
-
-  const gc = data.growth_count;
-  document.getElementById('mg-plant').textContent = getPlantIcon(gc);
-  document.getElementById('mg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
-  document.getElementById('mg-msg').textContent = getGrowthMsg(gc);
-  const mgNext = getNextMissionPreview(data);
-  const mgNextEl = document.getElementById('mg-next-preview');
-  if (mgNext && mgNextEl) {
-    mgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${mgNext}</span>`;
-    mgNextEl.style.display = '';
-  }
-  document.getElementById('mission-growth-card').classList.add('show');
-
-  if (data.level >= 7) document.getElementById('mg-max-level').style.display = '';
   document.getElementById('mission-action-btns').style.display = 'none';
-  document.getElementById('btn-mission-home').style.display = '';
+
+  showGrowthAnimation(oldGc, data.growth_count, () => {
+    const msg = document.getElementById('mission-result');
+    if (currentChoice === 'grow') {
+      msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신. 레벨 ${data.level} 달성! 🎉</small>`;
+    } else {
+      const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
+      msg.innerHTML = `오늘도 1.01배 유지 완료 🔄<br><small>${subMsg}</small>`;
+    }
+    msg.className = 'result-msg done-msg show';
+
+    const gc = data.growth_count;
+    document.getElementById('mg-plant').textContent = getPlantIcon(gc);
+    document.getElementById('mg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
+    document.getElementById('mg-msg').textContent = getGrowthMsg(gc);
+    const mgNext = getNextMissionPreview(data);
+    const mgNextEl = document.getElementById('mg-next-preview');
+    if (mgNext && mgNextEl) {
+      mgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${mgNext}</span>`;
+      mgNextEl.style.display = '';
+    }
+    document.getElementById('mission-growth-card').classList.add('show');
+    if (data.level >= 7) document.getElementById('mg-max-level').style.display = '';
+    document.getElementById('btn-mission-home').style.display = '';
+  });
 });
 
 /* ── 미션: 패스 ── */
