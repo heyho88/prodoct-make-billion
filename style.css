@@ -1694,6 +1694,50 @@ input:focus, textarea:focus {
   padding: 3px 10px; border-radius: 6px; margin-bottom: 12px;
   letter-spacing: 0.04em;
 }
+.home-cat-done-btn {
+  width: 100%; padding: 14px 20px; border-radius: 12px; border: none;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 14px; font-weight: 600; cursor: default;
+}
+.home-add-section {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 4px;
+}
+.home-add-cat-btn {
+  width: 100%; padding: 13px 20px; border-radius: 12px;
+  border: 1px dashed rgba(249, 115, 22, 0.3); background: transparent;
+  color: rgba(249, 115, 22, 0.8); font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.home-add-cat-btn:hover {
+  border-color: rgba(249, 115, 22, 0.5);
+  color: #F97316;
+  background: rgba(249, 115, 22, 0.04);
+}
+.next-mission-preview {
+  margin-top: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 16px;
+  text-align: left;
+}
+.next-mission-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.next-mission-text {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.5;
+}
 
 /* ── 사이드바 멀티 카테고리 (구 스타일, 미사용) ── */
 .sb-cat-block { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }

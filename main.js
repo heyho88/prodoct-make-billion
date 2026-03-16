@@ -160,6 +160,13 @@ function getPlantIcon(n) {
   if (n >= 8)   return "🌿";
   return "🌱";
 }
+function getNextMissionPreview(data) {
+  if (!data.type || !MISSIONS[data.type]) return null;
+  const lv = data.level || 1;
+  if (lv >= 7) return '이 루틴은 완전히 잡혔어. 새로운 도전을 추가해볼까? 🔥';
+  return getExerciseMission(data.type, lv + 1);
+}
+
 function getExerciseMission(type, level) {
   const arr = MISSIONS[type];
   return arr ? arr[Math.min(level - 1, 6)] : '';
@@ -178,31 +185,20 @@ function renderHomeCards() {
   const container = document.getElementById('home-cards');
   if (!container) return;
 
-  const html = CATEGORIES.map(cat => {
+  const todayStr = today();
+  let html = '';
+
+  CATEGORIES.forEach(cat => {
     const data = getCatData(cat);
+    if (!data || !data.active) return;
+
     const meta = CAT_META[cat];
-    const icon = getCatIcon(cat, data?.type);
-    const name = data?.active ? getCatName(cat, data.type) : meta.label;
-
-    if (!data || !data.active) {
-      return `<div class="home-cat-card home-cat-inactive">
-        <div class="home-cat-top">
-          <span class="home-cat-icon">${icon}</span>
-          <div class="home-cat-info">
-            <div class="home-cat-name">${name}</div>
-            <div class="home-cat-meta home-cat-meta-inactive">아직 시작 안 했어</div>
-          </div>
-        </div>
-        <button class="home-cat-add-btn" data-cat="${cat}">+ 추가하기</button>
-      </div>`;
-    }
-
+    const icon = getCatIcon(cat, data.type);
+    const name = getCatName(cat, data.type) || meta.label;
     const mult = Math.round(Math.pow(1.01, data.growth_count) * 100) / 100;
-    // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
-    // const doneToday = data.last_date === today();
-    const doneToday = false;
+    const doneToday = data.last_date === todayStr;
 
-    return `<div class="home-cat-card home-cat-active">
+    html += `<div class="home-cat-card home-cat-active">
       <div class="home-cat-top">
         <span class="home-cat-icon">${icon}</span>
         <div class="home-cat-info">
@@ -212,22 +208,33 @@ function renderHomeCards() {
         <button class="home-cat-reset-btn" data-cat="${cat}" title="${name} 초기화">↺</button>
       </div>
       ${doneToday
-        ? `<div class="home-cat-done-tag">✅ 오늘 완료!</div>`
+        ? `<button class="home-cat-done-btn" disabled>오늘 1% 완료했어 🌱</button>`
         : `<button class="home-cat-mission-btn" data-cat="${cat}">오늘 미션 하기 →</button>`
       }
     </div>`;
-  }).join('');
+  });
+
+  const inactiveCats = CATEGORIES.filter(cat => { const d = getCatData(cat); return !d || !d.active; });
+  if (inactiveCats.length > 0) {
+    html += `<div class="home-add-section">`;
+    inactiveCats.forEach(cat => {
+      const meta = CAT_META[cat];
+      const icon = getCatIcon(cat, null);
+      html += `<button class="home-add-cat-btn" data-cat="${cat}">+ ${icon} ${meta.label} 추가하기</button>`;
+    });
+    html += `</div>`;
+  }
 
   container.innerHTML = html;
 
-  container.querySelectorAll('.home-cat-add-btn').forEach(btn => {
-    btn.addEventListener('click', () => startCatOnboarding(btn.dataset.cat));
-  });
   container.querySelectorAll('.home-cat-mission-btn').forEach(btn => {
     btn.addEventListener('click', () => startCatMission(btn.dataset.cat));
   });
   container.querySelectorAll('.home-cat-reset-btn').forEach(btn => {
     btn.addEventListener('click', () => openResetModal(btn.dataset.cat));
+  });
+  container.querySelectorAll('.home-add-cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => startCatOnboarding(btn.dataset.cat));
   });
 }
 
@@ -578,9 +585,14 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   msg.className = 'result-msg done-msg show';
 
   document.getElementById('fg-plant').textContent = getPlantIcon(gc);
-  document.getElementById('fg-days').textContent = `당신은 ${tc}번째입니다`;
   document.getElementById('fg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
   document.getElementById('fg-msg').textContent = getGrowthMsg(gc);
+  const fgNext = getNextMissionPreview(data);
+  const fgNextEl = document.getElementById('fg-next-preview');
+  if (fgNext && fgNextEl) {
+    fgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${fgNext}</span>`;
+    fgNextEl.style.display = '';
+  }
   document.getElementById('first-growth-card').classList.add('show');
 
   document.getElementById('first-action-btns').style.display = 'none';
@@ -642,9 +654,14 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
 
   const gc = data.growth_count;
   document.getElementById('mg-plant').textContent = getPlantIcon(gc);
-  document.getElementById('mg-days').textContent = `당신은 ${data.total_count}번째입니다`;
   document.getElementById('mg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
   document.getElementById('mg-msg').textContent = getGrowthMsg(gc);
+  const mgNext = getNextMissionPreview(data);
+  const mgNextEl = document.getElementById('mg-next-preview');
+  if (mgNext && mgNextEl) {
+    mgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${mgNext}</span>`;
+    mgNextEl.style.display = '';
+  }
   document.getElementById('mission-growth-card').classList.add('show');
 
   if (data.level >= 7) document.getElementById('mg-max-level').style.display = '';
