@@ -236,7 +236,7 @@ function startCatMission(cat) {
   currentMissionCategory = cat;
   const data = getCatData(cat);
   if (!data) return;
-  if (cat === 'health') {
+  if (cat === 'health' || cat === 'sleep') {
     showMainChoice();
   } else {
     showDailyState();
@@ -500,16 +500,22 @@ document.querySelectorAll('.reason-card').forEach(card => {
     card.classList.add('selected');
     const cat = currentOnboardingCategory;
     setTimeout(() => {
-      if (cat === 'health') {
-        // 운동: 카테고리 데이터 생성 후 첫 미션
+      if (cat === 'health' || cat === 'sleep') {
+        // 운동/수면: 카테고리 데이터 생성 후 첫 미션
         const obj = newCatObj();
-        obj.type = obPendingType;
         obj.fail_reason = obPendingReason;
+        if (cat === 'health') {
+          obj.type = obPendingType;
+        } else {
+          obj.type = 'sleep';
+          if (obSleepBedtime !== null)        obj.bedtime_current = obSleepBedtime;
+          if (obSleepAdvanceMinutes !== null) obj.bedtime_target_minutes = obSleepAdvanceMinutes;
+        }
         setCatData(cat, obj);
         currentMissionCategory = cat;
         showFirstMission();
       } else {
-        // 수면/루틴: 에너지·멘탈 선택 화면으로
+        // 루틴: 에너지·멘탈 선택 화면으로
         document.querySelectorAll('.state-opt').forEach(o => o.classList.remove('active'));
         obSelections.energy = null;
         obSelections.mental = null;
@@ -542,11 +548,6 @@ document.getElementById('btn-get-mission').addEventListener('click', () => {
   const cat = currentOnboardingCategory;
   const obj = newCatObj();
   obj.fail_reason = obPendingReason;
-  if (cat === 'sleep') {
-    obj.type = 'sleep';
-    if (obSleepBedtime !== null)        obj.bedtime_current = obSleepBedtime;
-    if (obSleepAdvanceMinutes !== null) obj.bedtime_target_minutes = obSleepAdvanceMinutes;
-  }
   setCatData(cat, obj);
   currentMissionCategory = cat;
   showFirstMission(obSelections.energy, obSelections.mental);
