@@ -160,37 +160,6 @@ function getPlantIcon(n) {
   if (n >= 8)   return "🌿";
   return "🌱";
 }
-function getTodaySummary() {
-  const t = today();
-  const TODAY_MSGS = [
-    '',
-    '오늘 1% 했어. 충분해. 🌱',
-    '오늘 2% 했어. 욕심쟁이네. 😄',
-    '오늘 3% 했어. 이러다 37.78배 금방 되겠는데. 🔥'
-  ];
-  const count = CATEGORIES.filter(k => {
-    const d = getCatData(k);
-    return d?.active && d?.last_date === t;
-  }).length;
-  const totalGrowth = CATEGORIES.reduce((sum, k) => {
-    const d = getCatData(k);
-    return sum + (d?.growth_count || 0);
-  }, 0);
-  return {
-    count,
-    msg: TODAY_MSGS[Math.min(count, 3)],
-    mult: Math.pow(1.01, totalGrowth).toFixed(2)
-  };
-}
-
-function showTodaySummary(msgId, multId, wrapId) {
-  const s = getTodaySummary();
-  if (s.count < 1) return;
-  document.getElementById(msgId).textContent = s.msg;
-  document.getElementById(multId).textContent = `누적 성장률 ${s.mult}배`;
-  document.getElementById(wrapId).style.display = '';
-}
-
 function getExerciseMission(type, level) {
   const arr = MISSIONS[type];
   return arr ? arr[Math.min(level - 1, 6)] : '';
@@ -613,7 +582,6 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   document.getElementById('fg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
   document.getElementById('fg-msg').textContent = getGrowthMsg(gc);
   document.getElementById('first-growth-card').classList.add('show');
-  showTodaySummary('fg-summary-msg', 'fg-summary-mult', 'fg-today-summary');
 
   document.getElementById('first-action-btns').style.display = 'none';
   document.getElementById('btn-first-home').style.display = '';
@@ -678,7 +646,6 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   document.getElementById('mg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
   document.getElementById('mg-msg').textContent = getGrowthMsg(gc);
   document.getElementById('mission-growth-card').classList.add('show');
-  showTodaySummary('mg-summary-msg', 'mg-summary-mult', 'mg-today-summary');
 
   if (data.level >= 7) document.getElementById('mg-max-level').style.display = '';
   document.getElementById('mission-action-btns').style.display = 'none';
