@@ -97,14 +97,14 @@ function addCatHistory(cat, type) {
   const t = today();
   data.history = (data.history || []).filter(h => h.date !== t);
   data.history.push({ date: t, type });
-  if (data.history.length > 7) data.history = data.history.slice(-7);
+  if (data.history.length > 30) data.history = data.history.slice(-30);
   setCatData(cat, data);
 }
 
 function pushHistory(data, type, t) {
   data.history = (data.history || []).filter(h => h.date !== t);
   data.history.push({ date: t, type });
-  if (data.history.length > 7) data.history = data.history.slice(-7);
+  if (data.history.length > 30) data.history = data.history.slice(-30);
 }
 
 /* ── 기존 데이터 마이그레이션 ── */
@@ -219,6 +219,7 @@ function getExerciseMission(type, level) {
 ════════════════════════ */
 function showHome() {
   renderHomeCards();
+  renderHomeGrass();
   updateSidebar();
   showScreen('screen-home');
 }
@@ -806,6 +807,7 @@ document.getElementById('modal-reset-ok').addEventListener('click', () => {
     resetCat(pendingResetCategory);
     pendingResetCategory = null;
     renderHomeCards();
+    renderHomeGrass();
     updateSidebar();
   } else {
     CATEGORIES.forEach(k => resetCat(k));
@@ -1063,6 +1065,15 @@ function updateSidebar() {
     `;
   });
 
+  // 잔디밭 섹션 (사이드바 하단)
+  const hasAnyActiveCat = CATEGORIES.some(cat => { const d = getCatData(cat); return d && d.active; });
+  if (hasAnyActiveCat) {
+    html += `
+      <div class="sb-sect-divider" style="margin:24px 0 16px"></div>
+      ${buildGrassHtml('sb-sect-label')}
+    `;
+  }
+
   sbContent.innerHTML = html;
 
   // 모바일 요약 바 & 바텀시트 동기화
@@ -1088,6 +1099,88 @@ function checkMaintainBanner() {
     banner.style.display = 'none';
   }
 }
+
+/* ════════════════════════
+   잔디밭 (Grass Grid)
+════════════════════════ */
+function buildGrassMap() {
+  const grassMap = {};
+  CATEGORIES.forEach(cat => {
+    const data = getCatData(cat);
+    if (!data) return;
+    (data.history || []).forEach(h => {
+      const existing = grassMap[h.date];
+      if (!existing) {
+        grassMap[h.date] = h.type;
+      } else if (h.type === 'growth') {
+        grassMap[h.date] = 'growth';
+      } else if (h.type === 'maintain' && existing !== 'growth') {
+        grassMap[h.date] = 'maintain';
+      }
+    });
+  });
+  return grassMap;
+}
+
+function buildGrassHtml(titleClass) {
+  const grassMap = buildGrassMap();
+  let cellsHtml = '';
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const type = grassMap[ds];
+    let bg, tip;
+    if (type === 'growth')       { bg = '#F97316';                tip = `${mm}/${dd} 성장 완료`; }
+    else if (type === 'maintain') { bg = 'rgba(249,115,22,0.4)'; tip = `${mm}/${dd} 유지 완료`; }
+    else                          { bg = 'rgba(255,255,255,0.06)'; tip = `${mm}/${dd} 미완료`; }
+    cellsHtml += `<div class="grass-cell" style="background:${bg}" data-tip="${tip}"></div>`;
+  }
+  return `
+    <div class="${titleClass || 'sb-sect-label'}">30일 기록</div>
+    <div class="grass-grid">${cellsHtml}</div>
+    <div class="grass-legend">
+      <span class="grass-legend-item"><span class="grass-dot" style="background:rgba(255,255,255,0.06)"></span>미완료</span>
+      <span class="grass-legend-item"><span class="grass-dot" style="background:rgba(249,115,22,0.4)"></span>유지</span>
+      <span class="grass-legend-item"><span class="grass-dot" style="background:#F97316"></span>성장</span>
+    </div>
+  `;
+}
+
+function renderHomeGrass() {
+  const section = document.getElementById('home-grass-section');
+  if (!section) return;
+  const hasAnyActive = CATEGORIES.some(cat => { const d = getCatData(cat); return d && d.active; });
+  if (!hasAnyActive) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  section.innerHTML = buildGrassHtml('home-grass-title');
+}
+
+/* ── 잔디밭 툴팁 이벤트 위임 ── */
+(function () {
+  const tooltip = document.getElementById('grass-tooltip');
+  if (!tooltip) return;
+
+  document.addEventListener('mouseover', e => {
+    const cell = e.target.closest('.grass-cell');
+    if (!cell || !cell.dataset.tip) return;
+    tooltip.textContent = cell.dataset.tip;
+    tooltip.style.display = 'block';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (tooltip.style.display === 'none') return;
+    tooltip.style.left = (e.clientX + 10) + 'px';
+    tooltip.style.top  = (e.clientY - 6) + 'px';
+  });
+
+  document.addEventListener('mouseout', e => {
+    if (!e.target.closest('.grass-cell')) return;
+    tooltip.style.display = 'none';
+  });
+})();
 
 /* ════════════════════════
    실행

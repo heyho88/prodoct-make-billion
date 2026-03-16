@@ -1516,6 +1516,62 @@ input:focus, textarea:focus {
   .site-footer { padding-bottom: 80px; }
 }
 
+/* ════════════════════════════════
+   잔디밭 (Grass Grid)
+════════════════════════════════ */
+.grass-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 14px);
+  gap: 3px;
+  margin: 8px 0 10px;
+}
+.grass-cell {
+  width: 14px; height: 14px;
+  border-radius: 2px;
+  cursor: default;
+  transition: opacity 0.15s;
+}
+.grass-cell:hover { opacity: 0.8; }
+.grass-legend {
+  display: flex; gap: 14px;
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  margin-top: 6px;
+}
+.grass-legend-item { display: flex; align-items: center; gap: 4px; }
+.grass-dot {
+  display: inline-block; width: 10px; height: 10px;
+  border-radius: 2px; flex-shrink: 0;
+}
+.grass-tooltip {
+  position: fixed;
+  background: rgba(20,22,36,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+  font-size: 12px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 800;
+  white-space: nowrap;
+  transform: translateY(-110%);
+}
+
+/* 홈 화면 잔디밭 섹션 */
+.home-grass-section {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 8px 0 4px;
+}
+.home-grass-title {
+  font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
 /* ── 섹션 구분선 ── */
 .sb-sect-divider {
   height: 1px;
