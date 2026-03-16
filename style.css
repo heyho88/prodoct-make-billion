@@ -117,7 +117,20 @@ body {
   transition: color 0.2s, background 0.2s;
 }
 .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+.nav-links a.nav-earlybird {
+  color: #F97316;
+  border: 1px solid rgba(249, 115, 22, 0.45);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.nav-links a.nav-earlybird:hover {
+  background: rgba(249, 115, 22, 0.12);
+  color: #FB923C;
+}
 .nav-right { display: flex; gap: 8px; align-items: center; }
+.mobile-nav-link.nav-earlybird-mobile { color: #F97316; font-weight: 600; }
 
 /* 햄버거 메뉴 */
 .nav-hamburger {
