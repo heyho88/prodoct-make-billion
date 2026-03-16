@@ -760,6 +760,70 @@ document.getElementById('modal-reset').addEventListener('click', e => {
   }
 });
 
+/* ── 얼리버드 모달 ── */
+const earlybirdModal = document.getElementById('modal-earlybird');
+
+function openEarlybirdModal() {
+  const form = document.getElementById('modal-earlybird-form');
+  const done = document.getElementById('modal-earlybird-done');
+  form.reset();
+  form.style.display = '';
+  done.style.display = 'none';
+  earlybirdModal.style.display = 'flex';
+  earlybirdModal.querySelector('.modal-earlybird-input').focus();
+}
+
+function closeEarlybirdModal() {
+  earlybirdModal.style.display = 'none';
+}
+
+// nav 링크 클릭 → 모달 오픈 (PC + 모바일)
+document.querySelectorAll('a.nav-earlybird, a.nav-earlybird-mobile').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    closeAllMobileMenus();
+    openEarlybirdModal();
+  });
+});
+
+document.getElementById('modal-earlybird-close').addEventListener('click', closeEarlybirdModal);
+
+earlybirdModal.addEventListener('click', e => {
+  if (e.target === earlybirdModal) closeEarlybirdModal();
+});
+
+document.getElementById('modal-earlybird-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.modal-earlybird-btn');
+  btn.disabled = true;
+  btn.textContent = '신청 중...';
+  try {
+    const res = await fetch('https://formspree.io/f/maqdlblk', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    });
+    if (res.ok) {
+      form.style.display = 'none';
+      document.getElementById('modal-earlybird-done').style.display = '';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '신청하기';
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = '신청하기';
+  }
+});
+
+function closeAllMobileMenus() {
+  const menu = document.getElementById('mobile-nav-dropdown');
+  const ham  = document.getElementById('nav-hamburger');
+  if (menu) menu.classList.remove('open');
+  if (ham)  { ham.classList.remove('open'); ham.setAttribute('aria-expanded', 'false'); }
+}
+
 /* ── 햄버거 메뉴 ── */
 const hamburger = document.getElementById('nav-hamburger');
 const mobileMenu = document.getElementById('mobile-nav-dropdown');

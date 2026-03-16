@@ -585,6 +585,22 @@
   </div>
 </div>
 
+<!-- 얼리버드 신청 모달 -->
+<div class="modal-overlay" id="modal-earlybird" style="display:none" role="dialog" aria-modal="true" aria-labelledby="earlybird-modal-title">
+  <div class="modal-box modal-earlybird-box">
+    <button class="modal-earlybird-close" id="modal-earlybird-close" aria-label="닫기">✕</button>
+    <div class="modal-earlybird-badge">얼리버드 모집 중</div>
+    <h2 class="modal-earlybird-title" id="earlybird-modal-title">얼리버드 신청</h2>
+    <p class="modal-earlybird-sub">지금 신청하면 정식 출시 때 가장 먼저 알려드려요.</p>
+    <form id="modal-earlybird-form" class="modal-earlybird-form">
+      <input type="email" name="email" placeholder="이메일 주소 입력" required aria-label="이메일 주소" class="modal-earlybird-input">
+      <button type="submit" class="modal-earlybird-btn">신청하기</button>
+    </form>
+    <p class="modal-earlybird-done" id="modal-earlybird-done" style="display:none">신청 완료! 곧 연락드릴게요. 🎉</p>
+    <p class="modal-earlybird-note">스팸 없음. 출시 소식만 딱 한 번 보내드립니다.</p>
+  </div>
+</div>
+
 <!-- 커스텀 확인 모달 -->
 <div class="modal-overlay" id="modal-reset" style="display:none" role="dialog" aria-modal="true">
   <div class="modal-box">
