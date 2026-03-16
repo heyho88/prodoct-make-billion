@@ -1513,6 +1513,7 @@ input:focus, textarea:focus {
   .mobile-summary-bar.visible { display: flex; }
   .mobile-stats-btn.visible   { display: flex; }
   body.has-mobile-bar .flow-wrap { margin-top: 104px; }
+  .site-footer { padding-bottom: 80px; }
 }
 
 /* ── 섹션 구분선 ── */
