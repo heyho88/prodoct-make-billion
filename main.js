@@ -894,14 +894,63 @@ function closeAllMobileMenus() {
 }
 
 /* ── 모바일 📊 통계 바텀시트 ── */
-document.getElementById('mobile-stats-btn').addEventListener('click', () => {
-  document.getElementById('mobile-stats-overlay').classList.add('open');
-});
-document.getElementById('mobile-stats-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('mobile-stats-overlay')) {
-    document.getElementById('mobile-stats-overlay').classList.remove('open');
+(function() {
+  const overlay = document.getElementById('mobile-stats-overlay');
+  const sheet = overlay.querySelector('.mobile-stats-sheet');
+  const THRESHOLD = 100;
+
+  function closeSheet() {
+    sheet.style.transition = 'transform 0.3s ease';
+    sheet.style.transform = 'translateY(110%)';
+    setTimeout(() => {
+      overlay.classList.remove('open');
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+    }, 300);
   }
-});
+
+  document.getElementById('mobile-stats-btn').addEventListener('click', () => {
+    overlay.classList.add('open');
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeSheet();
+  });
+
+  /* 스와이프 다운으로 닫기 */
+  let startY = 0, dragDelta = 0, dragging = false;
+
+  sheet.addEventListener('touchstart', e => {
+    const touchY = e.touches[0].clientY;
+    const relY = touchY - sheet.getBoundingClientRect().top;
+    if (relY <= 60 || sheet.scrollTop === 0) {
+      startY = touchY;
+      dragDelta = 0;
+      dragging = true;
+      sheet.style.transition = 'none';
+    }
+  }, { passive: true });
+
+  sheet.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    dragDelta = e.touches[0].clientY - startY;
+    if (dragDelta <= 0) { sheet.style.transform = ''; return; }
+    sheet.style.transform = `translateY(${dragDelta}px)`;
+    if (dragDelta > 10) e.preventDefault();
+  }, { passive: false });
+
+  sheet.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (dragDelta >= THRESHOLD) {
+      closeSheet();
+    } else {
+      sheet.style.transition = 'transform 0.22s ease';
+      sheet.style.transform = 'translateY(0)';
+      setTimeout(() => { sheet.style.transition = ''; sheet.style.transform = ''; }, 220);
+    }
+  }, { passive: true });
+})();
 
 /* ── 햄버거 메뉴 ── */
 const hamburger = document.getElementById('nav-hamburger');
