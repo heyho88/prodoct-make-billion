@@ -239,7 +239,7 @@ function renderHomeCards() {
     const icon = getCatIcon(cat, data.type);
     const name = getCatName(cat, data.type) || meta.label;
     const mult = Math.round(Math.pow(1.01, data.growth_count) * 100) / 100;
-    const doneToday = data.last_date === todayStr;
+    const doneToday = false; // TEST: 날짜 제한 임시 해제 — 테스트 후 원복: data.last_date === todayStr
 
     html += `<div class="home-cat-card home-cat-active">
       <div class="home-cat-top">
