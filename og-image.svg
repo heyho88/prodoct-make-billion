@@ -1,0 +1,16 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#080B14"/>
+  <ellipse cx="200" cy="150" rx="400" ry="300" fill="rgba(139,92,246,0.18)"/>
+  <ellipse cx="1050" cy="520" rx="350" ry="250" fill="rgba(34,211,238,0.10)"/>
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F97316"/>
+      <stop offset="100%" style="stop-color:#A855F7"/>
+    </linearGradient>
+  </defs>
+  <text x="600" y="200" text-anchor="middle" font-family="NotoSansKR-Black, 'Helvetica Neue', Arial, sans-serif" font-size="52" font-weight="900" fill="url(#logoGrad)">SLOO</text>
+  <text x="600" y="310" text-anchor="middle" font-family="NotoSansKR-Black, 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="900" fill="#FFFFFF">매일 1%의 성장.</text>
+  <text x="600" y="400" text-anchor="middle" font-family="NotoSansKR-Regular, 'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="400" fill="rgba(255,255,255,0.65)">딱 하나만 해. 그게 1%야.</text>
+  <text x="600" y="530" text-anchor="middle" font-family="NotoSansKR-Black, 'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="500" fill="#F97316">sloo.kr</text>
+  <rect x="520" y="555" width="160" height="2" rx="1" fill="rgba(249,115,22,0.4)"/>
+</svg>
