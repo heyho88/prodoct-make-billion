@@ -1348,12 +1348,12 @@ function toggleDisqus() {
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
   }
 
-  async function share(title, text) {
+  // iOS Safari: navigator.share()는 동기적으로 바로 호출해야 유저 제스처 컨텍스트 유지됨
+  function share(title, text) {
     if (navigator.share) {
-      try { await navigator.share({ title, text, url: SLOO_URL }); } catch {}
+      navigator.share({ title, text, url: SLOO_URL }).catch(() => {});
     } else {
-      await navigator.clipboard.writeText(`${text} ${SLOO_URL}`);
-      showToast();
+      navigator.clipboard.writeText(text + ' ' + SLOO_URL).then(showToast).catch(showToast);
     }
   }
 
