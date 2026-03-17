@@ -1349,19 +1349,19 @@ function toggleDisqus() {
   }
 
   // iOS Safari: navigator.share()는 동기적으로 바로 호출해야 유저 제스처 컨텍스트 유지됨
-  function share(title, text) {
+  function share(title) {
     if (navigator.share) {
-      navigator.share({ title, text, url: SLOO_URL }).catch(() => {});
+      navigator.share({ title, url: SLOO_URL }).catch(() => {});
     } else {
-      navigator.clipboard.writeText(text + ' ' + SLOO_URL).then(showToast).catch(showToast);
+      navigator.clipboard.writeText(SLOO_URL).then(showToast).catch(showToast);
     }
   }
 
   document.getElementById('btn-calc-share').addEventListener('click', () =>
-    share('매일 1%가 만드는 변화', '365일 동안 매일 1%씩 성장하면 37.78배가 된다. 믿어져? →')
+    share('매일 1%가 만드는 변화')
   );
 
   document.getElementById('btn-first-share').addEventListener('click', () =>
-    share('나 오늘부터 매일 1% 시작했어', '매일 딱 하나만. 그게 1%야. 나랑 같이 시작할래? →')
+    share('나 오늘부터 매일 1% 시작했어')
   );
 })();
