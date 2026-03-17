@@ -1335,3 +1335,33 @@ function toggleDisqus() {
     btn.textContent = '댓글 접기 ▲';
   }
 }
+
+/* ── SNS 공유 ── */
+(function() {
+  const SLOO_URL = 'https://sloo.kr';
+  const toast = document.getElementById('share-toast');
+  let toastTimer;
+
+  function showToast() {
+    clearTimeout(toastTimer);
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  async function share(title, text) {
+    if (navigator.share) {
+      try { await navigator.share({ title, text, url: SLOO_URL }); } catch {}
+    } else {
+      await navigator.clipboard.writeText(`${text} ${SLOO_URL}`);
+      showToast();
+    }
+  }
+
+  document.getElementById('btn-calc-share').addEventListener('click', () =>
+    share('매일 1%가 만드는 변화', '365일 동안 매일 1%씩 성장하면 37.78배가 된다. 믿어져? →')
+  );
+
+  document.getElementById('btn-first-share').addEventListener('click', () =>
+    share('나 오늘부터 매일 1% 시작했어', '매일 딱 하나만. 그게 1%야. 나랑 같이 시작할래? →')
+  );
+})();
