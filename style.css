@@ -2009,6 +2009,38 @@ input:focus, textarea:focus {
 }
 .mission-share-btn:hover { color: var(--text-secondary); border-color: rgba(255,255,255,0.12); }
 
+/* ── 온보딩 로딩 ── */
+.ob-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  height: 100%;
+}
+.ob-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(249, 115, 22, 0.2);
+  border-top-color: #F97316;
+  border-radius: 50%;
+  animation: obSpin 0.9s linear infinite;
+}
+@keyframes obSpin {
+  to { transform: rotate(360deg); }
+}
+.ob-loading-text {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+}
+.ob-loading-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* ── 감사일기 링크 ── */
 .gratitude-info-link {
   display: block;

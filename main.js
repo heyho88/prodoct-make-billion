@@ -604,7 +604,12 @@ document.querySelectorAll('.reason-card').forEach(card => {
         }
         setCatData(cat, obj);
         currentMissionCategory = cat;
-        showFirstMission();
+        if (cat === 'health' || cat === 'sleep') {
+          showScreen('screen-ob-loading');
+          setTimeout(showFirstMission, 2000 + Math.random() * 500);
+        } else {
+          showFirstMission();
+        }
       } else {
         // 루틴: 에너지·멘탈 선택 화면으로
         document.querySelectorAll('.state-opt').forEach(o => o.classList.remove('active'));
