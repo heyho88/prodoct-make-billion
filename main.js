@@ -728,7 +728,15 @@ document.querySelectorAll('.reason-card').forEach(card => {
           const routineCat = getRoutineCat(obPendingType);
           setCatData(routineCat, obj);
           const slots = getRoutineSlots();
-          if (!slots.includes(obPendingType)) { slots.push(obPendingType); setRoutineSlots(slots); }
+          if (!slots.includes(obPendingType)) {
+            // 새 루틴 추가 시 기존 모든 슬롯의 daily_streak 리셋
+            slots.forEach(type => {
+              const d = getCatData(getRoutineCat(type));
+              if (d) { d.daily_streak = 0; setCatData(getRoutineCat(type), d); }
+            });
+            slots.push(obPendingType);
+            setRoutineSlots(slots);
+          }
           currentMissionCategory = routineCat;
           showFirstMission();
           return;
