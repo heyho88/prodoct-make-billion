@@ -705,8 +705,11 @@ document.querySelectorAll('.ob-mental-state-card').forEach(card => {
     document.querySelectorAll('.ob-mental-state-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     setTimeout(() => {
-      // 로딩 화면: 공감 메시지를 로딩 텍스트로 활용
-      document.querySelector('#screen-ob-loading .ob-loading-text').textContent = card.dataset.msg;
+      // 로딩 화면: 공감 메시지 표시 + 멘탈 전용 텍스트
+      const empathyEl = document.getElementById('ob-loading-empathy');
+      empathyEl.textContent = card.dataset.msg;
+      empathyEl.style.display = '';
+      document.getElementById('ob-loading-text').textContent = '당신의 상태에 맞는 미션을 만들고 있습니다...';
       showScreen('screen-ob-loading');
       // 카테고리 데이터 생성
       const obj = newCatObj();
@@ -822,6 +825,8 @@ document.querySelectorAll('.reason-card').forEach(card => {
         setCatData(cat, obj);
         currentMissionCategory = cat;
         if (cat === 'health' || cat === 'sleep') {
+          document.getElementById('ob-loading-empathy').style.display = 'none';
+          document.getElementById('ob-loading-text').textContent = '당신만의 맞춤 미션을 만들고 있습니다...';
           showScreen('screen-ob-loading');
           setTimeout(showFirstMission, 2000 + Math.random() * 500);
         } else {

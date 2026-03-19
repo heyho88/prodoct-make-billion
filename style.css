@@ -2110,6 +2110,13 @@ input:focus, textarea:focus {
 @keyframes obSpin {
   to { transform: rotate(360deg); }
 }
+.ob-loading-empathy {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  margin: 0;
+}
 .ob-loading-text {
   font-size: 1rem;
   color: var(--text-secondary);
