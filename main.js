@@ -259,16 +259,17 @@ function initDrumCol(col, items, initialVal) {
   document.addEventListener('mouseup', mup);
 
   // 마우스 휠: 한 칸씩 이동, 중복 방지 플래그
-  let wheelLocked = false;
+  let isScrolling = false;
   col.addEventListener('wheel', e => {
     e.preventDefault();
-    if (wheelLocked) return;
-    wheelLocked = true;
+    e.stopPropagation();
+    if (isScrolling) return;
+    isScrolling = true;
     const cur = Math.round(col.scrollTop / 44);
     const next = Math.max(0, Math.min(items.length - 1, cur + (e.deltaY > 0 ? 1 : -1)));
     col.scrollTo({ top: next * 44, behavior: 'smooth' });
     updateDrumHighlight(col);
-    setTimeout(() => { wheelLocked = false; }, 180);
+    setTimeout(() => { isScrolling = false; }, 150);
   }, { passive: false });
 }
 
