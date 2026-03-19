@@ -631,6 +631,7 @@ let pendingResetCategory = null;
 let obSleepBedtime = null;
 let obSleepAdvanceMinutes = null;
 let obMentalState = null;
+let obDigitalReason = null;
 
 /* 랜딩 → 온보딩 or 홈 */
 document.getElementById('btn-start').addEventListener('click', () => {
@@ -688,6 +689,13 @@ document.querySelectorAll('.ob2rt-card').forEach(card => {
         document.querySelectorAll('.ob-mental-state-card').forEach(c => c.classList.remove('selected'));
         obMentalState = null;
         showScreen('screen-ob-mental-state');
+      } else if (obPendingType === 'digital') {
+        // 디지털디톡스: "핸드폰, 왜 못 끊겠어?" 화면으로
+        document.getElementById('ob-digital-reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+        document.getElementById('ob-digital-reason-step-fill').style.width = '100%';
+        document.querySelectorAll('.ob-digital-reason-card').forEach(c => c.classList.remove('selected'));
+        obDigitalReason = null;
+        showScreen('screen-ob-digital-reason');
       } else {
         document.getElementById('reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
         document.getElementById('reason-step-fill').style.width = '100%';
@@ -726,6 +734,42 @@ document.querySelectorAll('.ob-mental-state-card').forEach(card => {
           if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
         });
         slots.push('mental');
+        setRoutineSlots(slots);
+      }
+      currentMissionCategory = routineCat;
+      setTimeout(showFirstMission, 2000 + Math.random() * 500);
+    }, 280);
+  });
+});
+
+/* 온보딩 (디지털디톡스): 핸드폰, 왜 못 끊겠어? 이유 선택 */
+document.querySelectorAll('.ob-digital-reason-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obDigitalReason = card.dataset.val;
+    document.querySelectorAll('.ob-digital-reason-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      // 로딩 화면: 공감 메시지 표시 + 디지털 전용 텍스트
+      const empathyEl = document.getElementById('ob-loading-empathy');
+      empathyEl.textContent = card.dataset.msg;
+      empathyEl.style.display = '';
+      document.getElementById('ob-loading-text').textContent = '당신의 상태에 맞는 미션을 만들고 있습니다...';
+      showScreen('screen-ob-loading');
+      // 카테고리 데이터 생성
+      const obj = newCatObj();
+      obj.fail_reason = 0;
+      obj.type = 'digital';
+      obj.digital_reason = obDigitalReason;
+      const routineCat = getRoutineCat('digital');
+      setCatData(routineCat, obj);
+      const slots = getRoutineSlots();
+      if (!slots.includes('digital')) {
+        const resetDate = today();
+        slots.forEach(type => {
+          const d = getCatData(getRoutineCat(type));
+          if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
+        });
+        slots.push('digital');
         setRoutineSlots(slots);
       }
       currentMissionCategory = routineCat;
