@@ -575,10 +575,11 @@ function showMissionScreen(choice) {
   document.getElementById('btn-mission-back').style.display = '';
   const isEvening = cat === 'routine_evening';
   document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
-  const isMentalBreathing = cat === 'routine_mental' && (data.level || 1) <= 4;
-  document.getElementById('mission-breathing-link').style.display = isMentalBreathing ? '' : 'none';
-  const isMentalMeditation = cat === 'routine_mental' && (data.level || 1) >= 5;
-  document.getElementById('mission-meditation-link').style.display = isMentalMeditation ? '' : 'none';
+  const effectiveLv = cat === 'routine_mental'
+    ? (choice === 'grow' && data.level < 7 ? (data.level || 1) + 1 : (data.level || 1))
+    : 0;
+  document.getElementById('mission-breathing-link').style.display = (cat === 'routine_mental' && effectiveLv <= 4) ? '' : 'none';
+  document.getElementById('mission-meditation-link').style.display = (cat === 'routine_mental' && effectiveLv >= 5) ? '' : 'none';
   showScreen('screen-mission');
 }
 
