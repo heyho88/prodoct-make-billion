@@ -630,6 +630,7 @@ let obPendingReason = 0;
 let pendingResetCategory = null;
 let obSleepBedtime = null;
 let obSleepAdvanceMinutes = null;
+let obMentalState = null;
 
 /* 랜딩 → 온보딩 or 홈 */
 document.getElementById('btn-start').addEventListener('click', () => {
@@ -680,10 +681,52 @@ document.querySelectorAll('.ob2rt-card').forEach(card => {
     card.classList.add('selected');
     setTimeout(() => {
       const isInit = document.getElementById('ob2rt-step-text').textContent.includes('/ 3');
-      document.getElementById('reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
-      document.getElementById('reason-step-fill').style.width = '100%';
-      document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
-      showScreen('screen-ob-reason');
+      if (obPendingType === 'mental') {
+        // 멘탈관리: "요즘 어때?" 화면으로
+        document.getElementById('ob-mental-state-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+        document.getElementById('ob-mental-state-step-fill').style.width = '100%';
+        document.querySelectorAll('.ob-mental-state-card').forEach(c => c.classList.remove('selected'));
+        obMentalState = null;
+        showScreen('screen-ob-mental-state');
+      } else {
+        document.getElementById('reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+        document.getElementById('reason-step-fill').style.width = '100%';
+        document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
+        showScreen('screen-ob-reason');
+      }
+    }, 280);
+  });
+});
+
+/* 온보딩 (멘탈관리): 요즘 어때? 상태 선택 */
+document.querySelectorAll('.ob-mental-state-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obMentalState = card.dataset.val;
+    document.querySelectorAll('.ob-mental-state-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      // 로딩 화면: 공감 메시지를 로딩 텍스트로 활용
+      document.querySelector('#screen-ob-loading .ob-loading-text').textContent = card.dataset.msg;
+      showScreen('screen-ob-loading');
+      // 카테고리 데이터 생성
+      const obj = newCatObj();
+      obj.fail_reason = 0;
+      obj.type = 'mental';
+      obj.mental_state = obMentalState;
+      const routineCat = getRoutineCat('mental');
+      setCatData(routineCat, obj);
+      const slots = getRoutineSlots();
+      if (!slots.includes('mental')) {
+        const resetDate = today();
+        slots.forEach(type => {
+          const d = getCatData(getRoutineCat(type));
+          if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
+        });
+        slots.push('mental');
+        setRoutineSlots(slots);
+      }
+      currentMissionCategory = routineCat;
+      setTimeout(showFirstMission, 2000 + Math.random() * 500);
     }, 280);
   });
 });
