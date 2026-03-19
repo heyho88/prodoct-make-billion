@@ -1888,6 +1888,51 @@ input:focus, textarea:focus {
   transform: translateY(-2px);
 }
 .home-cat-mission-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+/* ── 루틴 그룹 카드 ── */
+.home-routine-group .home-cat-top { margin-bottom: 10px; }
+.routine-unlock-banner {
+  font-size: 0.8rem;
+  color: #F97316;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.routine-slots-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.routine-slot-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.routine-slot-icon { font-size: 20px; flex-shrink: 0; }
+.routine-slot-info { flex: 1; min-width: 0; }
+.routine-slot-name { font-size: 14px; font-weight: 600; color: var(--text-primary); display: block; }
+.routine-slot-meta { font-size: 11px; color: var(--text-muted); }
+.routine-slot-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.routine-slot-actions .home-cat-mission-btn {
+  width: auto; padding: 8px 14px; font-size: 13px; box-shadow: none; border-radius: 8px;
+}
+.routine-slot-actions .home-cat-reset-btn { padding: 5px 8px; }
+.routine-add-btn {
+  width: 100%; padding: 12px; border-radius: 10px;
+  font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.routine-add-btn.can-add {
+  border: 1px dashed rgba(249,115,22,0.5); background: transparent;
+  color: #F97316;
+}
+.routine-add-btn.can-add:hover { background: rgba(249,115,22,0.06); border-color: rgba(249,115,22,0.7); }
+.routine-add-btn.locked {
+  border: 1px dashed rgba(255,255,255,0.12); background: transparent;
+  color: rgba(255,255,255,0.3); cursor: not-allowed;
+}
+
 .home-cat-add-btn {
   width: 100%; padding: 14px 20px; border-radius: 12px;
   border: 1px dashed rgba(249,115,22,0.3); background: transparent;

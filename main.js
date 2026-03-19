@@ -44,6 +44,12 @@ const CAT_META = {
   sleep:   { label: '수면/기상',     icon: '😴' },
   routine: { label: '루틴/생활습관', icon: '📋' }
 };
+const ROUTINE_TYPE_META = {
+  morning: { label: '아침 루틴',      icon: '🌅' },
+  evening: { label: '저녁 루틴',      icon: '🌙' },
+  space:   { label: '공간관리',       icon: '🏠' },
+  digital: { label: '디지털 디톡스',  icon: '📵' },
+};
 
 function getCatIcon(cat, type) {
   if (cat === 'health') {
@@ -52,9 +58,9 @@ function getCatIcon(cat, type) {
     if (type === 'walking')      return '🚶';
     return '🏃';
   }
-  if (cat === 'routine') {
-    if (type === 'morning') return '🌅';
-    return '📋';
+  if (cat === 'routine' || isRoutineCat(cat)) {
+    const t = type || (isRoutineCat(cat) ? getRoutineType(cat) : null);
+    return ROUTINE_TYPE_META[t]?.icon || '📋';
   }
   return CAT_META[cat]?.icon || '';
 }
@@ -66,11 +72,40 @@ function getCatName(cat, type) {
     if (type === 'walking')      return '걷기/달리기';
     return '운동/건강';
   }
-  if (cat === 'routine') {
-    if (type === 'morning') return '아침 루틴';
-    return '루틴/생활습관';
+  if (cat === 'routine' || isRoutineCat(cat)) {
+    const t = type || (isRoutineCat(cat) ? getRoutineType(cat) : null);
+    return ROUTINE_TYPE_META[t]?.label || '루틴/생활습관';
   }
   return CAT_META[cat]?.label || '';
+}
+
+/* ── 루틴 슬롯 헬퍼 ── */
+function isRoutineCat(cat)   { return cat && cat.startsWith('routine_'); }
+function getRoutineType(cat) { return cat.replace('routine_', ''); }
+function getRoutineCat(type) { return 'routine_' + type; }
+function getRoutineSlots() {
+  try { return JSON.parse(localStorage.getItem('sloo_routine_slots') || '[]'); } catch { return []; }
+}
+function setRoutineSlots(arr) { localStorage.setItem('sloo_routine_slots', JSON.stringify(arr)); }
+function getRoutineUnlocked() { return parseInt(localStorage.getItem('sloo_routine_unlocked') || '1'); }
+function setRoutineUnlocked(n) { localStorage.setItem('sloo_routine_unlocked', String(n)); }
+
+function getAllActiveCatKeys() {
+  const keys = CATEGORIES.filter(c => c !== 'routine' && getCatData(c)?.active);
+  getRoutineSlots().forEach(type => keys.push(getRoutineCat(type)));
+  return keys;
+}
+
+function checkRoutineUnlock() {
+  const slots = getRoutineSlots();
+  const unlocked = getRoutineUnlocked();
+  if (unlocked >= 7) return false;
+  const anyHit7 = slots.some(type => (getCatData(getRoutineCat(type))?.daily_streak || 0) >= 7);
+  if (anyHit7 && slots.length >= unlocked) {
+    setRoutineUnlocked(unlocked + 1);
+    return true; // newly unlocked
+  }
+  return false;
 }
 
 /* ── localStorage 카테고리 헬퍼 ── */
@@ -87,6 +122,12 @@ function setCatData(cat, obj) {
 
 function resetCat(cat) {
   localStorage.removeItem('sloo_' + cat);
+  if (isRoutineCat(cat)) {
+    const type = getRoutineType(cat);
+    const slots = getRoutineSlots().filter(s => s !== type);
+    setRoutineSlots(slots);
+    if (slots.length === 0) localStorage.removeItem('sloo_routine_unlocked');
+  }
 }
 
 function newCatObj() {
@@ -117,6 +158,18 @@ function pushHistory(data, type, t) {
   data.history = (data.history || []).filter(h => h.date !== t);
   data.history.push({ date: t, type });
   if (data.history.length > 30) data.history = data.history.slice(-30);
+}
+
+/* ── 루틴 데이터 마이그레이션 (sloo_routine → sloo_routine_{type}) ── */
+function migrateRoutineIfNeeded() {
+  const old = getCatData('routine');
+  if (!old || !old.type) return;
+  const type = old.type;
+  const newKey = getRoutineCat(type);
+  if (!getCatData(newKey)) setCatData(newKey, old);
+  const slots = getRoutineSlots();
+  if (!slots.includes(type)) { slots.push(type); setRoutineSlots(slots); }
+  localStorage.removeItem('sloo_routine');
 }
 
 /* ── 기존 데이터 마이그레이션 ── */
@@ -243,7 +296,9 @@ function renderHomeCards() {
   const todayStr = today();
   let html = '';
 
+  // health / sleep 일반 카드
   CATEGORIES.forEach(cat => {
+    if (cat === 'routine') return;
     const data = getCatData(cat);
     if (!data || !data.active) return;
 
@@ -251,7 +306,7 @@ function renderHomeCards() {
     const icon = getCatIcon(cat, data.type);
     const name = getCatName(cat, data.type) || meta.label;
     const mult = Math.round(Math.pow(1.01, data.growth_count) * 100) / 100;
-    const doneToday = false; // TEST: 날짜 제한 임시 해제 — 테스트 후 원복: data.last_date === todayStr
+    const doneToday = false;
 
     html += `<div class="home-cat-card home-cat-active">
       <div class="home-cat-top">
@@ -269,7 +324,62 @@ function renderHomeCards() {
     </div>`;
   });
 
-  const inactiveCats = CATEGORIES.filter(cat => { const d = getCatData(cat); return !d || !d.active; });
+  // 루틴/생활습관 그룹 카드
+  const routineSlots = getRoutineSlots();
+  if (routineSlots.length > 0) {
+    const unlocked = getRoutineUnlocked();
+    const canAdd = routineSlots.length < unlocked && routineSlots.length < 7;
+    const availableTypes = Object.keys(ROUTINE_TYPE_META).filter(t => !routineSlots.includes(t));
+
+    const slotsHtml = routineSlots.map(type => {
+      const data = getCatData(getRoutineCat(type));
+      if (!data) return '';
+      const meta = ROUTINE_TYPE_META[type];
+      const mult = Math.round(Math.pow(1.01, data.growth_count || 0) * 100) / 100;
+      const streak = data.daily_streak || 0;
+      const doneToday = false;
+      return `<div class="routine-slot-row">
+        <span class="routine-slot-icon">${meta.icon}</span>
+        <div class="routine-slot-info">
+          <span class="routine-slot-name">${meta.label}</span>
+          <span class="routine-slot-meta">레벨 ${data.level} · ${mult.toFixed(2)}배 · 🔥${streak}일 연속</span>
+        </div>
+        <div class="routine-slot-actions">
+          ${doneToday
+            ? `<button class="home-cat-done-btn" disabled>완료 🌱</button>`
+            : `<button class="home-cat-mission-btn" data-cat="routine_${type}">미션 →</button>`
+          }
+          <button class="home-cat-reset-btn" data-cat="routine_${type}" title="${meta.label} 초기화">↺</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const unlockBanner = canAdd
+      ? `<div class="routine-unlock-banner">7일 연속 달성! 새로운 루틴을 추가할 수 있어 🎉</div>`
+      : '';
+    const addBtn = availableTypes.length > 0
+      ? `<button class="routine-add-btn ${canAdd ? 'can-add' : 'locked'}" data-can-add="${canAdd}">
+          ${canAdd ? '+ 루틴 추가하기' : '🔒 루틴 추가하기 (7일 연속 완료 시 해제)'}
+        </button>`
+      : '';
+
+    html += `<div class="home-cat-card home-cat-active home-routine-group">
+      <div class="home-cat-top">
+        <span class="home-cat-icon">📋</span>
+        <div class="home-cat-info"><div class="home-cat-name">루틴/생활습관</div></div>
+      </div>
+      ${unlockBanner}
+      <div class="routine-slots-list">${slotsHtml}</div>
+      ${addBtn}
+    </div>`;
+  }
+
+  // 추가하기 섹션
+  const inactiveCats = CATEGORIES.filter(cat => {
+    if (cat === 'routine') return routineSlots.length === 0;
+    const d = getCatData(cat);
+    return !d || !d.active;
+  });
   if (inactiveCats.length > 0) {
     html += `<div class="home-add-section">`;
     inactiveCats.forEach(cat => {
@@ -291,6 +401,11 @@ function renderHomeCards() {
   container.querySelectorAll('.home-add-cat-btn').forEach(btn => {
     btn.addEventListener('click', () => startCatOnboarding(btn.dataset.cat));
   });
+  container.querySelectorAll('.routine-add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.canAdd === 'true') startAddRoutine();
+    });
+  });
 }
 
 /* ── 카테고리 미션 시작 ── */
@@ -298,7 +413,7 @@ function startCatMission(cat) {
   currentMissionCategory = cat;
   const data = getCatData(cat);
   if (!data) return;
-  if (cat === 'health' || cat === 'sleep' || (cat === 'routine' && data.type)) {
+  if (cat === 'health' || cat === 'sleep' || isRoutineCat(cat)) {
     showMainChoice();
   } else {
     showDailyState();
@@ -306,6 +421,19 @@ function startCatMission(cat) {
 }
 
 /* ── 카테고리 온보딩 (홈에서 "추가하기" 클릭 시) ── */
+function startAddRoutine() {
+  currentOnboardingCategory = 'routine';
+  obPendingType = null;
+  const activeSlots = getRoutineSlots();
+  document.querySelectorAll('.ob2rt-card').forEach(c => {
+    c.classList.remove('selected');
+    c.style.display = activeSlots.includes(c.dataset.val) ? 'none' : '';
+  });
+  document.getElementById('ob2rt-step-text').textContent = '1 / 2';
+  document.getElementById('ob2rt-step-fill').style.width = '50%';
+  showScreen('screen-ob2-routine');
+}
+
 function startCatOnboarding(cat) {
   currentOnboardingCategory = cat;
   if (cat === 'health') {
@@ -321,11 +449,7 @@ function startCatOnboarding(cat) {
     document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
     showScreen('screen-ob-sleep-bedtime');
   } else if (cat === 'routine') {
-    obPendingType = null;
-    document.getElementById('ob2rt-step-text').textContent = '1 / 2';
-    document.getElementById('ob2rt-step-fill').style.width = '50%';
-    document.querySelectorAll('.ob2rt-card').forEach(c => c.classList.remove('selected'));
-    showScreen('screen-ob2-routine');
+    startAddRoutine();
   } else {
     document.getElementById('reason-step-text').textContent = '1 / 2';
     document.getElementById('reason-step-fill').style.width = '50%';
@@ -352,8 +476,9 @@ function showLanding() {
 ════════════════════════ */
 function init() {
   migrateFromLegacy();
+  migrateRoutineIfNeeded();
   updateSidebar();
-  const hasAny = CATEGORIES.some(k => getCatData(k)?.active);
+  const hasAny = CATEGORIES.some(k => getCatData(k)?.active) || getRoutineSlots().length > 0;
   if (hasAny) {
     showHome();
   } else {
@@ -429,7 +554,7 @@ function showMissionScreen(choice) {
   document.getElementById('mission-action-btns').style.display = '';
   document.getElementById('btn-mission-home').style.display = 'none';
   document.getElementById('btn-mission-back').style.display = '';
-  const isEvening = cat === 'routine' && data?.type === 'evening';
+  const isEvening = cat === 'routine_evening';
   document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
   showScreen('screen-mission');
 }
@@ -444,7 +569,7 @@ function showFirstMission(energy, mental) {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else if (cat === 'sleep') {
     missionText = getExerciseMission('sleep', data.level || 1);
-  } else if (cat === 'routine' && data.type) {
+  } else if (isRoutineCat(cat) && data.type) {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else {
     const e = energy || 'mid';
@@ -458,7 +583,7 @@ function showFirstMission(energy, mental) {
   document.getElementById('first-growth-card').classList.remove('show');
   document.getElementById('first-action-btns').style.display = '';
   document.getElementById('btn-first-home').style.display = 'none';
-  const isEveningFirst = cat === 'routine' && data?.type === 'evening';
+  const isEveningFirst = cat === 'routine_evening';
   document.getElementById('first-gratitude-link').style.display = isEveningFirst ? '' : 'none';
   showScreen('screen-first-mission');
 }
@@ -478,7 +603,7 @@ let obSleepAdvanceMinutes = null;
 
 /* 랜딩 → 온보딩 or 홈 */
 document.getElementById('btn-start').addEventListener('click', () => {
-  const hasAny = CATEGORIES.some(k => getCatData(k)?.active);
+  const hasAny = getAllActiveCatKeys().length > 0;
   if (hasAny) {
     showHome();
   } else {
@@ -596,8 +721,17 @@ document.querySelectorAll('.reason-card').forEach(card => {
         // 운동/수면/루틴(타입있음): 카테고리 데이터 생성 후 첫 미션
         const obj = newCatObj();
         obj.fail_reason = obPendingReason;
-        if (cat === 'health' || (cat === 'routine' && obPendingType)) {
+        if (cat === 'health') {
           obj.type = obPendingType;
+        } else if (cat === 'routine' && obPendingType) {
+          obj.type = obPendingType;
+          const routineCat = getRoutineCat(obPendingType);
+          setCatData(routineCat, obj);
+          const slots = getRoutineSlots();
+          if (!slots.includes(obPendingType)) { slots.push(obPendingType); setRoutineSlots(slots); }
+          currentMissionCategory = routineCat;
+          showFirstMission();
+          return;
         } else {
           obj.type = 'sleep';
           if (obSleepBedtime !== null)        obj.bedtime_current = obSleepBedtime;
@@ -665,8 +799,10 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   data.growth_count = oldGc + 1;
   data.maintain_count = 0;
   data.last_date = t;
+  if (isRoutineCat(cat)) data.daily_streak = (data.daily_streak || 0) + 1;
   pushHistory(data, 'growth', t);
   setCatData(cat, data);
+  if (isRoutineCat(cat)) checkRoutineUnlock();
   updateSidebar();
 
   document.getElementById('first-action-btns').style.display = 'none';
@@ -698,6 +834,7 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
+    if (isRoutineCat(cat)) data.daily_streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
@@ -737,8 +874,10 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
     data.maintain_count = (data.maintain_count || 0) + 1;
     pushHistory(data, 'maintain', t);
   }
+  if (isRoutineCat(cat)) data.daily_streak = (data.daily_streak || 0) + 1;
 
   setCatData(cat, data);
+  if (isRoutineCat(cat)) checkRoutineUnlock();
   updateSidebar();
   document.getElementById('mission-action-btns').style.display = 'none';
   document.getElementById('btn-mission-back').style.display = 'none';
@@ -775,6 +914,7 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
+    if (isRoutineCat(cat)) data.daily_streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
@@ -837,7 +977,6 @@ function openResetModal(cat) {
   pendingResetCategory = cat || null;
   const msg = document.querySelector('#modal-reset .modal-msg');
   if (cat) {
-    const meta = CAT_META[cat];
     const data = getCatData(cat);
     const name = getCatName(cat, data?.type);
     msg.innerHTML = `<strong>${getCatIcon(cat, data?.type)} ${name}</strong> 기록이 사라져요.<br>정말 초기화할까요?`;
@@ -863,6 +1002,9 @@ document.getElementById('modal-reset-ok').addEventListener('click', () => {
     renderHomeGrass();
     updateSidebar();
   } else {
+    getRoutineSlots().forEach(type => localStorage.removeItem('sloo_routine_' + type));
+    localStorage.removeItem('sloo_routine_slots');
+    localStorage.removeItem('sloo_routine_unlocked');
     CATEGORIES.forEach(k => resetCat(k));
     // 구 키도 정리
     ['sloo_category','sloo_type','sloo_fail_reason','sloo_level','sloo_days',
@@ -1044,7 +1186,7 @@ function updateSidebar() {
   const sidebar = document.getElementById('desktop-sidebar');
   if (!sidebar) return;
 
-  const activeCats = CATEGORIES.filter(k => getCatData(k)?.active);
+  const activeCats = getAllActiveCatKeys();
   if (activeCats.length === 0) {
     sidebar.classList.remove('sb-active');
     document.body.classList.remove('has-sidebar');
@@ -1071,11 +1213,12 @@ function updateSidebar() {
     '오늘 2% 했어. 욕심쟁이네. 😄',
     '오늘 3% 했어. 이러다 37.78배 금방 되겠는데. 🔥'
   ];
-  const completedToday = CATEGORIES.filter(k => {
+  const allKeys = getAllActiveCatKeys();
+  const completedToday = allKeys.filter(k => {
     const d = getCatData(k);
-    return d?.active && d?.last_date === todayStr;
+    return d?.last_date === todayStr;
   }).length;
-  const totalGrowth = CATEGORIES.reduce((sum, k) => {
+  const totalGrowth = allKeys.reduce((sum, k) => {
     const d = getCatData(k);
     return sum + (d?.growth_count || 0);
   }, 0);
@@ -1091,16 +1234,12 @@ function updateSidebar() {
     <div class="sb-sect-divider" style="margin:0 0 20px"></div>
   `;
 
-  CATEGORIES.forEach(cat => {
+  allKeys.forEach(cat => {
     const data = getCatData(cat);
-    const meta = CAT_META[cat];
     const icon = getCatIcon(cat, data?.type);
-    const name = getCatName(cat, data?.type) || meta.label;
+    const name = getCatName(cat, data?.type) || CAT_META[cat]?.label || '';
 
-    if (!data || !data.active) {
-      html += `<div class="sb-cat-inactive-block">${icon} ${meta.label} <span style="font-size:10px">— 미시작</span></div>`;
-      return;
-    }
+    if (!data) return;
 
     if (!firstActive) html += `<div class="sb-sect-divider" style="margin:24px 0 0"></div>`;
     firstActive = false;
@@ -1182,7 +1321,7 @@ function updateSidebar() {
   });
 
   // 잔디밭 섹션 (사이드바 하단)
-  const hasAnyActiveCat = CATEGORIES.some(cat => { const d = getCatData(cat); return d && d.active; });
+  const hasAnyActiveCat = getAllActiveCatKeys().length > 0;
   if (hasAnyActiveCat) {
     html += `
       <div class="sb-sect-divider" style="margin:24px 0 16px"></div>
@@ -1221,7 +1360,7 @@ function checkMaintainBanner() {
 ════════════════════════ */
 function buildGrassMap() {
   const grassMap = {};
-  CATEGORIES.forEach(cat => {
+  getAllActiveCatKeys().forEach(cat => {
     const data = getCatData(cat);
     if (!data) return;
     (data.history || []).forEach(h => {
