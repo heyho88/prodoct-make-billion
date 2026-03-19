@@ -831,7 +831,7 @@ document.querySelectorAll('.ob-evening-state-card').forEach(card => {
         setRoutineSlots(slots);
       }
       currentMissionCategory = routineCat;
-      setTimeout(showFirstMission, 2000 + Math.random() * 500);
+      setTimeout(showFirstMission, 2700);
     }, 280);
   });
 });
@@ -865,7 +865,7 @@ document.querySelectorAll('.ob-morning-state-card').forEach(card => {
         setRoutineSlots(slots);
       }
       currentMissionCategory = routineCat;
-      setTimeout(showFirstMission, 2000 + Math.random() * 500);
+      setTimeout(showFirstMission, 2700);
     }, 280);
   });
 });
