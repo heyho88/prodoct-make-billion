@@ -634,6 +634,7 @@ let obMentalState = null;
 let obDigitalReason = null;
 let obReadingReason = null;
 let obMorningState = null;
+let obEveningState = null;
 
 /* 랜딩 → 온보딩 or 홈 */
 document.getElementById('btn-start').addEventListener('click', () => {
@@ -698,6 +699,13 @@ document.querySelectorAll('.ob2rt-card').forEach(card => {
         document.querySelectorAll('.ob-digital-reason-card').forEach(c => c.classList.remove('selected'));
         obDigitalReason = null;
         showScreen('screen-ob-digital-reason');
+      } else if (obPendingType === 'evening') {
+        // 저녁루틴: "하루 끝날 때 어때?" 화면으로
+        document.getElementById('ob-evening-state-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+        document.getElementById('ob-evening-state-step-fill').style.width = '100%';
+        document.querySelectorAll('.ob-evening-state-card').forEach(c => c.classList.remove('selected'));
+        obEveningState = null;
+        showScreen('screen-ob-evening-state');
       } else if (obPendingType === 'morning') {
         // 아침루틴: "아침이 어때?" 화면으로
         document.getElementById('ob-morning-state-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
@@ -786,6 +794,40 @@ document.querySelectorAll('.ob-digital-reason-card').forEach(card => {
           if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
         });
         slots.push('digital');
+        setRoutineSlots(slots);
+      }
+      currentMissionCategory = routineCat;
+      setTimeout(showFirstMission, 2000 + Math.random() * 500);
+    }, 280);
+  });
+});
+
+/* 온보딩 (저녁루틴): 하루 끝날 때 어때? 상태 선택 */
+document.querySelectorAll('.ob-evening-state-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obEveningState = card.dataset.val;
+    document.querySelectorAll('.ob-evening-state-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      const empathyEl = document.getElementById('ob-loading-empathy');
+      empathyEl.textContent = card.dataset.msg;
+      empathyEl.style.display = '';
+      document.getElementById('ob-loading-text').textContent = '당신만의 맞춤 미션을 만들고 있습니다...';
+      showScreen('screen-ob-loading');
+      const obj = newCatObj();
+      obj.fail_reason = 0;
+      obj.type = 'evening';
+      obj.evening_state = obEveningState;
+      const routineCat = getRoutineCat('evening');
+      setCatData(routineCat, obj);
+      const slots = getRoutineSlots();
+      if (!slots.includes('evening')) {
+        const resetDate = today();
+        slots.forEach(type => {
+          const d = getCatData(getRoutineCat(type));
+          if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
+        });
+        slots.push('evening');
         setRoutineSlots(slots);
       }
       currentMissionCategory = routineCat;
