@@ -733,6 +733,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
     data.maintain_count = 0;
     pushHistory(data, 'growth', t);
   } else {
+    data.growth_count = oldGc + 0.5;
     data.maintain_count = (data.maintain_count || 0) + 1;
     pushHistory(data, 'maintain', t);
   }
@@ -748,7 +749,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
       msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신. 레벨 ${data.level} 달성! 🎉</small>`;
     } else {
       const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
-      msg.innerHTML = `오늘도 1.01배 유지 완료 🔄<br><small>${subMsg}</small>`;
+      msg.innerHTML = `오늘도 지켰어. 0.5% 성장했어 🌱<br><small>${subMsg}</small>`;
     }
     msg.className = 'result-msg done-msg show';
 
