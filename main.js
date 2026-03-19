@@ -380,10 +380,10 @@ function showMainChoice() {
   const aCard = document.getElementById('choice-a-card');
   if (data.level >= 7) {
     aCard.querySelector('.ab-card-title').textContent = '최고 레벨 달성 🏆';
-    aCard.querySelector('.ab-badge').textContent = '완성';
+    aCard.querySelector('.ab-card-stat').textContent = '';
   } else {
-    aCard.querySelector('.ab-card-title').textContent = '오늘 1% 더 성장할래?';
-    aCard.querySelector('.ab-badge').textContent = '성장';
+    aCard.querySelector('.ab-card-title').textContent = '한 단계 더 성장할게';
+    aCard.querySelector('.ab-card-stat').textContent = '+1%';
   }
   checkMaintainBanner();
   showScreen('screen-main');
