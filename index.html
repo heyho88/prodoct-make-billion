@@ -268,6 +268,7 @@
         <button class="btn-done" id="btn-first-done">✅ 완료했어</button>
         <button class="btn-pass" id="btn-first-pass">⏭ 오늘은 패스</button>
       </div>
+      <button class="gratitude-info-link" id="first-gratitude-link" style="display:none">감사일기란 뭘까요? →</button>
       <button class="mission-share-btn" id="btn-first-share">시작했다고 알리기 🌱</button>
       <p class="result-msg" id="first-result-msg" aria-live="polite"></p>
       <button class="btn-home" id="btn-first-home" style="display:none">← 홈으로 돌아가기</button>
@@ -331,6 +332,7 @@
         <button class="btn-done" id="btn-mission-done">✅ 완료했어</button>
         <button class="btn-pass" id="btn-mission-pass">⏭ 오늘은 패스</button>
       </div>
+      <button class="gratitude-info-link" id="mission-gratitude-link" style="display:none">감사일기란 뭘까요? →</button>
       <p class="result-msg" id="mission-result" aria-live="polite"></p>
       <button class="btn-home" id="btn-mission-home" style="display:none">← 홈으로 돌아가기</button>
       <div class="growth-card" id="mission-growth-card">
@@ -673,6 +675,15 @@
   <div class="mobile-stats-sheet">
     <div class="mobile-stats-handle"></div>
     <div id="mobile-stats-content"></div>
+  </div>
+</div>
+
+<!-- 감사일기 정보 모달 -->
+<div class="gratitude-modal-overlay" id="gratitude-modal-overlay">
+  <div class="gratitude-modal" role="dialog" aria-modal="true">
+    <button class="gratitude-modal-close" id="gratitude-modal-close" aria-label="닫기">✕</button>
+    <h3 class="gratitude-modal-title">감사일기란?</h3>
+    <p class="gratitude-modal-body">하루 중 감사했던 것을 적는 아주 짧은 글입니다.<br><br>하버드 연구에서 감사일기를 쓴 사람들이 그렇지 않은 사람보다 행복감이 25% 높았습니다. 뇌가 좋은 것에 집중하는 습관이 생기거든요.<br><br>딱 1줄이면 충분합니다.</p>
   </div>
 </div>
 

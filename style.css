@@ -2009,6 +2009,74 @@ input:focus, textarea:focus {
 }
 .mission-share-btn:hover { color: var(--text-secondary); border-color: rgba(255,255,255,0.12); }
 
+/* ── 감사일기 링크 ── */
+.gratitude-info-link {
+  display: block;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 4px 0;
+  margin: 4px auto 0;
+  text-align: center;
+}
+.gratitude-info-link:hover { color: rgba(255, 255, 255, 0.75); }
+
+/* ── 감사일기 모달 ── */
+.gratitude-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.gratitude-modal-overlay.open { display: flex; }
+.gratitude-modal {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background: #0F1220;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  animation: fadeInScale 0.22s ease;
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.gratitude-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+.gratitude-modal-close:hover { color: rgba(255, 255, 255, 0.8); }
+.gratitude-modal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+}
+.gratitude-modal-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
 /* ── 공유 토스트 ── */
 .share-toast {
   position: fixed;

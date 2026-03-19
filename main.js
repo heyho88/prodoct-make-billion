@@ -426,6 +426,8 @@ function showMissionScreen(choice) {
   document.getElementById('mg-max-level').style.display = 'none';
   document.getElementById('mission-action-btns').style.display = '';
   document.getElementById('btn-mission-home').style.display = 'none';
+  const isEvening = cat === 'routine' && data?.type === 'evening';
+  document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
   showScreen('screen-mission');
 }
 
@@ -453,6 +455,8 @@ function showFirstMission(energy, mental) {
   document.getElementById('first-growth-card').classList.remove('show');
   document.getElementById('first-action-btns').style.display = '';
   document.getElementById('btn-first-home').style.display = 'none';
+  const isEveningFirst = cat === 'routine' && data?.type === 'evening';
+  document.getElementById('first-gratitude-link').style.display = isEveningFirst ? '' : 'none';
   showScreen('screen-first-mission');
 }
 
@@ -919,6 +923,20 @@ document.getElementById('modal-earlybird-form').addEventListener('submit', async
     btn.disabled = false;
     btn.textContent = '신청하기';
   }
+});
+
+/* ── 감사일기 모달 ── */
+function openGratitudeModal() {
+  document.getElementById('gratitude-modal-overlay').classList.add('open');
+}
+function closeGratitudeModal() {
+  document.getElementById('gratitude-modal-overlay').classList.remove('open');
+}
+document.getElementById('first-gratitude-link').addEventListener('click', openGratitudeModal);
+document.getElementById('mission-gratitude-link').addEventListener('click', openGratitudeModal);
+document.getElementById('gratitude-modal-close').addEventListener('click', closeGratitudeModal);
+document.getElementById('gratitude-modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('gratitude-modal-overlay')) closeGratitudeModal();
 });
 
 function closeAllMobileMenus() {
