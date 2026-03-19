@@ -257,6 +257,19 @@ function initDrumCol(col, items, initialVal) {
   });
   document.addEventListener('mousemove', mmove);
   document.addEventListener('mouseup', mup);
+
+  // 마우스 휠: 한 칸씩 이동, 중복 방지 플래그
+  let wheelLocked = false;
+  col.addEventListener('wheel', e => {
+    e.preventDefault();
+    if (wheelLocked) return;
+    wheelLocked = true;
+    const cur = Math.round(col.scrollTop / 44);
+    const next = Math.max(0, Math.min(items.length - 1, cur + (e.deltaY > 0 ? 1 : -1)));
+    col.scrollTo({ top: next * 44, behavior: 'smooth' });
+    updateDrumHighlight(col);
+    setTimeout(() => { wheelLocked = false; }, 180);
+  }, { passive: false });
 }
 
 function updateDrumHighlight(col) {
@@ -1182,7 +1195,7 @@ document.getElementById('btn-sleep-confirm-start').addEventListener('click', () 
     active: true,
     current_bedtime: curStr,
     target_bedtime: tgtStr,
-    current_target: alreadyDone ? tgtStr : curStr,
+    current_target: alreadyDone ? tgtStr : minsToTimeStr(curMins - 5),
     total_minutes_diff: alreadyDone ? 0 : diffMins,
     growth_count: alreadyDone ? 1 : 0,
     total_count: 0,
