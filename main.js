@@ -735,20 +735,35 @@ function showMainChoice() {
   el.querySelector('.main-mult').textContent = multStr(data.growth_count);
   el.querySelector('.main-level').textContent = data.level;
 
-  const currentMission = getExerciseMission(data.type, data.level);
-  const nextMission = data.level < 7
-    ? getExerciseMission(data.type, data.level + 1)
-    : '최고 레벨! 다음 카테고리를 추가해봐';
-  el.querySelector('.card-grow-preview').textContent = nextMission;
-  el.querySelector('.card-maintain-preview').textContent = currentMission;
-
   const aCard = document.getElementById('choice-a-card');
-  if (data.level >= 7) {
-    aCard.querySelector('.ab-card-title').textContent = '최고 레벨 달성 🏆';
-    aCard.querySelector('.ab-card-stat').textContent = '';
+  if (cat === 'sleep') {
+    const isMax = isSleepMaxLevel(data);
+    const growText = isMax
+      ? `오늘도 ${data.current_target}에 자보기`
+      : `오늘은 ${minsToTimeStr(sleepTimeToMins(data.current_target) - 5)}에 자보기`;
+    el.querySelector('.card-grow-preview').textContent = growText;
+    el.querySelector('.card-maintain-preview').textContent = `오늘도 ${data.current_target}에 자보기`;
+    if (isMax) {
+      aCard.querySelector('.ab-card-title').textContent = '목표 취침 시간 유지 🏆';
+      aCard.querySelector('.ab-card-stat').textContent = '';
+    } else {
+      aCard.querySelector('.ab-card-title').textContent = '한 단계 더 성장할게';
+      aCard.querySelector('.ab-card-stat').textContent = '+1%';
+    }
   } else {
-    aCard.querySelector('.ab-card-title').textContent = '한 단계 더 성장할게';
-    aCard.querySelector('.ab-card-stat').textContent = '+1%';
+    const currentMission = getExerciseMission(data.type, data.level);
+    const nextMission = data.level < 7
+      ? getExerciseMission(data.type, data.level + 1)
+      : '최고 레벨! 다음 카테고리를 추가해봐';
+    el.querySelector('.card-grow-preview').textContent = nextMission;
+    el.querySelector('.card-maintain-preview').textContent = currentMission;
+    if (data.level >= 7) {
+      aCard.querySelector('.ab-card-title').textContent = '최고 레벨 달성 🏆';
+      aCard.querySelector('.ab-card-stat').textContent = '';
+    } else {
+      aCard.querySelector('.ab-card-title').textContent = '한 단계 더 성장할게';
+      aCard.querySelector('.ab-card-stat').textContent = '+1%';
+    }
   }
   checkMaintainBanner();
   showScreen('screen-main');
