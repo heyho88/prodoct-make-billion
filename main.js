@@ -577,6 +577,8 @@ function showMissionScreen(choice) {
   document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
   const isMentalBreathing = cat === 'routine_mental' && (data.level || 1) <= 4;
   document.getElementById('mission-breathing-link').style.display = isMentalBreathing ? '' : 'none';
+  const isMentalMeditation = cat === 'routine_mental' && (data.level || 1) >= 5;
+  document.getElementById('mission-meditation-link').style.display = isMentalMeditation ? '' : 'none';
   showScreen('screen-mission');
 }
 
@@ -608,6 +610,8 @@ function showFirstMission(energy, mental) {
   document.getElementById('first-gratitude-link').style.display = isEveningFirst ? '' : 'none';
   const isFirstMentalBreathing = cat === 'routine_mental' && (data.level || 1) <= 4;
   document.getElementById('first-breathing-link').style.display = isFirstMentalBreathing ? '' : 'none';
+  const isFirstMentalMeditation = cat === 'routine_mental' && (data.level || 1) >= 5;
+  document.getElementById('first-meditation-link').style.display = isFirstMentalMeditation ? '' : 'none';
   showScreen('screen-first-mission');
 }
 
@@ -1139,6 +1143,20 @@ document.getElementById('mission-breathing-link').addEventListener('click', open
 document.getElementById('breathing-modal-close').addEventListener('click', closeBreathingModal);
 document.getElementById('breathing-modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('breathing-modal-overlay')) closeBreathingModal();
+});
+
+/* ── 명상 모달 ── */
+function openMeditationModal() {
+  document.getElementById('meditation-modal-overlay').classList.add('open');
+}
+function closeMeditationModal() {
+  document.getElementById('meditation-modal-overlay').classList.remove('open');
+}
+document.getElementById('first-meditation-link').addEventListener('click', openMeditationModal);
+document.getElementById('mission-meditation-link').addEventListener('click', openMeditationModal);
+document.getElementById('meditation-modal-close').addEventListener('click', closeMeditationModal);
+document.getElementById('meditation-modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('meditation-modal-overlay')) closeMeditationModal();
 });
 
 function closeAllMobileMenus() {

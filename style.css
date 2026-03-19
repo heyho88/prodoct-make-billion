@@ -2189,6 +2189,17 @@ input:focus, textarea:focus {
   line-height: 1.7;
   margin: 0;
 }
+.modal-subtitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.modal-list {
+  display: block;
+  padding-left: 4px;
+  color: var(--text-secondary);
+  line-height: 2;
+}
 
 /* ── 공유 토스트 ── */
 .share-toast {
