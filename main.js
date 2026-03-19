@@ -575,6 +575,8 @@ function showMissionScreen(choice) {
   document.getElementById('btn-mission-back').style.display = '';
   const isEvening = cat === 'routine_evening';
   document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
+  const isMentalBreathing = cat === 'routine_mental' && (data.level || 1) <= 4;
+  document.getElementById('mission-breathing-link').style.display = isMentalBreathing ? '' : 'none';
   showScreen('screen-mission');
 }
 
@@ -604,6 +606,8 @@ function showFirstMission(energy, mental) {
   document.getElementById('btn-first-home').style.display = 'none';
   const isEveningFirst = cat === 'routine_evening';
   document.getElementById('first-gratitude-link').style.display = isEveningFirst ? '' : 'none';
+  const isFirstMentalBreathing = cat === 'routine_mental' && (data.level || 1) <= 4;
+  document.getElementById('first-breathing-link').style.display = isFirstMentalBreathing ? '' : 'none';
   showScreen('screen-first-mission');
 }
 
@@ -1121,6 +1125,20 @@ document.getElementById('mission-gratitude-link').addEventListener('click', open
 document.getElementById('gratitude-modal-close').addEventListener('click', closeGratitudeModal);
 document.getElementById('gratitude-modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('gratitude-modal-overlay')) closeGratitudeModal();
+});
+
+/* ── 호흡 모달 ── */
+function openBreathingModal() {
+  document.getElementById('breathing-modal-overlay').classList.add('open');
+}
+function closeBreathingModal() {
+  document.getElementById('breathing-modal-overlay').classList.remove('open');
+}
+document.getElementById('first-breathing-link').addEventListener('click', openBreathingModal);
+document.getElementById('mission-breathing-link').addEventListener('click', openBreathingModal);
+document.getElementById('breathing-modal-close').addEventListener('click', closeBreathingModal);
+document.getElementById('breathing-modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('breathing-modal-overlay')) closeBreathingModal();
 });
 
 function closeAllMobileMenus() {
