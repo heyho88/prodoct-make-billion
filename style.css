@@ -2254,6 +2254,9 @@ input:focus, textarea:focus {
   scrollbar-width: none;
   -ms-overflow-style: none;
   cursor: grab;
+  /* 위아래 숫자 투명 페이드 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
 }
 .drum-col:active { cursor: grabbing; }
 .drum-col::-webkit-scrollbar { display: none; }
@@ -2294,20 +2297,7 @@ input:focus, textarea:focus {
   z-index: 1;
 }
 .drum-picker-mask {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 88px;
-  pointer-events: none;
-  z-index: 2;
-}
-.drum-picker-mask-top {
-  top: 0;
-  background: linear-gradient(to bottom, #080B14 0%, transparent 100%);
-}
-.drum-picker-mask-bottom {
-  bottom: 0;
-  background: linear-gradient(to top, #080B14 0%, transparent 100%);
+  display: none; /* mask-image on .drum-col으로 대체 */
 }
 .sleep-confirm-msg {
   background: var(--bg-card);

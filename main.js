@@ -190,38 +190,63 @@ const DRUM_HOURS = Array.from({length:24}, (_,i) => String(i).padStart(2,'0'));
 const DRUM_MINS  = ['00','05','10','15','20','25','30','35','40','45','50','55'];
 
 function initDrumCol(col, items, initialVal) {
+  const N = items.length;
+  col.dataset.n = N;
   col.innerHTML = '';
+
   // 2 spacers top
   for (let i = 0; i < 2; i++) {
     const sp = document.createElement('div');
     sp.className = 'drum-item drum-spacer';
     col.appendChild(sp);
   }
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'drum-item';
-    el.textContent = item;
-    col.appendChild(el);
-  });
+  // 3 copies for infinite circular scroll
+  for (let rep = 0; rep < 3; rep++) {
+    items.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'drum-item';
+      el.textContent = item;
+      col.appendChild(el);
+    });
+  }
   // 2 spacers bottom
   for (let i = 0; i < 2; i++) {
     const sp = document.createElement('div');
     sp.className = 'drum-item drum-spacer';
     col.appendChild(sp);
   }
-  const idx = Math.max(0, items.indexOf(initialVal));
-  col.scrollTop = idx * 44;
+
+  // Start at middle copy
+  const initIdx = N + Math.max(0, items.indexOf(initialVal));
+  col.scrollTop = initIdx * 44;
   updateDrumHighlight(col);
 
-  // scroll snap
+  // 끝에 도달하면 중간 카피로 순간 점프 (애니메이션 없음)
+  let wrapping = false;
+  function wrapIfNeeded() {
+    const rawIdx = Math.round(col.scrollTop / 44);
+    if (rawIdx < N) {
+      wrapping = true;
+      col.scrollTop = (rawIdx + N) * 44;
+      setTimeout(() => { wrapping = false; }, 30);
+    } else if (rawIdx >= 2 * N) {
+      wrapping = true;
+      col.scrollTop = (rawIdx - N) * 44;
+      setTimeout(() => { wrapping = false; }, 30);
+    }
+  }
+
+  // scroll snap + wrap
   let snapTimer;
   col.addEventListener('scroll', () => {
+    if (wrapping) return;
     clearTimeout(snapTimer);
     snapTimer = setTimeout(() => {
       const i = Math.round(col.scrollTop / 44);
       col.scrollTo({ top: i * 44, behavior: 'smooth' });
       updateDrumHighlight(col);
-    }, 120);
+      setTimeout(wrapIfNeeded, 300);
+    }, 80);
   });
 
   // touch drag
@@ -237,6 +262,7 @@ function initDrumCol(col, items, initialVal) {
     const i = Math.round(col.scrollTop / 44);
     col.scrollTo({ top: i * 44, behavior: 'smooth' });
     updateDrumHighlight(col);
+    setTimeout(wrapIfNeeded, 300);
   });
 
   // mouse drag
@@ -250,6 +276,7 @@ function initDrumCol(col, items, initialVal) {
     const i = Math.round(col.scrollTop / 44);
     col.scrollTo({ top: i * 44, behavior: 'smooth' });
     updateDrumHighlight(col);
+    setTimeout(wrapIfNeeded, 300);
   };
   col.addEventListener('_cleanup', () => {
     document.removeEventListener('mousemove', mmove);
@@ -258,32 +285,41 @@ function initDrumCol(col, items, initialVal) {
   document.addEventListener('mousemove', mmove);
   document.addEventListener('mouseup', mup);
 
-  // 마우스 휠: 한 칸씩 이동, 중복 방지 플래그
-  let isScrolling = false;
+  // 마우스 휠: deltaY 누적값 방식 — 연속 스크롤 자연스럽게
+  let accumulated = 0;
   col.addEventListener('wheel', e => {
     e.preventDefault();
     e.stopPropagation();
-    if (isScrolling) return;
-    isScrolling = true;
-    const cur = Math.round(col.scrollTop / 44);
-    const next = Math.max(0, Math.min(items.length - 1, cur + (e.deltaY > 0 ? 1 : -1)));
-    col.scrollTo({ top: next * 44, behavior: 'smooth' });
-    updateDrumHighlight(col);
-    setTimeout(() => { isScrolling = false; }, 150);
+    accumulated += e.deltaY;
+    if (accumulated > 30) {
+      const cur = Math.round(col.scrollTop / 44);
+      col.scrollTo({ top: (cur + 1) * 44, behavior: 'smooth' });
+      updateDrumHighlight(col);
+      accumulated = 0;
+    } else if (accumulated < -30) {
+      const cur = Math.round(col.scrollTop / 44);
+      col.scrollTo({ top: (cur - 1) * 44, behavior: 'smooth' });
+      updateDrumHighlight(col);
+      accumulated = 0;
+    }
   }, { passive: false });
 }
 
 function updateDrumHighlight(col) {
-  const idx = Math.round(col.scrollTop / 44);
+  const N = parseInt(col.dataset.n) || 0;
+  const rawIdx = Math.round(col.scrollTop / 44);
+  const normIdx = N ? ((rawIdx % N) + N) % N : rawIdx;
   col.querySelectorAll('.drum-item:not(.drum-spacer)').forEach((el, i) => {
-    el.classList.toggle('drum-selected', i === idx);
+    el.classList.toggle('drum-selected', N ? (i % N === normIdx) : i === normIdx);
   });
 }
 
 function getDrumValue(col) {
-  const idx = Math.round(col.scrollTop / 44);
-  const items = col.querySelectorAll('.drum-item:not(.drum-spacer)');
-  return items[Math.min(idx, items.length - 1)]?.textContent || '00';
+  const N = parseInt(col.dataset.n) || 0;
+  const rawIdx = Math.round(col.scrollTop / 44);
+  const normIdx = N ? ((rawIdx % N) + N) % N : rawIdx;
+  const allItems = col.querySelectorAll('.drum-item:not(.drum-spacer)');
+  return allItems[normIdx]?.textContent || '00';
 }
 
 function initSleepPickers() {
