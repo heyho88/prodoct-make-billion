@@ -426,6 +426,7 @@ function showMissionScreen(choice) {
   document.getElementById('mg-max-level').style.display = 'none';
   document.getElementById('mission-action-btns').style.display = '';
   document.getElementById('btn-mission-home').style.display = 'none';
+  document.getElementById('btn-mission-back').style.display = '';
   const isEvening = cat === 'routine' && data?.type === 'evening';
   document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
   showScreen('screen-mission');
@@ -732,6 +733,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   setCatData(cat, data);
   updateSidebar();
   document.getElementById('mission-action-btns').style.display = 'none';
+  document.getElementById('btn-mission-back').style.display = 'none';
 
   showGrowthAnimation(oldGc, data.growth_count, () => {
     const msg = document.getElementById('mission-result');
@@ -773,8 +775,12 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
   msg.className = 'result-msg pass-msg show';
   document.getElementById('mission-action-btns').style.display = 'none';
+  document.getElementById('btn-mission-back').style.display = 'none';
   document.getElementById('btn-mission-home').style.display = '';
 });
+
+/* ── 뒤로가기 (미션 → A/B 선택) ── */
+document.getElementById('btn-mission-back').addEventListener('click', showMainChoice);
 
 /* ── 홈으로 돌아가기 ── */
 document.getElementById('btn-first-home').addEventListener('click', showHome);
