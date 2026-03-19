@@ -97,25 +97,7 @@ function getAllActiveCatKeys() {
 }
 
 function computeRoutineStreak(data) {
-  const todayStr = today();
-  const histMap = {};
-  (data.history || []).forEach(h => { histMap[h.date] = h.type; });
-  const resetAfter = data.streak_reset_after || null;
-
-  const todayDone = histMap[todayStr] && histMap[todayStr] !== 'pass';
-  const d = new Date();
-  if (!todayDone) d.setDate(d.getDate() - 1);
-
-  let streak = 0;
-  while (true) {
-    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    if (resetAfter && ds <= resetAfter) break;
-    const t = histMap[ds];
-    if (!t || t === 'pass') break;
-    streak++;
-    d.setDate(d.getDate() - 1);
-  }
-  return streak;
+  return data.streak || 0;
 }
 
 function checkRoutineUnlock() {
@@ -768,7 +750,7 @@ document.querySelectorAll('.reason-card').forEach(card => {
             const resetDate = today();
             slots.forEach(type => {
               const d = getCatData(getRoutineCat(type));
-              if (d) { d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
+              if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
             });
             slots.push(obPendingType);
             setRoutineSlots(slots);
@@ -843,6 +825,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   data.growth_count = oldGc + 1;
   data.maintain_count = 0;
   data.last_date = t;
+  if (isRoutineCat(cat)) data.streak = (data.streak || 0) + 1;
   pushHistory(data, 'growth', t);
   setCatData(cat, data);
   if (isRoutineCat(cat)) checkRoutineUnlock();
@@ -877,6 +860,7 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
+    if (isRoutineCat(cat)) data.streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
@@ -917,6 +901,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
     pushHistory(data, 'maintain', t);
   }
 
+  if (isRoutineCat(cat)) data.streak = (data.streak || 0) + 1;
   setCatData(cat, data);
   if (isRoutineCat(cat)) checkRoutineUnlock();
   updateSidebar();
@@ -955,6 +940,7 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
+    if (isRoutineCat(cat)) data.streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
