@@ -467,8 +467,7 @@ function showGrowthAnimation(oldGc, newGc, callback) {
 function getNextMissionPreview(data, cat) {
   if (cat === 'sleep') {
     if (isSleepMaxLevel(data)) return '목표 취침 시간을 매일 지켜보자 🎉';
-    const next = minsToTimeStr(sleepTimeToMins(data.current_target) - 5);
-    return `다음 목표: ${next}에 자보기`;
+    return `다음 목표: ${data.current_target}에 자보기`;
   }
   if (!data.type || !MISSIONS[data.type]) return null;
   const lv = data.level || 1;
@@ -733,7 +732,12 @@ function showMainChoice() {
   const el = document.getElementById('screen-main');
   el.querySelector('.main-days').textContent = data.total_count;
   el.querySelector('.main-mult').textContent = multStr(data.growth_count);
-  el.querySelector('.main-level').textContent = data.level;
+  if (cat === 'sleep') {
+    const remainMins = sleepTimeToMins(data.current_target) - sleepTimeToMins(data.target_bedtime);
+    el.querySelector('.main-level').textContent = isSleepMaxLevel(data) ? '목표 달성 🎉' : `목표까지 ${remainMins}분`;
+  } else {
+    el.querySelector('.main-level').textContent = data.level;
+  }
 
   const aCard = document.getElementById('choice-a-card');
   if (cat === 'sleep') {
@@ -1467,7 +1471,10 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   showGrowthAnimation(oldGc, data.growth_count, () => {
     const msg = document.getElementById('mission-result');
     if (currentChoice === 'grow') {
-      msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신. 레벨 ${data.level} 달성! 🎉</small>`;
+      const levelText = cat === 'sleep'
+        ? ''
+        : ` 레벨 ${data.level} 달성! 🎉`;
+      msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신.${levelText}</small>`;
     } else {
       const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
       msg.innerHTML = `오늘도 지켰어. 0.5% 성장했어 🌱<br><small>${subMsg}</small>`;
