@@ -96,14 +96,36 @@ function getAllActiveCatKeys() {
   return keys;
 }
 
+function computeRoutineStreak(data) {
+  const todayStr = today();
+  const histMap = {};
+  (data.history || []).forEach(h => { histMap[h.date] = h.type; });
+  const resetAfter = data.streak_reset_after || null;
+
+  const todayDone = histMap[todayStr] && histMap[todayStr] !== 'pass';
+  const d = new Date();
+  if (!todayDone) d.setDate(d.getDate() - 1);
+
+  let streak = 0;
+  while (true) {
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (resetAfter && ds <= resetAfter) break;
+    const t = histMap[ds];
+    if (!t || t === 'pass') break;
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  return streak;
+}
+
 function checkRoutineUnlock() {
   const slots = getRoutineSlots();
   const unlocked = getRoutineUnlocked();
   if (unlocked >= 7) return false;
-  const anyHit7 = slots.some(type => (getCatData(getRoutineCat(type))?.daily_streak || 0) >= 7);
+  const anyHit7 = slots.some(type => computeRoutineStreak(getCatData(getRoutineCat(type)) || {}) >= 7);
   if (anyHit7 && slots.length >= unlocked) {
     setRoutineUnlocked(unlocked + 1);
-    return true; // newly unlocked
+    return true;
   }
   return false;
 }
@@ -336,7 +358,7 @@ function renderHomeCards() {
       if (!data) return '';
       const meta = ROUTINE_TYPE_META[type];
       const mult = Math.round(Math.pow(1.01, data.growth_count || 0) * 100) / 100;
-      const streak = data.daily_streak || 0;
+      const streak = computeRoutineStreak(data);
       const doneToday = false;
       return `<div class="routine-slot-row">
         <span class="routine-slot-icon">${meta.icon}</span>
@@ -354,13 +376,26 @@ function renderHomeCards() {
       </div>`;
     }).join('');
 
+    // 잠금 해제 프로그레스 (가장 높은 streak 기준)
+    const maxStreak = Math.min(routineSlots.reduce((max, type) => {
+      const d = getCatData(getRoutineCat(type));
+      return Math.max(max, d ? computeRoutineStreak(d) : 0);
+    }, 0), 7);
+    const progressPct = Math.round((maxStreak / 7) * 100);
+    const progressBar = `<div class="routine-progress-wrap">
+      <div class="routine-progress-track">
+        <div class="routine-progress-fill" style="width:${progressPct}%"></div>
+      </div>
+      <span class="routine-progress-label">${maxStreak}/7일</span>
+    </div>`;
+
     const unlockBanner = canAdd
       ? `<div class="routine-unlock-banner">7일 연속 달성! 새로운 루틴을 추가할 수 있어 🎉</div>`
       : '';
     const addBtn = availableTypes.length > 0
       ? `<button class="routine-add-btn ${canAdd ? 'can-add' : 'locked'}" data-can-add="${canAdd}">
           ${canAdd ? '+ 루틴 추가하기' : '🔒 루틴 추가하기 (7일 연속 완료 시 해제)'}
-        </button>`
+        </button>${canAdd ? '' : progressBar}`
       : '';
 
     html += `<div class="home-cat-card home-cat-active home-routine-group">
@@ -729,10 +764,11 @@ document.querySelectorAll('.reason-card').forEach(card => {
           setCatData(routineCat, obj);
           const slots = getRoutineSlots();
           if (!slots.includes(obPendingType)) {
-            // 새 루틴 추가 시 기존 모든 슬롯의 daily_streak 리셋
+            // 새 루틴 추가 시 기존 모든 슬롯의 streak 리셋 (streak_reset_after 설정)
+            const resetDate = today();
             slots.forEach(type => {
               const d = getCatData(getRoutineCat(type));
-              if (d) { d.daily_streak = 0; setCatData(getRoutineCat(type), d); }
+              if (d) { d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
             });
             slots.push(obPendingType);
             setRoutineSlots(slots);
@@ -807,7 +843,6 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   data.growth_count = oldGc + 1;
   data.maintain_count = 0;
   data.last_date = t;
-  if (isRoutineCat(cat)) data.daily_streak = (data.daily_streak || 0) + 1;
   pushHistory(data, 'growth', t);
   setCatData(cat, data);
   if (isRoutineCat(cat)) checkRoutineUnlock();
@@ -842,7 +877,6 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
-    if (isRoutineCat(cat)) data.daily_streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
@@ -882,7 +916,6 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
     data.maintain_count = (data.maintain_count || 0) + 1;
     pushHistory(data, 'maintain', t);
   }
-  if (isRoutineCat(cat)) data.daily_streak = (data.daily_streak || 0) + 1;
 
   setCatData(cat, data);
   if (isRoutineCat(cat)) checkRoutineUnlock();
@@ -922,7 +955,6 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
   const data = getCatData(cat);
   if (data) {
     data.maintain_count = 0;
-    if (isRoutineCat(cat)) data.daily_streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
     updateSidebar();
