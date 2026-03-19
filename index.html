@@ -215,6 +215,24 @@
     </div>
   </div>
 
+  <!-- 화면: 온보딩 (아침루틴) — 아침이 어때? -->
+  <div class="screen" id="screen-ob-morning-state">
+    <div class="progress-wrap">
+      <span class="progress-text" id="ob-morning-state-step-text">3 / 3</span>
+      <div class="progress-track"><div class="progress-fill" id="ob-morning-state-step-fill" style="width:100%"></div></div>
+    </div>
+    <div class="screen-content">
+      <h2 class="screen-q">아침이 어때?</h2>
+      <p class="screen-sub">지금 상태를 알아야 딱 맞는 미션을 줄 수 있어.</p>
+      <div class="choice-grid">
+        <div class="choice-card ob-morning-state-card" data-val="blank" data-msg="멍한 게 당연해. 뇌가 아직 깨어나는 중이거든. 아주 작은 것 하나로 시작해보자." role="radio" tabindex="0">😴 일어나자마자 멍해</div>
+        <div class="choice-card ob-morning-state-card" data-val="phone" data-msg="자기도 모르게 손이 가는 거야. 당연한 거야. 오늘은 딱 하나만 먼저 해보자." role="radio" tabindex="0">📱 눈 뜨자마자 핸드폰 봐</div>
+        <div class="choice-card ob-morning-state-card" data-val="rush" data-msg="아침이 바쁜 건 네 잘못이 아니야. 딱 하나만 바꿔보자." role="radio" tabindex="0">🏃 항상 시간에 쫓겨</div>
+        <div class="choice-card ob-morning-state-card" data-val="mood" data-msg="아침 기분은 습관으로 바꿀 수 있어. 작은 것 하나가 하루를 바꾸거든." role="radio" tabindex="0">😤 아침마다 기분이 별로야</div>
+      </div>
+    </div>
+  </div>
+
   <!-- 화면 3: 온보딩 2 (운동) — 어떤 운동? -->
   <div class="screen" id="screen-ob2-exercise">
     <div class="progress-wrap">
