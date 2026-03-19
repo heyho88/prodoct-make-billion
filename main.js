@@ -49,7 +49,7 @@ const CAT_META = {
 const ROUTINE_TYPE_META = {
   morning: { label: '아침 루틴',      icon: '🌅' },
   evening: { label: '저녁 루틴',      icon: '🌙' },
-  space:   { label: '공간관리',       icon: '🏠' },
+  space:   { label: '정리정돈',       icon: '🏠' },
   digital: { label: '디지털 디톡스',  icon: '📵' },
   mental:  { label: '멘탈관리',       icon: '🧘' },
   reading: { label: '독서',           icon: '📚' },
@@ -635,6 +635,7 @@ let obDigitalReason = null;
 let obReadingReason = null;
 let obMorningState = null;
 let obEveningState = null;
+let obSpaceReason = null;
 
 /* 랜딩 → 온보딩 or 홈 */
 document.getElementById('btn-start').addEventListener('click', () => {
@@ -699,6 +700,13 @@ document.querySelectorAll('.ob2rt-card').forEach(card => {
         document.querySelectorAll('.ob-digital-reason-card').forEach(c => c.classList.remove('selected'));
         obDigitalReason = null;
         showScreen('screen-ob-digital-reason');
+      } else if (obPendingType === 'space') {
+        // 정리정돈: "정리정돈, 왜 하고 싶어?" 화면으로
+        document.getElementById('ob-space-reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+        document.getElementById('ob-space-reason-step-fill').style.width = '100%';
+        document.querySelectorAll('.ob-space-reason-card').forEach(c => c.classList.remove('selected'));
+        obSpaceReason = null;
+        showScreen('screen-ob-space-reason');
       } else if (obPendingType === 'evening') {
         // 저녁루틴: "하루 끝날 때 어때?" 화면으로
         document.getElementById('ob-evening-state-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
@@ -798,6 +806,40 @@ document.querySelectorAll('.ob-digital-reason-card').forEach(card => {
       }
       currentMissionCategory = routineCat;
       setTimeout(showFirstMission, 2000 + Math.random() * 500);
+    }, 280);
+  });
+});
+
+/* 온보딩 (정리정돈): 정리정돈, 왜 하고 싶어? 이유 선택 */
+document.querySelectorAll('.ob-space-reason-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obSpaceReason = card.dataset.val;
+    document.querySelectorAll('.ob-space-reason-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      const empathyEl = document.getElementById('ob-loading-empathy');
+      empathyEl.textContent = card.dataset.msg;
+      empathyEl.style.display = '';
+      document.getElementById('ob-loading-text').textContent = '당신만의 맞춤 미션을 만들고 있습니다...';
+      showScreen('screen-ob-loading');
+      const obj = newCatObj();
+      obj.fail_reason = 0;
+      obj.type = 'space';
+      obj.space_reason = obSpaceReason;
+      const routineCat = getRoutineCat('space');
+      setCatData(routineCat, obj);
+      const slots = getRoutineSlots();
+      if (!slots.includes('space')) {
+        const resetDate = today();
+        slots.forEach(type => {
+          const d = getCatData(getRoutineCat(type));
+          if (d) { d.streak = 0; d.streak_reset_after = resetDate; setCatData(getRoutineCat(type), d); }
+        });
+        slots.push('space');
+        setRoutineSlots(slots);
+      }
+      currentMissionCategory = routineCat;
+      setTimeout(showFirstMission, 2700);
     }, 280);
   });
 });
