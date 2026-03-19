@@ -286,39 +286,62 @@
     </div>
   </div>
 
-  <!-- 화면: 온보딩 (수면) — 몇 시에 자요? -->
-  <div class="screen" id="screen-ob-sleep-bedtime">
+  <!-- 화면: 온보딩 (수면) — 현재 취침 시간 -->
+  <div class="screen" id="screen-ob-sleep-current">
     <div class="progress-wrap">
-      <span class="progress-text" id="ob-sleep-bt-step-text">2 / 4</span>
-      <div class="progress-track"><div class="progress-fill" id="ob-sleep-bt-step-fill" style="width:50%"></div></div>
+      <span class="progress-text" id="ob-sleep-cur-step-text">2 / 3</span>
+      <div class="progress-track"><div class="progress-fill" id="ob-sleep-cur-step-fill" style="width:66%"></div></div>
     </div>
     <div class="screen-content">
       <h2 class="screen-q">보통 몇 시에 자요?</h2>
-      <p class="screen-sub">지금 기준으로 솔직하게 골라봐</p>
-      <div class="choice-grid">
-        <div class="choice-card ob-sleep-bt-card" data-val="before_midnight" role="radio" tabindex="0">🌙 자정 이전 (11시 이전)</div>
-        <div class="choice-card ob-sleep-bt-card" data-val="midnight_1am" role="radio" tabindex="0">🕛 자정 ~ 1시</div>
-        <div class="choice-card ob-sleep-bt-card" data-val="dawn_1am_2am" role="radio" tabindex="0">🌃 새벽 1시 ~ 2시</div>
-        <div class="choice-card ob-sleep-bt-card" data-val="after_2am" role="radio" tabindex="0">🌄 새벽 2시 이후</div>
+      <p class="screen-sub">지금 기준으로 솔직하게</p>
+      <div class="sleep-picker-wrap">
+        <div class="drum-picker" id="drum-picker-current">
+          <div class="drum-picker-mask drum-picker-mask-top"></div>
+          <div class="drum-picker-highlight"></div>
+          <div class="drum-picker-mask drum-picker-mask-bottom"></div>
+          <div class="drum-col" id="sleep-cur-hour"></div>
+          <div class="drum-sep">:</div>
+          <div class="drum-col" id="sleep-cur-min"></div>
+        </div>
       </div>
+      <button class="cta-main" id="btn-sleep-cur-next">다음 →</button>
     </div>
   </div>
 
-  <!-- 화면: 온보딩 (수면) — 몇 분씩 앞당길까요? -->
-  <div class="screen" id="screen-ob-sleep-advance">
+  <!-- 화면: 온보딩 (수면) — 목표 취침 시간 -->
+  <div class="screen" id="screen-ob-sleep-target">
     <div class="progress-wrap">
-      <span class="progress-text" id="ob-sleep-adv-step-text">3 / 4</span>
-      <div class="progress-track"><div class="progress-fill" id="ob-sleep-adv-step-fill" style="width:75%"></div></div>
+      <span class="progress-text" id="ob-sleep-tgt-step-text">3 / 3</span>
+      <div class="progress-track"><div class="progress-fill" id="ob-sleep-tgt-step-fill" style="width:100%"></div></div>
     </div>
     <div class="screen-content">
-      <h2 class="screen-q">몇 분씩 앞당길까요?</h2>
-      <p class="screen-sub">작을수록 꾸준히 지킬 수 있어</p>
-      <div class="choice-grid">
-        <div class="choice-card ob-sleep-adv-card" data-val="5" role="radio" tabindex="0">⭐ 5분 (추천)</div>
-        <div class="choice-card ob-sleep-adv-card" data-val="10" role="radio" tabindex="0">10분</div>
-        <div class="choice-card ob-sleep-adv-card" data-val="15" role="radio" tabindex="0">15분</div>
-        <div class="choice-card ob-sleep-adv-card" data-val="30" role="radio" tabindex="0">30분</div>
+      <h2 class="screen-q">목표 취침 시간은?</h2>
+      <p class="screen-sub">현실적으로 목표를 정해봐</p>
+      <div class="sleep-picker-wrap">
+        <div class="drum-picker" id="drum-picker-target">
+          <div class="drum-picker-mask drum-picker-mask-top"></div>
+          <div class="drum-picker-highlight"></div>
+          <div class="drum-picker-mask drum-picker-mask-bottom"></div>
+          <div class="drum-col" id="sleep-tgt-hour"></div>
+          <div class="drum-sep">:</div>
+          <div class="drum-col" id="sleep-tgt-min"></div>
+        </div>
       </div>
+      <button class="cta-main" id="btn-sleep-tgt-next">다음 →</button>
+    </div>
+  </div>
+
+  <!-- 화면: 온보딩 (수면) — 확인 및 시작 -->
+  <div class="screen" id="screen-ob-sleep-confirm">
+    <div class="progress-wrap">
+      <span class="progress-text">3 / 3</span>
+      <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+    <div class="screen-content">
+      <h2 class="screen-q">이렇게 시작해볼까요?</h2>
+      <div class="sleep-confirm-msg" id="sleep-confirm-msg"></div>
+      <button class="cta-main" id="btn-sleep-confirm-start">시작하기 →</button>
     </div>
   </div>
 

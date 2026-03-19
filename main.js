@@ -152,6 +152,145 @@ function newCatObj() {
   };
 }
 
+/* ── 수면 시간 헬퍼 ── */
+function sleepTimeToMins(timeStr) {
+  // timeStr: "HH:MM"  — 12:00 이후는 당일, 00:00~11:59는 익일로 처리
+  const [h, m] = timeStr.split(':').map(Number);
+  return (h >= 12 ? h : h + 24) * 60 + m;
+}
+function minsToTimeStr(mins) {
+  const total = ((mins % 1440) + 1440) % 1440;
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+function formatTimeKorean(timeStr) {
+  const [h, m] = timeStr.split(':').map(Number);
+  const ms = String(m).padStart(2,'0');
+  if (h === 0) return `자정 0시 ${ms}분`;
+  if (h < 6)  return `새벽 ${h}시 ${ms}분`;
+  if (h < 12) return `오전 ${h}시 ${ms}분`;
+  if (h === 12) return `낮 12시 ${ms}분`;
+  if (h < 18) return `오후 ${h-12}시 ${ms}분`;
+  if (h < 21) return `저녁 ${h-12}시 ${ms}분`;
+  return `밤 ${h}시 ${ms}분`;
+}
+function isSleepMaxLevel(data) {
+  if (!data || !data.current_target || !data.target_bedtime) return false;
+  return sleepTimeToMins(data.current_target) <= sleepTimeToMins(data.target_bedtime);
+}
+function getSleepMissionText(data, choice) {
+  if (isSleepMaxLevel(data)) return `오늘 ${data.target_bedtime}에 잤어요 체크하기`;
+  const prefix = choice === 'maintain' ? '오늘도' : '오늘은';
+  return `${prefix} ${data.current_target}에 자보기`;
+}
+
+/* ── 드럼롤 피커 ── */
+const DRUM_HOURS = Array.from({length:24}, (_,i) => String(i).padStart(2,'0'));
+const DRUM_MINS  = ['00','05','10','15','20','25','30','35','40','45','50','55'];
+
+function initDrumCol(col, items, initialVal) {
+  col.innerHTML = '';
+  // 2 spacers top
+  for (let i = 0; i < 2; i++) {
+    const sp = document.createElement('div');
+    sp.className = 'drum-item drum-spacer';
+    col.appendChild(sp);
+  }
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'drum-item';
+    el.textContent = item;
+    col.appendChild(el);
+  });
+  // 2 spacers bottom
+  for (let i = 0; i < 2; i++) {
+    const sp = document.createElement('div');
+    sp.className = 'drum-item drum-spacer';
+    col.appendChild(sp);
+  }
+  const idx = Math.max(0, items.indexOf(initialVal));
+  col.scrollTop = idx * 44;
+  updateDrumHighlight(col);
+
+  // scroll snap
+  let snapTimer;
+  col.addEventListener('scroll', () => {
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(() => {
+      const i = Math.round(col.scrollTop / 44);
+      col.scrollTo({ top: i * 44, behavior: 'smooth' });
+      updateDrumHighlight(col);
+    }, 120);
+  });
+
+  // touch drag
+  let tyStart = 0, tsStart = 0;
+  col.addEventListener('touchstart', e => {
+    tyStart = e.touches[0].clientY; tsStart = col.scrollTop;
+  }, { passive: true });
+  col.addEventListener('touchmove', e => {
+    e.preventDefault();
+    col.scrollTop = tsStart + (tyStart - e.touches[0].clientY);
+  }, { passive: false });
+  col.addEventListener('touchend', () => {
+    const i = Math.round(col.scrollTop / 44);
+    col.scrollTo({ top: i * 44, behavior: 'smooth' });
+    updateDrumHighlight(col);
+  });
+
+  // mouse drag
+  let myStart = 0, msStart = 0, mDown = false;
+  col.addEventListener('mousedown', e => {
+    e.preventDefault(); mDown = true; myStart = e.clientY; msStart = col.scrollTop;
+  });
+  const mmove = e => { if (mDown) col.scrollTop = msStart + (myStart - e.clientY); };
+  const mup   = () => {
+    if (!mDown) return; mDown = false;
+    const i = Math.round(col.scrollTop / 44);
+    col.scrollTo({ top: i * 44, behavior: 'smooth' });
+    updateDrumHighlight(col);
+  };
+  col.addEventListener('_cleanup', () => {
+    document.removeEventListener('mousemove', mmove);
+    document.removeEventListener('mouseup', mup);
+  });
+  document.addEventListener('mousemove', mmove);
+  document.addEventListener('mouseup', mup);
+}
+
+function updateDrumHighlight(col) {
+  const idx = Math.round(col.scrollTop / 44);
+  col.querySelectorAll('.drum-item:not(.drum-spacer)').forEach((el, i) => {
+    el.classList.toggle('drum-selected', i === idx);
+  });
+}
+
+function getDrumValue(col) {
+  const idx = Math.round(col.scrollTop / 44);
+  const items = col.querySelectorAll('.drum-item:not(.drum-spacer)');
+  return items[Math.min(idx, items.length - 1)]?.textContent || '00';
+}
+
+function initSleepPickers() {
+  initDrumCol(
+    document.getElementById('sleep-cur-hour'), DRUM_HOURS,
+    String(obSleepCurrentH).padStart(2,'0')
+  );
+  initDrumCol(
+    document.getElementById('sleep-cur-min'), DRUM_MINS,
+    String(Math.round(obSleepCurrentM / 5) * 5).padStart(2,'0')
+  );
+  initDrumCol(
+    document.getElementById('sleep-tgt-hour'), DRUM_HOURS,
+    String(obSleepTargetH).padStart(2,'0')
+  );
+  initDrumCol(
+    document.getElementById('sleep-tgt-min'), DRUM_MINS,
+    String(Math.round(obSleepTargetM / 5) * 5).padStart(2,'0')
+  );
+}
+
 function addCatHistory(cat, type) {
   const data = getCatData(cat);
   if (!data) return;
@@ -275,7 +414,12 @@ function showGrowthAnimation(oldGc, newGc, callback) {
   }
 }
 
-function getNextMissionPreview(data) {
+function getNextMissionPreview(data, cat) {
+  if (cat === 'sleep') {
+    if (isSleepMaxLevel(data)) return '목표 취침 시간을 매일 지켜보자 🎉';
+    const next = minsToTimeStr(sleepTimeToMins(data.current_target) - 5);
+    return `다음 목표: ${next}에 자보기`;
+  }
   if (!data.type || !MISSIONS[data.type]) return null;
   const lv = data.level || 1;
   if (lv >= 7) return '이 루틴은 완전히 잡혔어. 새로운 도전을 추가해볼까? 🔥';
@@ -316,15 +460,38 @@ function renderHomeCards() {
     const mult = Math.round(Math.pow(1.01, data.growth_count) * 100) / 100;
     const doneToday = false;
 
+    let catMetaHtml = `레벨 ${data.level} · ${mult.toFixed(2)}배`;
+    let catProgressHtml = '';
+    if (cat === 'sleep' && data.current_bedtime) {
+      const isMax = isSleepMaxLevel(data);
+      if (isMax) {
+        catMetaHtml = `목표 달성 🎉 유지 중`;
+        catProgressHtml = `<div class="sleep-progress-wrap">
+          <div class="sleep-progress-track"><div class="sleep-progress-fill" style="width:100%"></div></div>
+          <div class="sleep-progress-label">목표: ${data.target_bedtime}</div>
+        </div>`;
+      } else {
+        const totalDiff = data.total_minutes_diff || 1;
+        const curDiff = Math.max(0, sleepTimeToMins(data.current_target) - sleepTimeToMins(data.target_bedtime));
+        const pct = Math.round(((totalDiff - curDiff) / totalDiff) * 100);
+        catMetaHtml = `목표까지 ${curDiff}분 남음`;
+        catProgressHtml = `<div class="sleep-progress-wrap">
+          <div class="sleep-progress-track"><div class="sleep-progress-fill" style="width:${pct}%"></div></div>
+          <div class="sleep-progress-label">현재: ${data.current_target} → 목표: ${data.target_bedtime}</div>
+        </div>`;
+      }
+    }
+
     html += `<div class="home-cat-card home-cat-active">
       <div class="home-cat-top">
         <span class="home-cat-icon">${icon}</span>
         <div class="home-cat-info">
           <div class="home-cat-name">${name}</div>
-          <div class="home-cat-meta">레벨 ${data.level} · ${mult.toFixed(2)}배</div>
+          <div class="home-cat-meta">${catMetaHtml}</div>
         </div>
         <button class="home-cat-reset-btn" data-cat="${cat}" title="${name} 초기화">↺</button>
       </div>
+      ${catProgressHtml}
       ${doneToday
         ? `<button class="home-cat-done-btn" disabled>오늘 1% 완료했어 🌱</button>`
         : `<button class="home-cat-mission-btn" data-cat="${cat}">오늘 미션 하기 →</button>`
@@ -434,7 +601,9 @@ function startCatMission(cat) {
   currentMissionCategory = cat;
   const data = getCatData(cat);
   if (!data) return;
-  if (cat === 'health' || cat === 'sleep' || isRoutineCat(cat)) {
+  if (cat === 'sleep' && isSleepMaxLevel(data)) {
+    showFirstMission(); // 맥스레벨: A/B 없이 바로 미션
+  } else if (cat === 'health' || cat === 'sleep' || isRoutineCat(cat)) {
     showMainChoice();
   } else {
     showDailyState();
@@ -463,12 +632,12 @@ function startCatOnboarding(cat) {
     document.querySelectorAll('.ob2ex-card').forEach(c => c.classList.remove('selected'));
     showScreen('screen-ob2-exercise');
   } else if (cat === 'sleep') {
-    obSleepBedtime = null;
-    obSleepAdvanceMinutes = null;
-    document.getElementById('ob-sleep-bt-step-text').textContent = '1 / 3';
-    document.getElementById('ob-sleep-bt-step-fill').style.width = '33%';
-    document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
-    showScreen('screen-ob-sleep-bedtime');
+    obSleepCurrentH = 2; obSleepCurrentM = 0;
+    obSleepTargetH = 0; obSleepTargetM = 0;
+    document.getElementById('ob-sleep-cur-step-text').textContent = '1 / 2';
+    document.getElementById('ob-sleep-cur-step-fill').style.width = '50%';
+    initSleepPickers();
+    showScreen('screen-ob-sleep-current');
   } else if (cat === 'routine') {
     startAddRoutine();
   } else {
@@ -556,14 +725,18 @@ function showMissionScreen(choice) {
   const cat = currentMissionCategory;
   const data = getCatData(cat);
   let missionText;
-  if (choice === 'grow') {
+  if (cat === 'sleep') {
+    missionText = getSleepMissionText(data, choice);
+  } else if (choice === 'grow') {
     missionText = data.level < 7
       ? getExerciseMission(data.type, data.level + 1)
       : getExerciseMission(data.type, 7);
   } else {
     missionText = getExerciseMission(data.type, data.level);
   }
-  document.getElementById('mission-empathy').textContent = EMPATHY_MSGS[data.fail_reason || 0];
+  document.getElementById('mission-empathy').textContent = cat === 'sleep'
+    ? (isSleepMaxLevel(data) ? '목표를 달성했어. 유지만 하면 돼 🎉' : '취침 시간을 조금씩 앞당겨보자.')
+    : EMPATHY_MSGS[data.fail_reason || 0];
   document.getElementById('mission-text').textContent = missionText;
   const badge = document.getElementById('mission-choice-badge');
   badge.textContent = choice === 'grow' ? '🌱 성장 모드' : '🔄 유지 모드';
@@ -594,7 +767,7 @@ function showFirstMission(energy, mental) {
   if (cat === 'health') {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else if (cat === 'sleep') {
-    missionText = getExerciseMission('sleep', data.level || 1);
+    missionText = getSleepMissionText(data, 'grow');
   } else if (isRoutineCat(cat) && data.type) {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else {
@@ -602,7 +775,9 @@ function showFirstMission(energy, mental) {
     const m = mental || 'mid';
     missionText = ENERGY_MISSIONS[e + '-' + m] || '';
   }
-  document.getElementById('first-empathy-msg').textContent = EMPATHY_MSGS[data?.fail_reason || 0];
+  document.getElementById('first-empathy-msg').textContent = cat === 'sleep'
+    ? (isSleepMaxLevel(data) ? '목표를 달성했어. 유지만 하면 돼 🎉' : '취침 시간을 조금씩 앞당겨보자. 5분씩이면 충분해.')
+    : EMPATHY_MSGS[data?.fail_reason || 0];
   document.getElementById('first-mission-text').textContent = missionText;
   document.getElementById('first-result-msg').textContent = '';
   document.getElementById('first-result-msg').className = 'result-msg';
@@ -628,8 +803,10 @@ let currentMissionCategory = null;
 let obPendingType = null;
 let obPendingReason = 0;
 let pendingResetCategory = null;
-let obSleepBedtime = null;
-let obSleepAdvanceMinutes = null;
+let obSleepCurrentH = 2;
+let obSleepCurrentM = 0;
+let obSleepTargetH = 0;
+let obSleepTargetM = 0;
 let obMentalState = null;
 let obDigitalReason = null;
 let obReadingReason = null;
@@ -661,12 +838,12 @@ document.querySelectorAll('.ob1-card').forEach(card => {
         document.querySelectorAll('.ob2ex-card').forEach(c => c.classList.remove('selected'));
         showScreen('screen-ob2-exercise');
       } else if (card.dataset.val === 'sleep') {
-        obSleepBedtime = null;
-        obSleepAdvanceMinutes = null;
-        document.getElementById('ob-sleep-bt-step-text').textContent = '2 / 4';
-        document.getElementById('ob-sleep-bt-step-fill').style.width = '50%';
-        document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
-        showScreen('screen-ob-sleep-bedtime');
+        obSleepCurrentH = 2; obSleepCurrentM = 0;
+        obSleepTargetH = 0; obSleepTargetM = 0;
+        document.getElementById('ob-sleep-cur-step-text').textContent = '2 / 3';
+        document.getElementById('ob-sleep-cur-step-fill').style.width = '66%';
+        initSleepPickers();
+        showScreen('screen-ob-sleep-current');
       } else {
         obPendingType = null;
         document.getElementById('ob2rt-step-text').textContent = '2 / 3';
@@ -963,38 +1140,62 @@ document.querySelectorAll('.ob2ex-card').forEach(card => {
   });
 });
 
-/* 온보딩 (수면): 취침 시간 선택 */
-document.querySelectorAll('.ob-sleep-bt-card').forEach(card => {
-  card.addEventListener('click', () => {
-    obSleepBedtime = card.dataset.val;
-    document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    setTimeout(() => {
-      // 초기 온보딩: 2/4 → 3/4, 홈에서 추가: 1/3 → 2/3
-      const isInit = document.getElementById('ob-sleep-bt-step-text').textContent.includes('/ 4');
-      document.getElementById('ob-sleep-adv-step-text').textContent = isInit ? '3 / 4' : '2 / 3';
-      document.getElementById('ob-sleep-adv-step-fill').style.width = isInit ? '75%' : '66%';
-      document.querySelectorAll('.ob-sleep-adv-card').forEach(c => c.classList.remove('selected'));
-      showScreen('screen-ob-sleep-advance');
-    }, 280);
-  });
+/* 온보딩 (수면): 현재 취침 시간 → 다음 */
+document.getElementById('btn-sleep-cur-next').addEventListener('click', () => {
+  obSleepCurrentH = parseInt(getDrumValue(document.getElementById('sleep-cur-hour')));
+  obSleepCurrentM = parseInt(getDrumValue(document.getElementById('sleep-cur-min')));
+  const isInit = document.getElementById('ob-sleep-cur-step-text').textContent.includes('/ 3');
+  document.getElementById('ob-sleep-tgt-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+  document.getElementById('ob-sleep-tgt-step-fill').style.width = '100%';
+  showScreen('screen-ob-sleep-target');
 });
 
-/* 온보딩 (수면): 앞당길 분 선택 */
-document.querySelectorAll('.ob-sleep-adv-card').forEach(card => {
-  card.addEventListener('click', () => {
-    obSleepAdvanceMinutes = parseInt(card.dataset.val);
-    document.querySelectorAll('.ob-sleep-adv-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    setTimeout(() => {
-      // 초기 온보딩: 3/4 → 4/4, 홈에서 추가: 2/3 → 3/3
-      const isInit = document.getElementById('ob-sleep-adv-step-text').textContent.includes('/ 4');
-      document.getElementById('reason-step-text').textContent = isInit ? '4 / 4' : '3 / 3';
-      document.getElementById('reason-step-fill').style.width = '100%';
-      document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
-      showScreen('screen-ob-reason');
-    }, 280);
-  });
+/* 온보딩 (수면): 목표 취침 시간 → 확인 */
+document.getElementById('btn-sleep-tgt-next').addEventListener('click', () => {
+  obSleepTargetH = parseInt(getDrumValue(document.getElementById('sleep-tgt-hour')));
+  obSleepTargetM = parseInt(getDrumValue(document.getElementById('sleep-tgt-min')));
+  const curStr = `${String(obSleepCurrentH).padStart(2,'0')}:${String(obSleepCurrentM).padStart(2,'0')}`;
+  const tgtStr = `${String(obSleepTargetH).padStart(2,'0')}:${String(obSleepTargetM).padStart(2,'0')}`;
+  const curMins = sleepTimeToMins(curStr);
+  const tgtMins = sleepTimeToMins(tgtStr);
+  const diffMins = curMins - tgtMins;
+  let confirmText;
+  if (diffMins <= 0) {
+    confirmText = '이미 목표를 달성했어요! 유지 모드로 시작합니다 🌱';
+  } else {
+    const totalMissions = Math.ceil(diffMins / 5);
+    confirmText = `현재 ${formatTimeKorean(curStr)} → 목표 ${formatTimeKorean(tgtStr)}\n총 ${totalMissions}번의 미션으로 목표에 도달할 수 있어요 🌱`;
+  }
+  document.getElementById('sleep-confirm-msg').textContent = confirmText;
+  showScreen('screen-ob-sleep-confirm');
+});
+
+/* 온보딩 (수면): 시작하기 */
+document.getElementById('btn-sleep-confirm-start').addEventListener('click', () => {
+  const curStr = `${String(obSleepCurrentH).padStart(2,'0')}:${String(obSleepCurrentM).padStart(2,'0')}`;
+  const tgtStr = `${String(obSleepTargetH).padStart(2,'0')}:${String(obSleepTargetM).padStart(2,'0')}`;
+  const curMins = sleepTimeToMins(curStr);
+  const tgtMins = sleepTimeToMins(tgtStr);
+  const diffMins = Math.max(0, curMins - tgtMins);
+  const alreadyDone = diffMins <= 0;
+  const obj = {
+    active: true,
+    current_bedtime: curStr,
+    target_bedtime: tgtStr,
+    current_target: alreadyDone ? tgtStr : curStr,
+    total_minutes_diff: alreadyDone ? 0 : diffMins,
+    growth_count: alreadyDone ? 1 : 0,
+    total_count: 0,
+    maintain_count: 0,
+    last_date: null,
+    history: []
+  };
+  setCatData('sleep', obj);
+  currentMissionCategory = 'sleep';
+  document.getElementById('ob-loading-empathy').style.display = 'none';
+  document.getElementById('ob-loading-text').textContent = '당신만의 맞춤 미션을 만들고 있습니다...';
+  showScreen('screen-ob-loading');
+  setTimeout(showFirstMission, 2000 + Math.random() * 500);
 });
 
 /* 온보딩: 실패 이유 선택 */
@@ -1005,8 +1206,8 @@ document.querySelectorAll('.reason-card').forEach(card => {
     card.classList.add('selected');
     const cat = currentOnboardingCategory;
     setTimeout(() => {
-      if (cat === 'health' || cat === 'sleep' || (cat === 'routine' && obPendingType)) {
-        // 운동/수면/루틴(타입있음): 카테고리 데이터 생성 후 첫 미션
+      if (cat === 'health' || (cat === 'routine' && obPendingType)) {
+        // 운동/루틴(타입있음): 카테고리 데이터 생성 후 첫 미션
         const obj = newCatObj();
         obj.fail_reason = obPendingReason;
         if (cat === 'health') {
@@ -1029,14 +1230,10 @@ document.querySelectorAll('.reason-card').forEach(card => {
           currentMissionCategory = routineCat;
           showFirstMission();
           return;
-        } else {
-          obj.type = 'sleep';
-          if (obSleepBedtime !== null)        obj.bedtime_current = obSleepBedtime;
-          if (obSleepAdvanceMinutes !== null) obj.bedtime_target_minutes = obSleepAdvanceMinutes;
         }
         setCatData(cat, obj);
         currentMissionCategory = cat;
-        if (cat === 'health' || cat === 'sleep') {
+        if (cat === 'health') {
           document.getElementById('ob-loading-empathy').style.display = 'none';
           document.getElementById('ob-loading-text').textContent = '당신만의 맞춤 미션을 만들고 있습니다...';
           showScreen('screen-ob-loading');
@@ -1095,8 +1292,18 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   const t = today();
   const oldGc = data.growth_count || 0;
   data.total_count = (data.total_count || 0) + 1;
-  data.growth_count = oldGc + 1;
-  data.maintain_count = 0;
+  if (cat === 'sleep') {
+    if (isSleepMaxLevel(data)) {
+      data.growth_count = oldGc + 0.5;
+    } else {
+      data.current_target = minsToTimeStr(sleepTimeToMins(data.current_target) - 5);
+      data.growth_count = oldGc + 1;
+    }
+    data.maintain_count = 0;
+  } else {
+    data.growth_count = oldGc + 1;
+    data.maintain_count = 0;
+  }
   data.last_date = t;
   if (isRoutineCat(cat)) data.streak = (data.streak || 0) + 1;
   pushHistory(data, 'growth', t);
@@ -1116,7 +1323,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
     document.getElementById('fg-plant').textContent = getPlantIcon(gc);
     document.getElementById('fg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
     document.getElementById('fg-msg').textContent = getGrowthMsg(gc);
-    const fgNext = getNextMissionPreview(data);
+    const fgNext = getNextMissionPreview(data, cat);
     const fgNextEl = document.getElementById('fg-next-preview');
     if (fgNext && fgNextEl) {
       fgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${fgNext}</span>`;
@@ -1163,7 +1370,18 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   data.total_count = (data.total_count || 0) + 1;
   data.last_date = t;
 
-  if (currentChoice === 'grow') {
+  if (cat === 'sleep') {
+    if (currentChoice === 'grow' && !isSleepMaxLevel(data)) {
+      data.current_target = minsToTimeStr(sleepTimeToMins(data.current_target) - 5);
+      data.growth_count = oldGc + 1;
+      data.maintain_count = 0;
+      pushHistory(data, 'growth', t);
+    } else {
+      data.growth_count = oldGc + 0.5;
+      data.maintain_count = (data.maintain_count || 0) + 1;
+      pushHistory(data, 'maintain', t);
+    }
+  } else if (currentChoice === 'grow') {
     if (data.level < 7) data.level++;
     data.growth_count = oldGc + 1;
     data.maintain_count = 0;
@@ -1195,14 +1413,16 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
     document.getElementById('mg-plant').textContent = getPlantIcon(gc);
     document.getElementById('mg-formula').innerHTML = `1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신입니다`;
     document.getElementById('mg-msg').textContent = getGrowthMsg(gc);
-    const mgNext = getNextMissionPreview(data);
+    const mgNext = getNextMissionPreview(data, cat);
     const mgNextEl = document.getElementById('mg-next-preview');
     if (mgNext && mgNextEl) {
       mgNextEl.innerHTML = `<span class="next-mission-label">내일의 1% 👀</span><span class="next-mission-text">${mgNext}</span>`;
       mgNextEl.style.display = '';
     }
     document.getElementById('mission-growth-card').classList.add('show');
-    if (data.level >= 7) document.getElementById('mg-max-level').style.display = '';
+    if ((cat !== 'sleep' && data.level >= 7) || (cat === 'sleep' && isSleepMaxLevel(data))) {
+      document.getElementById('mg-max-level').style.display = '';
+    }
     document.getElementById('btn-mission-home').style.display = '';
   });
 });
@@ -1622,12 +1842,27 @@ function updateSidebar() {
       ${statusHtml}
 
       <div class="sb-sect-divider"></div>
-      <div class="sb-sect-label">레벨 진행</div>
+      ${cat === 'sleep' && data.current_bedtime ? (() => {
+        const isMax = isSleepMaxLevel(data);
+        if (isMax) {
+          return `<div class="sb-sect-label">취침 목표</div>
+          <div class="sb-level-display">목표 달성 🎉</div>
+          <div class="sb-level-bar-track"><div class="sb-level-bar-fill" style="width:100%"></div></div>
+          <div class="sleep-progress-label" style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">목표: ${data.target_bedtime} 유지 중</div>`;
+        }
+        const totalDiff = data.total_minutes_diff || 1;
+        const curDiff = Math.max(0, sleepTimeToMins(data.current_target) - sleepTimeToMins(data.target_bedtime));
+        const pct = Math.round(((totalDiff - curDiff) / totalDiff) * 100);
+        return `<div class="sb-sect-label">취침 목표 진행</div>
+          <div class="sb-level-display">목표까지 ${curDiff}분 남음</div>
+          <div class="sb-level-bar-track"><div class="sb-level-bar-fill" style="width:${pct}%"></div></div>
+          <div class="sleep-progress-label" style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">현재: ${data.current_target} → 목표: ${data.target_bedtime}</div>`;
+      })() : `<div class="sb-sect-label">레벨 진행</div>
       <div class="sb-level-display">레벨 ${level} / 7</div>
       <div class="sb-level-bar-track">
         <div class="sb-level-bar-fill" style="width:${levelPct}%"></div>
       </div>
-      ${nextMissionHtml}
+      ${nextMissionHtml}`}
 
       <div class="sb-sect-divider"></div>
       <div class="sb-stats-row">

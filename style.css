@@ -2230,3 +2230,114 @@ input:focus, textarea:focus {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ── 수면 드럼롤 피커 ── */
+.sleep-picker-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+.drum-picker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 220px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.drum-col {
+  width: 80px;
+  height: 220px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+.drum-col:active { cursor: grabbing; }
+.drum-col::-webkit-scrollbar { display: none; }
+.drum-item {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s, font-size 0.15s, font-weight 0.15s;
+}
+.drum-item.drum-selected {
+  color: #F97316;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.drum-sep {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  align-self: center;
+}
+.drum-picker-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 44px;
+  background: rgba(249, 115, 22, 0.08);
+  border-radius: 8px;
+  border-top: 1px solid rgba(249, 115, 22, 0.25);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.25);
+  pointer-events: none;
+  z-index: 1;
+}
+.drum-picker-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 88px;
+  pointer-events: none;
+  z-index: 2;
+}
+.drum-picker-mask-top {
+  top: 0;
+  background: linear-gradient(to bottom, #080B14 0%, transparent 100%);
+}
+.drum-picker-mask-bottom {
+  bottom: 0;
+  background: linear-gradient(to top, #080B14 0%, transparent 100%);
+}
+.sleep-confirm-msg {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 24px 0;
+  white-space: pre-line;
+}
+/* 수면 홈카드 진행바 */
+.sleep-progress-wrap {
+  margin: 8px 0 4px;
+}
+.sleep-progress-track {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.sleep-progress-fill {
+  height: 100%;
+  background: #F97316;
+  border-radius: 2px;
+  transition: width 0.4s;
+}
+.sleep-progress-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
