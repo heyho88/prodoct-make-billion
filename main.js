@@ -5,7 +5,8 @@ const MISSIONS = {
   gym:          ["운동복만 갈아입기","운동복 입고 현관까지","집 근처 5분 산책","헬스장 입구까지만","헬스장 들어가서 15분","헬스장 30분","헬스장 1시간"],
   hometraining: ["운동복만 갈아입기","매트 꺼내서 펼치기","스트레칭 3분","유튜브 홈트 영상 틀어놓기","홈트 10분","홈트 20분","홈트 30분"],
   walking:      ["운동화 꺼내놓기","운동복 입고 현관까지","집 앞 5분 걷기","동네 한 바퀴 (10분)","20분 걷기","30분 걷기 or 10분 달리기","5km"],
-  sleep:        ["오늘 취침 목표 시간 확인하기","목표 시간 30분 전 눕기 준비 시작","목표 시간에 눕기","목표 시간 -5분에 눕기","목표 시간 3일 연속 지키기","목표 시간 5일 연속 지키기","목표 시간 7일 연속 지키기"]
+  sleep:        ["오늘 취침 목표 시간 확인하기","목표 시간 30분 전 눕기 준비 시작","목표 시간에 눕기","목표 시간 -5분에 눕기","목표 시간 3일 연속 지키기","목표 시간 5일 연속 지키기","목표 시간 7일 연속 지키기"],
+  morning:      ["물 한 잔 마시기","물 한 잔 + 커튼 or 창문 열기","물 한 잔 + 커튼 or 창문 열기 + 1분 스트레칭","물 한 잔 + 커튼 or 창문 열기 + 3분 스트레칭","물 한 잔 + 커튼 or 창문 열기 + 5분 스트레칭","물 한 잔 + 커튼 or 창문 열기 + 5분 스트레칭 + 오늘 할 일 1개 적기","물 한 잔 + 커튼 or 창문 열기 + 10분 스트레칭 + 오늘 할 일 3개 적기"]
 };
 
 const ENERGY_MISSIONS = {
@@ -48,6 +49,10 @@ function getCatIcon(cat, type) {
     if (type === 'walking')      return '🚶';
     return '🏃';
   }
+  if (cat === 'routine') {
+    if (type === 'morning') return '🌅';
+    return '📋';
+  }
   return CAT_META[cat]?.icon || '';
 }
 
@@ -57,6 +62,10 @@ function getCatName(cat, type) {
     if (type === 'hometraining') return '홈트';
     if (type === 'walking')      return '걷기/달리기';
     return '운동/건강';
+  }
+  if (cat === 'routine') {
+    if (type === 'morning') return '아침 루틴';
+    return '루틴/생활습관';
   }
   return CAT_META[cat]?.label || '';
 }
@@ -286,7 +295,7 @@ function startCatMission(cat) {
   currentMissionCategory = cat;
   const data = getCatData(cat);
   if (!data) return;
-  if (cat === 'health' || cat === 'sleep') {
+  if (cat === 'health' || cat === 'sleep' || (cat === 'routine' && data.type)) {
     showMainChoice();
   } else {
     showDailyState();
@@ -308,6 +317,12 @@ function startCatOnboarding(cat) {
     document.getElementById('ob-sleep-bt-step-fill').style.width = '33%';
     document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
     showScreen('screen-ob-sleep-bedtime');
+  } else if (cat === 'routine') {
+    obPendingType = null;
+    document.getElementById('ob2rt-step-text').textContent = '1 / 2';
+    document.getElementById('ob2rt-step-fill').style.width = '50%';
+    document.querySelectorAll('.ob2rt-card').forEach(c => c.classList.remove('selected'));
+    showScreen('screen-ob2-routine');
   } else {
     document.getElementById('reason-step-text').textContent = '1 / 2';
     document.getElementById('reason-step-fill').style.width = '50%';
@@ -423,6 +438,8 @@ function showFirstMission(energy, mental) {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else if (cat === 'sleep') {
     missionText = getExerciseMission('sleep', data.level || 1);
+  } else if (cat === 'routine' && data.type) {
+    missionText = getExerciseMission(data.type, data.level || 1);
   } else {
     const e = energy || 'mid';
     const m = mental || 'mid';
@@ -482,11 +499,28 @@ document.querySelectorAll('.ob1-card').forEach(card => {
         document.querySelectorAll('.ob-sleep-bt-card').forEach(c => c.classList.remove('selected'));
         showScreen('screen-ob-sleep-bedtime');
       } else {
-        document.getElementById('reason-step-text').textContent = '2 / 3';
-        document.getElementById('reason-step-fill').style.width = '66%';
-        document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
-        showScreen('screen-ob-reason');
+        obPendingType = null;
+        document.getElementById('ob2rt-step-text').textContent = '2 / 3';
+        document.getElementById('ob2rt-step-fill').style.width = '66%';
+        document.querySelectorAll('.ob2rt-card').forEach(c => c.classList.remove('selected'));
+        showScreen('screen-ob2-routine');
       }
+    }, 280);
+  });
+});
+
+/* 온보딩2 (루틴): 루틴 종류 선택 */
+document.querySelectorAll('.ob2rt-card').forEach(card => {
+  card.addEventListener('click', () => {
+    obPendingType = card.dataset.val;
+    document.querySelectorAll('.ob2rt-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    setTimeout(() => {
+      const isInit = document.getElementById('ob2rt-step-text').textContent.includes('/ 3');
+      document.getElementById('reason-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
+      document.getElementById('reason-step-fill').style.width = '100%';
+      document.querySelectorAll('.reason-card').forEach(c => c.classList.remove('selected'));
+      showScreen('screen-ob-reason');
     }, 280);
   });
 });
@@ -550,11 +584,11 @@ document.querySelectorAll('.reason-card').forEach(card => {
     card.classList.add('selected');
     const cat = currentOnboardingCategory;
     setTimeout(() => {
-      if (cat === 'health' || cat === 'sleep') {
-        // 운동/수면: 카테고리 데이터 생성 후 첫 미션
+      if (cat === 'health' || cat === 'sleep' || (cat === 'routine' && obPendingType)) {
+        // 운동/수면/루틴(타입있음): 카테고리 데이터 생성 후 첫 미션
         const obj = newCatObj();
         obj.fail_reason = obPendingReason;
-        if (cat === 'health') {
+        if (cat === 'health' || (cat === 'routine' && obPendingType)) {
           obj.type = obPendingType;
         } else {
           obj.type = 'sleep';
