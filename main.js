@@ -2058,9 +2058,7 @@ function buildGrassHtml(titleClass) {
     const isFuture = ds > todayStr;
     const type = grassMap[ds];
     let bg, numColor, extraStyle = '';
-    if (isToday) {
-      bg = 'rgba(255,255,255,0.04)'; numColor = '#F97316'; extraStyle = 'border:1.5px solid #F97316;';
-    } else if (isFuture) {
+    if (isFuture) {
       bg = 'rgba(255,255,255,0.02)'; numColor = 'rgba(255,255,255,0.15)';
     } else if (type === 'growth') {
       bg = '#F97316'; numColor = '#fff'; extraStyle = 'font-weight:700;';
@@ -2069,8 +2067,10 @@ function buildGrassHtml(titleClass) {
     } else if (type === 'pass') {
       bg = 'rgba(255,255,255,0.06)'; numColor = 'rgba(255,255,255,0.3)';
     } else {
-      bg = 'rgba(255,255,255,0.03)'; numColor = 'rgba(255,255,255,0.25)';
+      bg = isToday ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.03)';
+      numColor = isToday ? '#F97316' : 'rgba(255,255,255,0.25)';
     }
+    if (isToday) extraStyle += 'border:1.5px solid #F97316;';
     cellsHtml += `<div class="cal-cell" style="background:${bg};${extraStyle}">
       <span class="cal-day-num" style="color:${numColor}">${day}</span>
     </div>`;
@@ -2095,7 +2095,7 @@ function buildGrassHtml(titleClass) {
 function renderHomeGrass() {
   const section = document.getElementById('home-grass-section');
   if (!section) return;
-  const hasAnyActive = CATEGORIES.some(cat => { const d = getCatData(cat); return d && d.active; });
+  const hasAnyActive = getAllActiveCatKeys().length > 0;
   if (!hasAnyActive) { section.style.display = 'none'; return; }
   section.style.display = '';
   section.innerHTML = buildGrassHtml('home-grass-title');
