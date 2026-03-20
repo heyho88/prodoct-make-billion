@@ -1173,19 +1173,22 @@ input:focus, textarea:focus {
   padding: 72px 24px 48px;
 }
 
-/* ── 홈으로 (작은 텍스트 버튼) ── */
+/* ── 홈 아이콘 버튼 ── */
 .btn-back-home {
-  display: block;
-  background: none;
-  border: none;
-  padding: 0;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.5);
   cursor: pointer;
-  text-align: left;
+  margin-bottom: 12px;
+  transition: background 0.2s, color 0.2s;
 }
-.btn-back-home:hover { color: rgba(255,255,255,0.7); }
+.btn-back-home:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
 
 /* ── 홈으로 돌아가기 버튼 ── */
 .btn-home {
