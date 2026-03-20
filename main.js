@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
       btnLoginTxt.textContent  = name + ' ▾'
       btnLoginMob.textContent  = name + ' ▾ (로그아웃)'
     } else {
-      btnLoginTxt.textContent  = '구글로 시작하기'
-      btnLoginMob.textContent  = '구글로 시작하기'
+      btnLoginTxt.textContent  = '로그인'
+      btnLoginMob.textContent  = '로그인'
     }
   }
 
