@@ -823,7 +823,7 @@ function showMissionScreen(choice) {
   document.getElementById('mg-max-level').style.display = 'none';
   document.getElementById('mission-action-btns').style.display = '';
   document.getElementById('btn-mission-home').style.display = 'none';
-  document.getElementById('btn-mission-back').style.display = '';
+  document.getElementById('btn-mission-back').style.display = data.last_date === today() ? '' : 'none';
   const isEvening = cat === 'routine_evening';
   document.getElementById('mission-gratitude-link').style.display = isEvening ? '' : 'none';
   const effectiveLv = cat === 'routine_mental'
