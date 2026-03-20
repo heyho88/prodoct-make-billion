@@ -1815,21 +1815,74 @@ if (hamburger && mobileMenu) {
 document.getElementById('sb-toggle-btn')?.addEventListener('click', () => {
   const sidebar = document.getElementById('desktop-sidebar');
   const btn = document.getElementById('sb-toggle-btn');
-  const icon = document.getElementById('sb-toggle-icon');
   if (!sidebar) return;
   const expanded = sidebar.classList.toggle('sb-expanded');
   btn.classList.toggle('sb-expanded', expanded);
   document.body.classList.toggle('sb-body-expanded', expanded);
-  // 화살표 방향 전환
-  icon.innerHTML = expanded
-    ? '<polyline points="3 2 8 8 3 14"/>'
-    : '<polyline points="7 2 2 8 7 14"/>';
+  sidebar.style.overflowY = expanded ? 'auto' : 'hidden';
   updateSidebar();
 });
 
 /* ════════════════════════
    사이드바
 ════════════════════════ */
+function renderSidebarCollapsed(sbContent) {
+  const todayStr = today();
+  const allKeys = getAllActiveCatKeys();
+  const completedToday = allKeys.filter(k => getCatData(k)?.last_date === todayStr).length;
+  const totalGrowth = allKeys.reduce((sum, k) => sum + (getCatData(k)?.growth_count || 0), 0);
+  const totalMult = Math.pow(1.01, totalGrowth).toFixed(2);
+  const TODAY_PANEL_MSGS = [
+    '아직 시작 전이야. 오늘 1%를 시작해봐. 🌱',
+    '오늘 1% 했어. 충분해. 🌱',
+    '오늘 2% 했어. 욕심쟁이네. 😄',
+    '오늘 3% 했어. 이러다 37.78배 금방 되겠는데. 🔥'
+  ];
+  const todayMsg = TODAY_PANEL_MSGS[Math.min(completedToday, 3)];
+
+  let catListHtml = '';
+  allKeys.forEach(cat => {
+    const data = getCatData(cat);
+    if (!data) return;
+    const icon = getCatIcon(cat, data.type);
+    const name = getCatName(cat, data.type) || CAT_META[cat]?.label || '';
+    const mult = Math.pow(1.01, data.growth_count || 0).toFixed(2);
+    let stat = '';
+    if (cat === 'sleep' && data.current_target && data.target_bedtime) {
+      const diff = Math.max(0, sleepTimeToMins(data.current_target) - sleepTimeToMins(data.target_bedtime));
+      stat = isSleepMaxLevel(data) ? '목표 달성 🎉' : `목표까지 ${diff}분`;
+    } else if (isRoutineCat(cat)) {
+      const slots = getRoutineSlots ? getRoutineSlots() : {};
+      const types = Object.values(slots || {}).filter(Boolean);
+      if (types.length <= 1) {
+        stat = `레벨 ${data.level || 1} · ${mult}배`;
+      } else {
+        stat = `${getCatName(types[0], '')} 외 ${types.length - 1}개`;
+      }
+    } else {
+      stat = `레벨 ${data.level || 1} · ${mult}배`;
+    }
+    const done = data.last_date === todayStr;
+    catListHtml += `<div class="sb-compact-item ${done ? 'sb-compact-done' : ''}">
+      <span class="sb-compact-icon">${icon}</span>
+      <div class="sb-compact-info">
+        <div class="sb-compact-name">${name}</div>
+        <div class="sb-compact-stat">${stat}</div>
+      </div>
+      ${done ? '<span class="sb-compact-check">✅</span>' : ''}
+    </div>`;
+  });
+
+  sbContent.innerHTML = `
+    <div class="sb-compact-today">
+      <div class="sb-compact-mult">${totalMult}<span class="sb-compact-mult-unit">배</span></div>
+      <div class="sb-compact-msg">${todayMsg}</div>
+    </div>
+    <div class="sb-compact-divider"></div>
+    <div class="sb-compact-list">${catListHtml}</div>
+  `;
+}
+
 function updateSidebar() {
   const sidebar = document.getElementById('desktop-sidebar');
   if (!sidebar) return;
@@ -1851,6 +1904,14 @@ function updateSidebar() {
 
   const sbContent = document.getElementById('sb-content');
   if (!sbContent) return;
+
+  const isExpanded = sidebar.classList.contains('sb-expanded');
+  if (!isExpanded) {
+    sidebar.style.overflowY = 'hidden';
+    renderSidebarCollapsed(sbContent);
+    return;
+  }
+  sidebar.style.overflowY = 'auto';
 
   const dayNames = ['일','월','화','수','목','금','토'];
   const todayStr = today();
@@ -1983,30 +2044,6 @@ function updateSidebar() {
       <div class="sb-sect-divider"></div>
       <div class="sb-sect-label">최근 7일</div>
       <div class="sb-day-row">${dayBoxesHtml}</div>
-      ${document.getElementById('desktop-sidebar')?.classList.contains('sb-expanded') ? (() => {
-        let boxes30 = '';
-        for (let i = 29; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
-          const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-          const t = histMap[ds];
-          let boxClass = '';
-          if (t === 'growth') boxClass = 'sb-day-growth';
-          else if (t === 'maintain') boxClass = 'sb-day-maintain';
-          else if (t === 'pass') boxClass = 'sb-day-pass';
-          const todayCls = ds === todayStr ? ' sb-day-today' : '';
-          boxes30 += `<div class="sb-30day-box ${boxClass}${todayCls}" title="${ds}"></div>`;
-        }
-        const streak = data.streak || 0;
-        return `<div class="sb-sect-divider"></div>
-          <div class="sb-sect-label">최근 30일</div>
-          <div class="sb-30day-row">${boxes30}</div>
-          <div class="sb-sect-divider"></div>
-          <div class="sb-stats-row">
-            <div class="sb-stat-box"><div class="sb-stat-num">${totalCount}</div><div class="sb-stat-lbl">총 완료</div></div>
-            <div class="sb-stat-box"><div class="sb-stat-num">${streak}</div><div class="sb-stat-lbl">연속 일수</div></div>
-          </div>`;
-      })() : ''}
     `;
   });
 
