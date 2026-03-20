@@ -1973,18 +1973,15 @@ function checkMaintainBanner() {
    잔디밭 (Grass Grid)
 ════════════════════════ */
 function buildGrassMap() {
+  const priority = { growth: 3, maintain: 2, pass: 1 };
   const grassMap = {};
   getAllActiveCatKeys().forEach(cat => {
     const data = getCatData(cat);
     if (!data) return;
     (data.history || []).forEach(h => {
-      const existing = grassMap[h.date];
-      if (!existing) {
+      const cur = grassMap[h.date];
+      if (!cur || (priority[h.type] || 0) > (priority[cur] || 0)) {
         grassMap[h.date] = h.type;
-      } else if (h.type === 'growth') {
-        grassMap[h.date] = 'growth';
-      } else if (h.type === 'maintain' && existing !== 'growth') {
-        grassMap[h.date] = 'maintain';
       }
     });
   });
