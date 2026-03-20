@@ -1811,6 +1811,22 @@ if (hamburger && mobileMenu) {
   });
 }
 
+/* ── 사이드바 토글 ── */
+document.getElementById('sb-toggle-btn')?.addEventListener('click', () => {
+  const sidebar = document.getElementById('desktop-sidebar');
+  const btn = document.getElementById('sb-toggle-btn');
+  const icon = document.getElementById('sb-toggle-icon');
+  if (!sidebar) return;
+  const expanded = sidebar.classList.toggle('sb-expanded');
+  btn.classList.toggle('sb-expanded', expanded);
+  document.body.classList.toggle('sb-body-expanded', expanded);
+  // 화살표 방향 전환
+  icon.innerHTML = expanded
+    ? '<polyline points="3 2 8 8 3 14"/>'
+    : '<polyline points="7 2 2 8 7 14"/>';
+  updateSidebar();
+});
+
 /* ════════════════════════
    사이드바
 ════════════════════════ */
@@ -1818,10 +1834,12 @@ function updateSidebar() {
   const sidebar = document.getElementById('desktop-sidebar');
   if (!sidebar) return;
 
+  const toggleBtn = document.getElementById('sb-toggle-btn');
   const activeCats = getAllActiveCatKeys();
   if (activeCats.length === 0) {
     sidebar.classList.remove('sb-active');
     document.body.classList.remove('has-sidebar');
+    if (toggleBtn) toggleBtn.style.display = 'none';
     document.getElementById('mobile-summary-bar')?.classList.remove('visible');
     document.getElementById('mobile-stats-btn')?.classList.remove('visible');
     document.body.classList.remove('has-mobile-bar');
@@ -1829,6 +1847,7 @@ function updateSidebar() {
   }
   sidebar.classList.add('sb-active');
   document.body.classList.add('has-sidebar');
+  if (toggleBtn) toggleBtn.style.display = '';
 
   const sbContent = document.getElementById('sb-content');
   if (!sbContent) return;
@@ -1964,6 +1983,30 @@ function updateSidebar() {
       <div class="sb-sect-divider"></div>
       <div class="sb-sect-label">최근 7일</div>
       <div class="sb-day-row">${dayBoxesHtml}</div>
+      ${document.getElementById('desktop-sidebar')?.classList.contains('sb-expanded') ? (() => {
+        let boxes30 = '';
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+          const t = histMap[ds];
+          let boxClass = '';
+          if (t === 'growth') boxClass = 'sb-day-growth';
+          else if (t === 'maintain') boxClass = 'sb-day-maintain';
+          else if (t === 'pass') boxClass = 'sb-day-pass';
+          const todayCls = ds === todayStr ? ' sb-day-today' : '';
+          boxes30 += `<div class="sb-30day-box ${boxClass}${todayCls}" title="${ds}"></div>`;
+        }
+        const streak = data.streak || 0;
+        return `<div class="sb-sect-divider"></div>
+          <div class="sb-sect-label">최근 30일</div>
+          <div class="sb-30day-row">${boxes30}</div>
+          <div class="sb-sect-divider"></div>
+          <div class="sb-stats-row">
+            <div class="sb-stat-box"><div class="sb-stat-num">${totalCount}</div><div class="sb-stat-lbl">총 완료</div></div>
+            <div class="sb-stat-box"><div class="sb-stat-num">${streak}</div><div class="sb-stat-lbl">연속 일수</div></div>
+          </div>`;
+      })() : ''}
     `;
   });
 
