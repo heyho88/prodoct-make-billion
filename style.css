@@ -197,6 +197,26 @@ body {
   transition: opacity 0.2s, color 0.2s, border-color 0.2s;
 }
 .btn-reset-nav:hover { opacity: 1; color: var(--accent); border-color: rgba(249,115,22,0.4); }
+.btn-google-login {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.btn-google-login:hover { border-color: rgba(255,255,255,0.5); color: #fff; background: rgba(255,255,255,0.05); }
+.btn-google-login-mobile {
+  width: 100%; text-align: left;
+  background: transparent; border: none;
+  font-size: inherit; font-family: inherit;
+  cursor: pointer;
+}
 
 /* ════════════════════════════════
    화면 플로우

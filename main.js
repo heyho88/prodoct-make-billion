@@ -8,6 +8,45 @@ let supabaseClient
 document.addEventListener('DOMContentLoaded', () => {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   console.log('Supabase 연결 완료')
+
+  /* ── Google 로그인 버튼 ── */
+  const btnLogin    = document.getElementById('btn-google-login')
+  const btnLoginTxt = document.getElementById('btn-google-login-text')
+  const btnLoginMob = document.getElementById('btn-google-login-mobile')
+
+  function updateAuthUI(session) {
+    if (session) {
+      const name = session.user.email.split('@')[0]
+      btnLoginTxt.textContent  = name + ' ▾'
+      btnLoginMob.textContent  = name + ' ▾ (로그아웃)'
+    } else {
+      btnLoginTxt.textContent  = '구글로 시작하기'
+      btnLoginMob.textContent  = '구글로 시작하기'
+    }
+  }
+
+  async function handleAuthClick() {
+    const { data: { session } } = await supabaseClient.auth.getSession()
+    if (session) {
+      await supabaseClient.auth.signOut()
+    } else {
+      await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: 'https://sloo.kr' }
+      })
+    }
+  }
+
+  btnLogin.addEventListener('click', handleAuthClick)
+  btnLoginMob.addEventListener('click', handleAuthClick)
+
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    updateAuthUI(session)
+  })
+
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    updateAuthUI(session)
+  })
 })
 
 /* ── 미션 데이터 ── */
