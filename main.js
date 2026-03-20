@@ -656,7 +656,11 @@ function startCatMission(cat) {
   if (cat === 'sleep' && isSleepMaxLevel(data)) {
     showFirstMission(); // 맥스레벨: A/B 없이 바로 미션
   } else if (cat === 'health' || cat === 'sleep' || isRoutineCat(cat)) {
-    showMainChoice();
+    if (data.last_date === today()) {
+      showMainChoice();
+    } else {
+      showMissionScreen('grow');
+    }
   } else {
     showDailyState();
   }
