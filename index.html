@@ -580,47 +580,59 @@
 
   <!-- 이용 방법 섹션 -->
   <section aria-label="SLOO 이용 방법">
-    <div class="section-header" style="margin-bottom:24px;">
-      <div class="section-tag">이용 방법</div>
+    <div class="section-header" style="margin-bottom:32px;">
+      <div class="how-badge">이용 방법</div>
       <h2>이렇게 작동해요</h2>
       <p>복잡한 거 없어요. 딱 이거예요.</p>
     </div>
-    <div class="how-flow">
-      <div class="how-card">
-        <div class="how-num">01</div>
-        <div class="how-body">
-          <div class="how-title">카테고리 선택</div>
-          <div class="how-desc">운동, 수면, 독서, 명상 등 지금 바꾸고 싶은 것 하나만 골라요.</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-left">
+          <div class="how-circle">1</div>
+          <div class="how-line"></div>
+        </div>
+        <div class="how-step-card">
+          <div class="how-step-tag">STEP 1</div>
+          <div class="how-step-title">카테고리 선택</div>
+          <div class="how-step-desc">운동, 수면, 독서, 명상 등 지금 바꾸고 싶은 것 하나만 골라요.</div>
         </div>
       </div>
-      <div class="how-arrow">↓</div>
-      <div class="how-card">
-        <div class="how-num">02</div>
-        <div class="how-body">
-          <div class="how-title">오늘 상태 확인</div>
-          <div class="how-desc">요즘 어때요? 컨디션에 맞는 질문 하나.</div>
+      <div class="how-step">
+        <div class="how-step-left">
+          <div class="how-circle">2</div>
+          <div class="how-line"></div>
+        </div>
+        <div class="how-step-card">
+          <div class="how-step-tag">STEP 2</div>
+          <div class="how-step-title">오늘 상태 확인</div>
+          <div class="how-step-desc">요즘 어때요? 컨디션에 맞는 질문 하나.</div>
         </div>
       </div>
-      <div class="how-arrow">↓</div>
-      <div class="how-card">
-        <div class="how-num">03</div>
-        <div class="how-body">
-          <div class="how-title">맞춤 미션 시작</div>
-          <div class="how-desc">당신만을 위한 아주 작은 미션. 할 수 있을 것 같은 딱 그 크기.</div>
+      <div class="how-step">
+        <div class="how-step-left">
+          <div class="how-circle">3</div>
+          <div class="how-line"></div>
+        </div>
+        <div class="how-step-card">
+          <div class="how-step-tag">STEP 3</div>
+          <div class="how-step-title">맞춤 미션 시작</div>
+          <div class="how-step-desc">당신만을 위한 아주 작은 미션. 할 수 있을 것 같은 딱 그 크기.</div>
         </div>
       </div>
-      <div class="how-arrow">↓</div>
-      <div class="how-card">
-        <div class="how-num">04</div>
-        <div class="how-body">
-          <div class="how-title">1% 성장</div>
-          <div class="how-desc">완료하면 1% 올라가요. 매일 쌓이면 37.78배가 됩니다.</div>
+      <div class="how-step how-step-last">
+        <div class="how-step-left">
+          <div class="how-circle how-circle-final">4</div>
+        </div>
+        <div class="how-step-card how-step-card-final">
+          <div class="how-step-tag">STEP 4</div>
+          <div class="how-step-title">1% 성장</div>
+          <div class="how-step-desc">완료하면 1% 올라가요. 매일 쌓이면 37.78배가 됩니다.</div>
         </div>
       </div>
     </div>
     <div class="how-cta">
       <p class="how-cta-text">지금 바로 시작할 수 있어요.</p>
-      <button class="cta-main" onclick="document.getElementById('btn-start').click()">나의 1% 시작하기 →</button>
+      <button class="cta-main" onclick="window.scrollTo({top:0,behavior:'smooth'})">나의 1% 시작하기 →</button>
     </div>
   </section>
 
