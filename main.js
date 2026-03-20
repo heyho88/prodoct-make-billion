@@ -2092,13 +2092,53 @@ function buildGrassHtml(titleClass) {
   `;
 }
 
+function buildWeekHtml(grassMap) {
+  const todayStr = today();
+  const todayDate = new Date();
+  const todayDow = todayDate.getDay();
+  const mondayOffset = todayDow === 0 ? -6 : 1 - todayDow;
+  const weekLabels = ['월','화','수','목','금','토','일'];
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(todayDate);
+    d.setDate(todayDate.getDate() + mondayOffset + i);
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const isFuture = ds > todayStr;
+    const isToday = ds === todayStr;
+    const type = isFuture ? null : grassMap[ds];
+    let icon = '<span class="hw-dot">·</span>';
+    if (!isFuture) {
+      if (type === 'growth') icon = '<span class="hw-icon">✅</span>';
+      else if (type === 'maintain') icon = '<span class="hw-icon">🔄</span>';
+      else if (type === 'pass') icon = '<span class="hw-icon">⏭</span>';
+    }
+    const todayClass = isToday ? ' hw-today' : '';
+    html += `<div class="hw-row${todayClass}">
+      <span class="hw-label">${weekLabels[i]}</span>${icon}
+    </div>`;
+  }
+  return html;
+}
+
 function renderHomeGrass() {
   const section = document.getElementById('home-grass-section');
   if (!section) return;
   const hasAnyActive = getAllActiveCatKeys().length > 0;
   if (!hasAnyActive) { section.style.display = 'none'; return; }
   section.style.display = '';
-  section.innerHTML = buildGrassHtml('home-grass-title');
+  const grassMap = buildGrassMap();
+  section.innerHTML = `
+    <div class="home-record-box">
+      <div class="home-record-left">
+        <div class="home-record-title">이번 주</div>
+        ${buildWeekHtml(grassMap)}
+      </div>
+      <div class="home-record-divider"></div>
+      <div class="home-record-right">
+        ${buildGrassHtml('home-record-title')}
+      </div>
+    </div>
+  `;
 }
 
 /* ── 잔디밭 툴팁 이벤트 위임 ── */

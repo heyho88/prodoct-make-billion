@@ -1652,6 +1652,66 @@ input:focus, textarea:focus {
   margin-bottom: 10px;
 }
 
+/* 홈 기록 좌우 레이아웃 */
+.home-record-box {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+.home-record-left {
+  flex: 0 0 auto;
+  min-width: 56px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.home-record-divider {
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 0 16px;
+  flex-shrink: 0;
+}
+.home-record-right {
+  flex: 1;
+  min-width: 0;
+}
+.home-record-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+/* 이번 주 행 */
+.hw-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  flex: 1;
+}
+.hw-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  min-width: 14px;
+}
+.hw-dot {
+  font-size: 13px;
+  color: rgba(255,255,255,0.2);
+  line-height: 1;
+}
+.hw-icon { font-size: 13px; line-height: 1; }
+.hw-today .hw-label { color: #F97316; font-weight: 600; }
+.hw-today .hw-dot  { color: rgba(249,115,22,0.4); }
+@media (max-width: 768px) {
+  .home-record-box { flex-direction: column; }
+  .home-record-divider { width: auto; height: 1px; margin: 12px 0; }
+  .home-record-left { padding-right: 0; flex-direction: row; gap: 0; }
+  .hw-row { flex: 1; flex-direction: column; gap: 2px; padding: 0 2px; }
+  .hw-label { min-width: auto; }
+}
+
 /* ── 섹션 구분선 ── */
 .sb-sect-divider {
   height: 1px;
