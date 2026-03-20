@@ -2033,29 +2033,72 @@ function buildGrassMap() {
   return grassMap;
 }
 
+let calViewYear = new Date().getFullYear();
+let calViewMonth = new Date().getMonth();
+
+function calGoPrev() {
+  calViewMonth--;
+  if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
+  renderHomeGrass();
+  updateSidebar();
+}
+function calGoNext() {
+  calViewMonth++;
+  if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+  renderHomeGrass();
+  updateSidebar();
+}
+
 function buildGrassHtml(titleClass) {
   const grassMap = buildGrassMap();
+  const todayStr = today();
+  const year = calViewYear;
+  const month = calViewMonth;
+  const firstDow = new Date(year, month, 1).getDay(); // 0=일
+  const startOffset = firstDow === 0 ? 6 : firstDow - 1; // 월요일 기준
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const weekLabels = ['월','화','수','목','금','토','일'];
+
   let cellsHtml = '';
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const mm = String(d.getMonth()+1).padStart(2,'0');
-    const dd = String(d.getDate()).padStart(2,'0');
-    const type = grassMap[ds];
-    let bg, tip;
-    if (type === 'growth')       { bg = '#F97316';                tip = `${mm}/${dd} 성장 완료`; }
-    else if (type === 'maintain') { bg = 'rgba(249,115,22,0.4)'; tip = `${mm}/${dd} 유지 완료`; }
-    else                          { bg = 'rgba(255,255,255,0.06)'; tip = `${mm}/${dd} 미완료`; }
-    cellsHtml += `<div class="grass-cell" style="background:${bg}" data-tip="${tip}"></div>`;
+  for (let i = 0; i < startOffset; i++) {
+    cellsHtml += `<div class="cal-cell cal-cell-empty"></div>`;
   }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const isToday = ds === todayStr;
+    const isFuture = ds > todayStr;
+    const type = grassMap[ds];
+    let bg, numColor, extraStyle = '';
+    if (isToday) {
+      bg = 'rgba(255,255,255,0.04)'; numColor = '#F97316'; extraStyle = 'border:1.5px solid #F97316;';
+    } else if (isFuture) {
+      bg = 'rgba(255,255,255,0.02)'; numColor = 'rgba(255,255,255,0.15)';
+    } else if (type === 'growth') {
+      bg = '#F97316'; numColor = '#fff'; extraStyle = 'font-weight:700;';
+    } else if (type === 'maintain') {
+      bg = 'rgba(249,115,22,0.35)'; numColor = 'rgba(255,255,255,0.7)';
+    } else if (type === 'pass') {
+      bg = 'rgba(255,255,255,0.06)'; numColor = 'rgba(255,255,255,0.3)';
+    } else {
+      bg = 'rgba(255,255,255,0.03)'; numColor = 'rgba(255,255,255,0.25)';
+    }
+    cellsHtml += `<div class="cal-cell" style="background:${bg};${extraStyle}">
+      <span class="cal-day-num" style="color:${numColor}">${day}</span>
+    </div>`;
+  }
+
   return `
-    <div class="${titleClass || 'sb-sect-label'}">30일 기록</div>
-    <div class="grass-grid">${cellsHtml}</div>
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="calGoPrev()">‹</button>
+      <span class="${titleClass || 'sb-sect-label'} cal-nav-title">${year}년 ${month + 1}월</span>
+      <button class="cal-nav-btn" onclick="calGoNext()">›</button>
+    </div>
+    <div class="cal-week-header">${weekLabels.map(d => `<div class="cal-week-label">${d}</div>`).join('')}</div>
+    <div class="cal-grid">${cellsHtml}</div>
     <div class="grass-legend">
-      <span class="grass-legend-item"><span class="grass-dot" style="background:rgba(255,255,255,0.06)"></span>미완료</span>
-      <span class="grass-legend-item"><span class="grass-dot" style="background:rgba(249,115,22,0.4)"></span>유지</span>
       <span class="grass-legend-item"><span class="grass-dot" style="background:#F97316"></span>성장</span>
+      <span class="grass-legend-item"><span class="grass-dot" style="background:rgba(249,115,22,0.35)"></span>유지</span>
+      <span class="grass-legend-item"><span class="grass-dot" style="background:rgba(255,255,255,0.06)"></span>패스</span>
     </div>
   `;
 }
