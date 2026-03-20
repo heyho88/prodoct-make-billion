@@ -1896,36 +1896,6 @@ function updateSidebar() {
       nextMissionHtml = `<div class="sb-next-mission">다음 단계: ${MISSIONS[data.type][level]}</div>`;
     }
 
-    // 이번 주 히스토리 (월~일 고정)
-    const histMap = {};
-    (data.history || []).forEach(h => { histMap[h.date] = h.type; });
-    let dayBoxesHtml = '';
-    const todayDate = new Date();
-    // 이번 주 월요일 구하기 (일=0 → 월=1 기준)
-    const todayDow = todayDate.getDay(); // 0=일, 1=월 ... 6=토
-    const mondayOffset = todayDow === 0 ? -6 : 1 - todayDow;
-    const weekLabels = ['월','화','수','목','금','토','일'];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(todayDate);
-      d.setDate(todayDate.getDate() + mondayOffset + i);
-      const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      const isFuture = ds > todayStr;
-      const t = histMap[ds];
-      let dayIcon = '·', boxClass = 'sb-day-box-empty';
-      if (!isFuture) {
-        if (t === 'growth')        { dayIcon = '✅'; boxClass = 'sb-day-box-growth'; }
-        else if (t === 'maintain') { dayIcon = '🔄'; boxClass = 'sb-day-box-maintain'; }
-        else if (t === 'pass')     { dayIcon = '⏭'; boxClass = 'sb-day-box-pass'; }
-      } else {
-        dayIcon = '';
-      }
-      const todayClass = ds === todayStr ? ' sb-day-today' : '';
-      dayBoxesHtml += `<div class="sb-day-box ${boxClass}${todayClass}">
-        <div class="sb-day-label">${weekLabels[i]}</div>
-        <div class="sb-day-icon">${dayIcon}</div>
-      </div>`;
-    }
-
     html += `
       <div class="sb-sect-label">진행 중인 루틴</div>
       <div class="sb-cat-title">${icon} ${name}</div>
@@ -1970,9 +1940,6 @@ function updateSidebar() {
         </div>
       </div>
 
-      <div class="sb-sect-divider"></div>
-      <div class="sb-sect-label">이번 주</div>
-      <div class="sb-day-row">${dayBoxesHtml}</div>
     `;
   });
 
