@@ -1,5 +1,11 @@
 /* ════════════════════════ SLOO — main.js ════════════════════════ */
 
+/* ── Supabase 초기화 ── */
+const SUPABASE_URL = 'https://hzhyymkpbgjkfnxitoch.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_-_k-7w1QR_DSQT7ngWv-WA_Y84mpuhI'
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+console.log('Supabase 연결 완료')
+
 /* ── 미션 데이터 ── */
 const MISSIONS = {
   gym:          ["운동복만 갈아입기","운동복 입고 현관까지","집 근처 5분 산책","헬스장 입구까지만","헬스장 들어가서 15분","헬스장 30분","헬스장 1시간"],
