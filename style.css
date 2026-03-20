@@ -637,6 +637,64 @@ body {
 /* ════════════════════════════════
    실패 허용 / 비교 섹션
 ════════════════════════════════ */
+
+/* 이용 방법 플로우 */
+.how-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.how-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.how-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: #F97316;
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 40px;
+}
+.how-body { flex: 1; }
+.how-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 4px;
+}
+.how-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+}
+.how-arrow {
+  font-size: 18px;
+  color: rgba(255,255,255,0.3);
+  text-align: center;
+  padding: 4px 0;
+  line-height: 1;
+}
+.how-cta {
+  text-align: center;
+  margin-top: 32px;
+}
+.how-cta-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 14px;
+}
+
 .diff-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 .diff-item {
   background: var(--bg-card);
