@@ -942,7 +942,15 @@ let obEveningState = null;
 let obSpaceReason = null;
 
 /* 랜딩 → 온보딩 or 홈 */
-document.getElementById('btn-start').addEventListener('click', () => {
+document.getElementById('btn-start').addEventListener('click', async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: 'https://sloo.kr' }
+    });
+    return;
+  }
   const hasAny = getAllActiveCatKeys().length > 0;
   if (hasAny) {
     showHome();
