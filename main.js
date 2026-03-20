@@ -1524,6 +1524,8 @@ document.getElementById('btn-mission-back').addEventListener('click', showMainCh
 /* ── 홈으로 돌아가기 ── */
 document.getElementById('btn-first-home').addEventListener('click', showHome);
 document.getElementById('btn-mission-home').addEventListener('click', showHome);
+document.getElementById('btn-first-back-home').addEventListener('click', showHome);
+document.getElementById('btn-mission-back-home').addEventListener('click', showHome);
 
 /* ── 유지 3일 연속 배너 ── */
 document.getElementById('btn-banner-grow').addEventListener('click', () => {
