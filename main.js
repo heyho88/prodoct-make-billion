@@ -1976,15 +1976,6 @@ function updateSidebar() {
     `;
   });
 
-  // 잔디밭 섹션 (사이드바 하단)
-  const hasAnyActiveCat = getAllActiveCatKeys().length > 0;
-  if (hasAnyActiveCat) {
-    html += `
-      <div class="sb-sect-divider" style="margin:24px 0 16px"></div>
-      ${buildGrassHtml('sb-sect-label')}
-    `;
-  }
-
   sbContent.innerHTML = html;
 
   // 모바일 요약 바 & 바텀시트 동기화
@@ -2040,13 +2031,11 @@ function calGoPrev() {
   calViewMonth--;
   if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
   renderHomeGrass();
-  updateSidebar();
 }
 function calGoNext() {
   calViewMonth++;
   if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
   renderHomeGrass();
-  updateSidebar();
 }
 
 function buildGrassHtml(titleClass) {
