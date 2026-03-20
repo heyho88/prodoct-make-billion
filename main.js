@@ -1817,10 +1817,12 @@ function toggleSidebar() {
   const btn = document.getElementById('sidebar-toggle');
   if (!sidebar) return;
   const expanded = sidebar.classList.toggle('sb-expanded');
+  btn?.classList.toggle('sb-expanded', expanded);
   document.body.classList.toggle('sb-body-expanded', expanded);
   // 펼친 상태면 〉, 접힌 상태면 〈
-  if (btn) {
-    btn.querySelector('path').setAttribute('d',
+  const icon = document.getElementById('sidebar-toggle-icon');
+  if (icon) {
+    icon.querySelector('path').setAttribute('d',
       expanded ? 'M2 2L10 10L2 18' : 'M10 2L2 10L10 18'
     );
   }
@@ -1896,7 +1898,7 @@ function updateSidebar() {
   if (activeCats.length === 0) {
     sidebar.classList.remove('sb-active');
     document.body.classList.remove('has-sidebar');
-    if (toggleBtn) toggleBtn.style.display = 'none';
+    if (toggleBtn) { toggleBtn.style.display = 'none'; }
     document.getElementById('mobile-summary-bar')?.classList.remove('visible');
     document.getElementById('mobile-stats-btn')?.classList.remove('visible');
     document.body.classList.remove('has-mobile-bar');
@@ -1904,7 +1906,7 @@ function updateSidebar() {
   }
   sidebar.classList.add('sb-active');
   document.body.classList.add('has-sidebar');
-  if (toggleBtn) toggleBtn.style.display = '';
+  if (toggleBtn && window.innerWidth >= 768) { toggleBtn.style.display = 'flex'; }
 
   const sbContent = document.getElementById('sb-content');
   if (!sbContent) return;
