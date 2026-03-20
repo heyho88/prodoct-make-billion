@@ -49,6 +49,53 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 
+/* ── Supabase 미션 동기화 ── */
+async function syncMissionToSupabase(cat, data, actionType) {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+    const userId = session.user.id;
+    const categoryKey = isRoutineCat(cat) ? 'routine' : cat;
+    const typeKey = isRoutineCat(cat) ? getRoutineType(cat) : (data.type || null);
+    await supabaseClient
+      .from('user_categories')
+      .upsert({
+        user_id: userId,
+        category: categoryKey,
+        type: typeKey,
+        level: data.level,
+        growth_count: data.growth_count,
+        total_count: data.total_count,
+        maintain_count: data.maintain_count,
+        last_date: data.last_date,
+        max_reached: data.max_reached || false,
+        extra_data: {
+          bedtime_current: data.bedtime_current,
+          bedtime_target: data.bedtime_target,
+          current_target: data.current_target,
+          total_minutes_diff: data.total_minutes_diff,
+          mental_state: data.mental_state,
+          digital_reason: data.digital_reason,
+          morning_state: data.morning_state,
+          evening_state: data.evening_state,
+          space_reason: data.space_reason,
+          reading_reason: data.reading_reason
+        },
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,category,type' });
+    await supabaseClient
+      .from('user_history')
+      .insert({
+        user_id: userId,
+        category: categoryKey,
+        date: today(),
+        action: actionType
+      });
+  } catch(e) {
+    console.error('Supabase sync error:', e);
+  }
+}
+
 /* ── 미션 데이터 ── */
 const MISSIONS = {
   gym:          ["운동복만 갈아입기","운동복 입고 현관까지","집 근처 5분 산책","헬스장 입구까지만","헬스장 들어가서 15분","헬스장 30분","헬스장 1시간"],
@@ -1445,6 +1492,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
   if (isRoutineCat(cat)) data.streak = (data.streak || 0) + 1;
   pushHistory(data, 'growth', t);
   setCatData(cat, data);
+  syncMissionToSupabase(cat, data, 'growth');
   if (isRoutineCat(cat)) checkRoutineUnlock();
   updateSidebar();
 
@@ -1480,6 +1528,7 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
     if (isRoutineCat(cat)) data.streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
+    syncMissionToSupabase(cat, data, 'pass');
     updateSidebar();
   }
   const msg = document.getElementById('first-result-msg');
@@ -1531,6 +1580,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
 
   if (isRoutineCat(cat)) data.streak = (data.streak || 0) + 1;
   setCatData(cat, data);
+  syncMissionToSupabase(cat, data, currentChoice === 'grow' ? 'growth' : 'maintain');
   if (isRoutineCat(cat)) checkRoutineUnlock();
   updateSidebar();
   document.getElementById('mission-action-btns').style.display = 'none';
@@ -1576,6 +1626,7 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
     if (isRoutineCat(cat)) data.streak = 0;
     pushHistory(data, 'pass', today());
     setCatData(cat, data);
+    syncMissionToSupabase(cat, data, 'pass');
     updateSidebar();
   }
   const msg = document.getElementById('mission-result');
