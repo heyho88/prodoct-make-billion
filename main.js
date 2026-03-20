@@ -219,10 +219,12 @@ function initDrumCol(col, items, initialVal) {
     col.appendChild(sp);
   }
 
-  // Start at middle copy
+  // Start at middle copy (rAF ensures element is visible before scrollTop is applied)
   const initIdx = N + Math.max(0, items.indexOf(initialVal));
-  col.scrollTop = initIdx * 44;
-  updateDrumHighlight(col);
+  requestAnimationFrame(() => {
+    col.scrollTop = initIdx * 44;
+    updateDrumHighlight(col);
+  });
 
   // 끝에 도달하면 중간 카피로 순간 점프 (애니메이션 없음)
   let wrapping = false;
