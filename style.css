@@ -289,6 +289,15 @@ body {
   box-shadow: 0 0 48px rgba(249, 115, 22, 0.5), 0 8px 24px rgba(0,0,0,0.4);
   transform: translateY(-1px);
 }
+.cta-gradient {
+  background: linear-gradient(135deg, #F97316, #A855F7) !important;
+  box-shadow: 0 0 32px rgba(168,85,247,0.25), 0 4px 16px rgba(0,0,0,0.3);
+}
+.cta-gradient:hover {
+  opacity: 0.9;
+  background: linear-gradient(135deg, #F97316, #A855F7) !important;
+  box-shadow: 0 0 48px rgba(168,85,247,0.35), 0 8px 24px rgba(0,0,0,0.4);
+}
 .cta-main:active { transform: translateY(0); }
 .cta-main:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
 
