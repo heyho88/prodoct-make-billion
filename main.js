@@ -179,10 +179,10 @@ function isSleepMaxLevel(data) {
   if (!data || !data.current_target || !data.target_bedtime) return false;
   return sleepTimeToMins(data.current_target) <= sleepTimeToMins(data.target_bedtime);
 }
-function getSleepMissionText(data, choice, isFirst = false) {
+function getSleepMissionText(data, choice) {
   if (isSleepMaxLevel(data)) return `오늘 ${data.target_bedtime}에 잤어요 체크하기`;
   const prefix = choice === 'maintain' ? '오늘도' : '오늘은';
-  const target = (!isFirst && choice === 'grow')
+  const target = choice === 'grow'
     ? minsToTimeStr(sleepTimeToMins(data.current_target) - 5)
     : data.current_target;
   return `${prefix} ${target}에 자보기`;
@@ -843,7 +843,7 @@ function showFirstMission(energy, mental) {
   if (cat === 'health') {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else if (cat === 'sleep') {
-    missionText = getSleepMissionText(data, 'grow', true);
+    missionText = getSleepMissionText(data, 'grow');
   } else if (isRoutineCat(cat) && data.type) {
     missionText = getExerciseMission(data.type, data.level || 1);
   } else {
@@ -1258,7 +1258,7 @@ document.getElementById('btn-sleep-confirm-start').addEventListener('click', () 
     active: true,
     current_bedtime: curStr,
     target_bedtime: tgtStr,
-    current_target: alreadyDone ? tgtStr : minsToTimeStr(curMins - 5),
+    current_target: alreadyDone ? tgtStr : curStr,
     total_minutes_diff: alreadyDone ? 0 : diffMins,
     growth_count: alreadyDone ? 1 : 0,
     total_count: 0,
@@ -1372,6 +1372,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
     if (isSleepMaxLevel(data)) {
       data.growth_count = oldGc + 0.5;
     } else {
+      data.current_target = minsToTimeStr(sleepTimeToMins(data.current_target) - 5);
       data.growth_count = oldGc + 1;
     }
     data.maintain_count = 0;
