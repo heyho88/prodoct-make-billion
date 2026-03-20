@@ -1811,94 +1811,17 @@ if (hamburger && mobileMenu) {
   });
 }
 
-/* ── 사이드바 토글 ── */
-function toggleSidebar() {
-  const sidebar = document.getElementById('desktop-sidebar');
-  const btn = document.getElementById('sidebar-toggle');
-  if (!sidebar) return;
-  const expanded = sidebar.classList.toggle('sb-expanded');
-  btn?.classList.toggle('sb-expanded', expanded);
-  document.body.classList.toggle('sb-body-expanded', expanded);
-  // 펼친 상태면 〉, 접힌 상태면 〈
-  const icon = document.getElementById('sidebar-toggle-icon');
-  if (icon) {
-    icon.querySelector('path').setAttribute('d',
-      expanded ? 'M2 2L10 10L2 18' : 'M10 2L2 10L10 18'
-    );
-  }
-  updateSidebar();
-}
-
 /* ════════════════════════
    사이드바
 ════════════════════════ */
-function renderSidebarCollapsed(sbContent) {
-  const todayStr = today();
-  const allKeys = getAllActiveCatKeys();
-  const completedToday = allKeys.filter(k => getCatData(k)?.last_date === todayStr).length;
-  const totalGrowth = allKeys.reduce((sum, k) => sum + (getCatData(k)?.growth_count || 0), 0);
-  const totalMult = Math.pow(1.01, totalGrowth).toFixed(2);
-  const TODAY_PANEL_MSGS = [
-    '아직 시작 전이야. 오늘 1%를 시작해봐. 🌱',
-    '오늘 1% 했어. 충분해. 🌱',
-    '오늘 2% 했어. 욕심쟁이네. 😄',
-    '오늘 3% 했어. 이러다 37.78배 금방 되겠는데. 🔥'
-  ];
-  const todayMsg = TODAY_PANEL_MSGS[Math.min(completedToday, 3)];
-
-  let catListHtml = '';
-  allKeys.forEach(cat => {
-    const data = getCatData(cat);
-    if (!data) return;
-    const icon = getCatIcon(cat, data.type);
-    const name = getCatName(cat, data.type) || CAT_META[cat]?.label || '';
-    const mult = Math.pow(1.01, data.growth_count || 0).toFixed(2);
-    let stat = '';
-    if (cat === 'sleep' && data.current_target && data.target_bedtime) {
-      const diff = Math.max(0, sleepTimeToMins(data.current_target) - sleepTimeToMins(data.target_bedtime));
-      stat = isSleepMaxLevel(data) ? '목표 달성 🎉' : `목표까지 ${diff}분`;
-    } else if (isRoutineCat(cat)) {
-      const slots = getRoutineSlots ? getRoutineSlots() : {};
-      const types = Object.values(slots || {}).filter(Boolean);
-      if (types.length <= 1) {
-        stat = `레벨 ${data.level || 1} · ${mult}배`;
-      } else {
-        stat = `${getCatName(types[0], '')} 외 ${types.length - 1}개`;
-      }
-    } else {
-      stat = `레벨 ${data.level || 1} · ${mult}배`;
-    }
-    const done = data.last_date === todayStr;
-    catListHtml += `<div class="sb-compact-item ${done ? 'sb-compact-done' : ''}">
-      <span class="sb-compact-icon">${icon}</span>
-      <div class="sb-compact-info">
-        <div class="sb-compact-name">${name}</div>
-        <div class="sb-compact-stat">${stat}</div>
-      </div>
-      ${done ? '<span class="sb-compact-check">✅</span>' : ''}
-    </div>`;
-  });
-
-  sbContent.innerHTML = `
-    <div class="sb-compact-today">
-      <div class="sb-compact-mult">${totalMult}<span class="sb-compact-mult-unit">배</span></div>
-      <div class="sb-compact-msg">${todayMsg}</div>
-    </div>
-    <div class="sb-compact-divider"></div>
-    <div class="sb-compact-list">${catListHtml}</div>
-  `;
-}
-
 function updateSidebar() {
   const sidebar = document.getElementById('desktop-sidebar');
   if (!sidebar) return;
 
-  const toggleBtn = document.getElementById('sidebar-toggle');
   const activeCats = getAllActiveCatKeys();
   if (activeCats.length === 0) {
     sidebar.classList.remove('sb-active');
     document.body.classList.remove('has-sidebar');
-    if (toggleBtn) { toggleBtn.style.display = 'none'; }
     document.getElementById('mobile-summary-bar')?.classList.remove('visible');
     document.getElementById('mobile-stats-btn')?.classList.remove('visible');
     document.body.classList.remove('has-mobile-bar');
@@ -1906,18 +1829,9 @@ function updateSidebar() {
   }
   sidebar.classList.add('sb-active');
   document.body.classList.add('has-sidebar');
-  if (toggleBtn && window.innerWidth >= 768) { toggleBtn.style.display = 'flex'; }
 
   const sbContent = document.getElementById('sb-content');
   if (!sbContent) return;
-
-  const isExpanded = sidebar.classList.contains('sb-expanded');
-  if (!isExpanded) {
-    sidebar.style.overflowY = 'hidden';
-    renderSidebarCollapsed(sbContent);
-    return;
-  }
-  sidebar.style.overflowY = 'auto';
 
   const dayNames = ['일','월','화','수','목','금','토'];
   const todayStr = today();

@@ -1393,99 +1393,11 @@ input:focus, textarea:focus {
   padding: 24px;
   flex-direction: column;
   gap: 0;
-  transition: width 0.3s ease;
 }
-.desktop-sidebar.sb-expanded { width: 500px; }
-
-/* ── 사이드바 토글 버튼 ── */
-#sidebar-toggle {
-  display: none;
-  position: fixed;
-  right: 300px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 48px;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px 0 0 8px;
-  border-right: none;
-  color: rgba(255,255,255,0.5);
-  cursor: pointer;
-  z-index: 101;
-  transition: right 0.3s ease;
-}
-#sidebar-toggle:hover {
-  background: rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.9);
-}
-#sidebar-toggle.sb-expanded { right: 500px; }
-
 @media (min-width: 768px) {
   .desktop-sidebar.sb-active { display: flex; }
-  body.has-sidebar { padding-right: 300px; transition: padding-right 0.3s ease; }
-  body.has-sidebar.sb-body-expanded { padding-right: 500px; }
+  body.has-sidebar { padding-right: 300px; }
 }
-
-/* ── 사이드바 접힌 상태 compact 뷰 ── */
-.sb-compact-today {
-  text-align: center;
-  padding: 16px 0 12px;
-}
-.sb-compact-mult {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
-}
-.sb-compact-mult-unit {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-secondary);
-  margin-left: 2px;
-}
-.sb-compact-msg {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 6px;
-  line-height: 1.4;
-}
-.sb-compact-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.07);
-  margin: 10px 0;
-}
-.sb-compact-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.sb-compact-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 6px;
-  border-radius: 8px;
-}
-.sb-compact-item.sb-compact-done { background: rgba(74,222,128,0.06); }
-.sb-compact-icon { font-size: 18px; flex-shrink: 0; }
-.sb-compact-info { flex: 1; min-width: 0; }
-.sb-compact-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sb-compact-stat {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 1px;
-}
-.sb-compact-check { font-size: 14px; flex-shrink: 0; }
 
 /* ── 성장 애니메이션 오버레이 ── */
 .growth-anim-overlay {
