@@ -1812,16 +1812,20 @@ if (hamburger && mobileMenu) {
 }
 
 /* ── 사이드바 토글 ── */
-document.getElementById('sb-toggle-btn')?.addEventListener('click', () => {
+function toggleSidebar() {
   const sidebar = document.getElementById('desktop-sidebar');
-  const btn = document.getElementById('sb-toggle-btn');
+  const btn = document.getElementById('sidebar-toggle');
   if (!sidebar) return;
   const expanded = sidebar.classList.toggle('sb-expanded');
-  btn.classList.toggle('sb-expanded', expanded);
   document.body.classList.toggle('sb-body-expanded', expanded);
-  sidebar.style.overflowY = expanded ? 'auto' : 'hidden';
+  // 펼친 상태면 〉, 접힌 상태면 〈
+  if (btn) {
+    btn.querySelector('path').setAttribute('d',
+      expanded ? 'M2 2L10 10L2 18' : 'M10 2L2 10L10 18'
+    );
+  }
   updateSidebar();
-});
+}
 
 /* ════════════════════════
    사이드바
@@ -1887,7 +1891,7 @@ function updateSidebar() {
   const sidebar = document.getElementById('desktop-sidebar');
   if (!sidebar) return;
 
-  const toggleBtn = document.getElementById('sb-toggle-btn');
+  const toggleBtn = document.getElementById('sidebar-toggle');
   const activeCats = getAllActiveCatKeys();
   if (activeCats.length === 0) {
     sidebar.classList.remove('sb-active');
