@@ -1226,6 +1226,8 @@ document.getElementById('btn-sleep-cur-next').addEventListener('click', () => {
   document.getElementById('ob-sleep-tgt-step-text').textContent = isInit ? '3 / 3' : '2 / 2';
   document.getElementById('ob-sleep-tgt-step-fill').style.width = '100%';
   showScreen('screen-ob-sleep-target');
+  initDrumCol(document.getElementById('sleep-tgt-hour'), DRUM_HOURS, String(obSleepTargetH).padStart(2,'0'));
+  initDrumCol(document.getElementById('sleep-tgt-min'), DRUM_MINS, String(Math.round(obSleepTargetM / 5) * 5).padStart(2,'0'));
 });
 
 /* 온보딩 (수면): 목표 취침 시간 → 확인 */
