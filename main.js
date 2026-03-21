@@ -4,8 +4,64 @@
 const SUPABASE_URL = 'https://hzhyymkpbgjkfnxitoch.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_-_k-7w1QR_DSQT7ngWv-WA_Y84mpuhI'
 let supabaseClient
+let _cache = {}
+let _cacheLoaded = false
 
-document.addEventListener('DOMContentLoaded', () => {
+/* ── Supabase 데이터 로드 ── */
+async function loadUserData(session) {
+  try {
+    const { data: categories } = await supabaseClient
+      .from('user_categories')
+      .select('*')
+      .eq('user_id', session.user.id)
+
+    const { data: history } = await supabaseClient
+      .from('user_history')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('date', { ascending: false })
+      .limit(90)
+
+    if (categories && categories.length > 0) {
+      const routineSlots = []
+
+      categories.forEach(cat => {
+        const lsData = {
+          active: true,
+          type: cat.type,
+          level: cat.level,
+          growth_count: cat.growth_count,
+          total_count: cat.total_count,
+          maintain_count: cat.maintain_count,
+          last_date: cat.last_date,
+          max_reached: cat.max_reached,
+          history: history?.filter(h =>
+            h.category === cat.category &&
+            (!cat.type || h.category === cat.category)
+          ).map(h => ({ date: h.date, type: h.action })) || [],
+          ...cat.extra_data
+        }
+
+        if (cat.category === 'routine') {
+          routineSlots.push(cat.type)
+          localStorage.setItem('sloo_routine_' + cat.type, JSON.stringify(lsData))
+        } else {
+          localStorage.setItem('sloo_' + cat.category, JSON.stringify(lsData))
+        }
+      })
+
+      if (routineSlots.length > 0) {
+        localStorage.setItem('sloo_routine_slots', JSON.stringify(routineSlots))
+      }
+    }
+    _cacheLoaded = true
+  } catch (err) {
+    console.error('Supabase 로드 실패, localStorage 폴백:', err)
+    _cacheLoaded = true
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   console.log('Supabase 연결 완료')
 
@@ -40,13 +96,29 @@ document.addEventListener('DOMContentLoaded', () => {
   btnLogin.addEventListener('click', handleAuthClick)
   btnLoginMob.addEventListener('click', handleAuthClick)
 
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    updateAuthUI(session)
+  supabaseClient.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN') {
+      document.getElementById('loading-overlay').style.display = 'flex'
+      await loadUserData(session)
+      document.getElementById('loading-overlay').style.display = 'none'
+      updateAuthUI(session)
+      showHome()
+    } else if (event === 'SIGNED_OUT') {
+      _cache = {}
+      _cacheLoaded = false
+      updateAuthUI(null)
+    } else {
+      updateAuthUI(session)
+    }
   })
 
-  supabaseClient.auth.getSession().then(({ data: { session } }) => {
-    updateAuthUI(session)
-  })
+  const { data: { session } } = await supabaseClient.auth.getSession()
+  if (session) {
+    document.getElementById('loading-overlay').style.display = 'flex'
+    await loadUserData(session)
+    document.getElementById('loading-overlay').style.display = 'none'
+  }
+  updateAuthUI(session)
 })
 
 /* ── Supabase 미션 동기화 ── */
