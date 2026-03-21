@@ -117,8 +117,8 @@ async function syncMissionToSupabase(cat, data, actionType) {
         last_date: data.last_date,
         max_reached: data.max_reached || false,
         extra_data: {
-          bedtime_current: data.bedtime_current,
-          bedtime_target: data.bedtime_target,
+          current_bedtime: data.current_bedtime,
+          target_bedtime: data.target_bedtime,
           current_target: data.current_target,
           total_minutes_diff: data.total_minutes_diff,
           mental_state: data.mental_state,
@@ -287,8 +287,8 @@ async function saveToSupabase(cat, obj) {
       last_date: obj.last_date,
       max_reached: obj.max_reached || false,
       extra_data: {
-        bedtime_current: obj.bedtime_current,
-        bedtime_target: obj.bedtime_target,
+        current_bedtime: obj.current_bedtime,
+        target_bedtime: obj.target_bedtime,
         current_target: obj.current_target,
         total_minutes_diff: obj.total_minutes_diff,
         mental_state: obj.mental_state,
