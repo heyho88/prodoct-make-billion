@@ -1479,6 +1479,7 @@ document.getElementById('btn-sleep-confirm-start').addEventListener('click', () 
   const alreadyDone = diffMins <= 0;
   const obj = {
     active: true,
+    type: 'sleep',
     current_bedtime: curStr,
     target_bedtime: tgtStr,
     current_target: alreadyDone ? tgtStr : curStr,
