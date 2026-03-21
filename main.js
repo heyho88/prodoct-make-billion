@@ -28,6 +28,11 @@ async function loadUserData(session) {
           max_reached: cat.max_reached,
           ...cat.extra_data
         }
+        if (cat.category === 'routine_meta') {
+          localStorage.setItem('sloo_routine_slots', JSON.stringify(cat.extra_data?.slots || []))
+          localStorage.setItem('sloo_routine_unlocked', String(cat.extra_data?.unlocked || 1))
+          return
+        }
         if (cat.category === 'routine') {
           localStorage.setItem('sloo_routine_' + cat.type, JSON.stringify(lsData))
         } else {
@@ -233,9 +238,36 @@ function getRoutineCat(type) { return 'routine_' + type; }
 function getRoutineSlots() {
   try { return JSON.parse(localStorage.getItem('sloo_routine_slots') || '[]'); } catch { return []; }
 }
-function setRoutineSlots(arr) { localStorage.setItem('sloo_routine_slots', JSON.stringify(arr)); }
+function setRoutineSlots(arr) {
+  localStorage.setItem('sloo_routine_slots', JSON.stringify(arr));
+  saveRoutineMeta().catch(err => console.error('루틴 메타 저장 실패:', err));
+}
 function getRoutineUnlocked() { return parseInt(localStorage.getItem('sloo_routine_unlocked') || '1'); }
-function setRoutineUnlocked(n) { localStorage.setItem('sloo_routine_unlocked', String(n)); }
+function setRoutineUnlocked(n) {
+  localStorage.setItem('sloo_routine_unlocked', String(n));
+  saveRoutineMeta().catch(err => console.error('루틴 메타 저장 실패:', err));
+}
+
+async function saveRoutineMeta() {
+  if (!supabaseClient) return
+  const { data: { session } } = await supabaseClient.auth.getSession()
+  if (!session) return
+  await supabaseClient
+    .from('user_categories')
+    .upsert({
+      user_id: session.user.id,
+      category: 'routine_meta',
+      type: 'meta',
+      level: 1,
+      growth_count: 0,
+      total_count: 0,
+      maintain_count: 0,
+      extra_data: {
+        slots: JSON.parse(localStorage.getItem('sloo_routine_slots') || '[]'),
+        unlocked: parseInt(localStorage.getItem('sloo_routine_unlocked') || '1')
+      }
+    }, { onConflict: 'user_id,category,type' })
+}
 
 function getAllActiveCatKeys() {
   const keys = CATEGORIES.filter(c => c !== 'routine' && getCatData(c)?.active);
