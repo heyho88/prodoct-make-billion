@@ -153,7 +153,9 @@ async function syncMissionToSupabase(cat, data, actionType) {
           morning_state: data.morning_state,
           evening_state: data.evening_state,
           space_reason: data.space_reason,
-          reading_reason: data.reading_reason
+          reading_reason: data.reading_reason,
+          streak: data.streak || 0,
+          streak_reset_after: data.streak_reset_after || null
         },
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id,category,type' });
@@ -350,7 +352,9 @@ async function saveToSupabase(cat, obj) {
         morning_state: obj.morning_state,
         evening_state: obj.evening_state,
         space_reason: obj.space_reason,
-        reading_reason: obj.reading_reason
+        reading_reason: obj.reading_reason,
+        streak: obj.streak || 0,
+        streak_reset_after: obj.streak_reset_after || null
       },
       updated_at: new Date().toISOString()
     }, { onConflict: 'user_id,category,type' });
