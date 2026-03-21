@@ -115,6 +115,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('modal-logout-ok').addEventListener('click', async () => {
     document.getElementById('modal-logout').style.display = 'none'
     await supabaseClient.auth.signOut()
+    // localStorage sloo_ 관련 데이터 전체 초기화
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('sloo_'))
+      .forEach(k => localStorage.removeItem(k))
   })
   document.getElementById('modal-logout').addEventListener('click', e => {
     if (e.target === document.getElementById('modal-logout')) {
