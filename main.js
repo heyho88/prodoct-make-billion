@@ -260,8 +260,44 @@ function getCatData(cat) {
   } catch(e) { return null; }
 }
 
+async function saveToSupabase(cat, obj) {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) return;
+
+  const category = cat.includes('_') ? cat.split('_')[0] : cat;
+  const type = cat.includes('_') ? cat.split('_')[1] : obj.type || null;
+
+  await supabaseClient
+    .from('user_categories')
+    .upsert({
+      user_id: session.user.id,
+      category,
+      type,
+      level: obj.level,
+      growth_count: obj.growth_count,
+      total_count: obj.total_count,
+      maintain_count: obj.maintain_count,
+      last_date: obj.last_date,
+      max_reached: obj.max_reached || false,
+      extra_data: {
+        bedtime_current: obj.bedtime_current,
+        bedtime_target: obj.bedtime_target,
+        current_target: obj.current_target,
+        total_minutes_diff: obj.total_minutes_diff,
+        mental_state: obj.mental_state,
+        digital_reason: obj.digital_reason,
+        morning_state: obj.morning_state,
+        evening_state: obj.evening_state,
+        space_reason: obj.space_reason,
+        reading_reason: obj.reading_reason
+      },
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id,category,type' });
+}
+
 function setCatData(cat, obj) {
   localStorage.setItem('sloo_' + cat, JSON.stringify(obj));
+  saveToSupabase(cat, obj).catch(err => console.error('Supabase 저장 실패:', err));
 }
 
 function resetCat(cat) {
