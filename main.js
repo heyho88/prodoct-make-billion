@@ -97,7 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnLoginMob.addEventListener('click', handleAuthClick)
 
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN') {
+    if (event === 'SIGNED_IN' && !_cacheLoaded) {
+      // 신규 로그인(OAuth 리다이렉트)일 때만 로드
       document.getElementById('loading-overlay').style.display = 'flex'
       await loadUserData(session)
       document.getElementById('loading-overlay').style.display = 'none'
@@ -113,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   })
 
   const { data: { session } } = await supabaseClient.auth.getSession()
-  if (session) {
+  if (session && !_cacheLoaded) {
     document.getElementById('loading-overlay').style.display = 'flex'
     await loadUserData(session)
     document.getElementById('loading-overlay').style.display = 'none'
