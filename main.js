@@ -63,6 +63,12 @@ async function loadUserData(session) {
       })
     }
     _cacheLoaded = true
+    // 데이터 로드 완료 후 화면 전환 (데이터 있을 때만)
+    const hasAny = getAllActiveCatKeys().length > 0
+    if (hasAny) {
+      showHome()
+    }
+    // 데이터 없으면 아무것도 안 함 (랜딩 페이지 그대로 유지)
     console.log('데이터 로드 완료')
     // UI 리렌더링
     const homeScreen = document.getElementById('screen-home')
