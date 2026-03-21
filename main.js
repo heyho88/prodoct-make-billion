@@ -37,6 +37,13 @@ async function loadUserData(session) {
     }
     _cacheLoaded = true
     console.log('데이터 로드 완료')
+    // UI 리렌더링
+    const homeScreen = document.getElementById('screen-home')
+    if (homeScreen && homeScreen.classList.contains('active')) {
+      renderHomeCards()
+      renderHomeGrass()
+      updateSidebar()
+    }
   } catch (err) {
     console.error('Supabase 로드 실패:', err)
     _cacheLoaded = true
