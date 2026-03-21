@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function handleAuthClick() {
     const { data: { session } } = await supabaseClient.auth.getSession()
     if (session) {
-      await supabaseClient.auth.signOut()
+      document.getElementById('modal-logout').style.display = 'flex'
     } else {
       await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
@@ -108,6 +108,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       })
     }
   }
+
+  document.getElementById('modal-logout-cancel').addEventListener('click', () => {
+    document.getElementById('modal-logout').style.display = 'none'
+  })
+  document.getElementById('modal-logout-ok').addEventListener('click', async () => {
+    document.getElementById('modal-logout').style.display = 'none'
+    await supabaseClient.auth.signOut()
+  })
+  document.getElementById('modal-logout').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-logout')) {
+      document.getElementById('modal-logout').style.display = 'none'
+    }
+  })
 
   btnLogin.addEventListener('click', handleAuthClick)
   btnLoginMob.addEventListener('click', handleAuthClick)
