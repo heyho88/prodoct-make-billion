@@ -40,6 +40,28 @@ async function loadUserData(session) {
         }
       })
     }
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    const fromDate = thirtyDaysAgo.toISOString().split('T')[0]
+    const { data: histories } = await supabaseClient
+      .from('user_history')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .gte('date', fromDate)
+      .order('date', { ascending: true })
+    if (histories && histories.length > 0) {
+      histories.forEach(h => {
+        const lsKey = 'sloo_' + h.category
+        const raw = localStorage.getItem(lsKey)
+        if (raw) {
+          const catData = JSON.parse(raw)
+          if (!catData.history) catData.history = []
+          catData.history = catData.history.filter(item => item.date !== h.date)
+          catData.history.push({ date: h.date, type: h.action })
+          localStorage.setItem(lsKey, JSON.stringify(catData))
+        }
+      })
+    }
     _cacheLoaded = true
     console.log('데이터 로드 완료')
     // UI 리렌더링
