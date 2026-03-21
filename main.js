@@ -119,6 +119,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     Object.keys(localStorage)
       .filter(k => k.startsWith('sloo_'))
       .forEach(k => localStorage.removeItem(k))
+    _cacheLoaded = false
+    showScreen('screen-landing')
   })
   document.getElementById('modal-logout').addEventListener('click', e => {
     if (e.target === document.getElementById('modal-logout')) {
