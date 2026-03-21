@@ -107,7 +107,7 @@ async function syncMissionToSupabase(cat, data, actionType) {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return;
     const userId = session.user.id;
-    const categoryKey = isRoutineCat(cat) ? 'routine' : cat;
+    const categoryKey = cat;
     const typeKey = isRoutineCat(cat) ? getRoutineType(cat) : (data.type || null);
     await supabaseClient
       .from('user_categories')
