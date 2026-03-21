@@ -4,8 +4,46 @@
 const SUPABASE_URL = 'https://hzhyymkpbgjkfnxitoch.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_-_k-7w1QR_DSQT7ngWv-WA_Y84mpuhI'
 let supabaseClient
+let _cacheLoaded = false
 
-document.addEventListener('DOMContentLoaded', () => {
+/* ── Supabase 데이터 로드 ── */
+async function loadUserData(session) {
+  if (_cacheLoaded) return
+  try {
+    const { data: categories } = await supabaseClient
+      .from('user_categories')
+      .select('*')
+      .eq('user_id', session.user.id)
+
+    if (categories && categories.length > 0) {
+      categories.forEach(cat => {
+        const lsData = {
+          active: true,
+          type: cat.type,
+          level: cat.level,
+          growth_count: cat.growth_count,
+          total_count: cat.total_count,
+          maintain_count: cat.maintain_count,
+          last_date: cat.last_date,
+          max_reached: cat.max_reached,
+          ...cat.extra_data
+        }
+        if (cat.category === 'routine') {
+          localStorage.setItem('sloo_routine_' + cat.type, JSON.stringify(lsData))
+        } else {
+          localStorage.setItem('sloo_' + cat.category, JSON.stringify(lsData))
+        }
+      })
+    }
+    _cacheLoaded = true
+    console.log('데이터 로드 완료')
+  } catch (err) {
+    console.error('Supabase 로드 실패:', err)
+    _cacheLoaded = true
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   console.log('Supabase 연결 완료')
 
@@ -44,9 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAuthUI(session)
   })
 
-  supabaseClient.auth.getSession().then(({ data: { session } }) => {
-    updateAuthUI(session)
-  })
+  const { data: { session } } = await supabaseClient.auth.getSession()
+  updateAuthUI(session)
+  if (session) {
+    await loadUserData(session)
+  }
 })
 
 /* ── Supabase 미션 동기화 ── */
