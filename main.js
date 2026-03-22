@@ -392,44 +392,29 @@ function setCatData(cat, obj) {
   saveToSupabase(cat, obj).catch(err => console.error('Supabase 저장 실패:', err));
 }
 
-function resetCat(cat) {
+async function resetCat(cat) {
   localStorage.removeItem('sloo_' + cat);
+
+  const { data: { session } } = await supabaseClient.auth.getSession()
+
   if (isRoutineCat(cat)) {
     const type = getRoutineType(cat);
     const slots = getRoutineSlots().filter(s => s !== type);
     setRoutineSlots(slots);
     if (slots.length === 0) localStorage.removeItem('sloo_routine_unlocked');
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return
-      supabaseClient
-        .from('user_categories')
-        .delete()
-        .eq('user_id', session.user.id)
-        .eq('category', 'routine_' + getRoutineType(cat))
-        .then(() => {})
-      supabaseClient
-        .from('user_history')
-        .delete()
-        .eq('user_id', session.user.id)
-        .eq('category', 'routine_' + getRoutineType(cat))
-        .then(() => {})
-    })
+    if (session) {
+      await supabaseClient.from('user_categories').delete()
+        .eq('user_id', session.user.id).eq('category', 'routine_' + type)
+      await supabaseClient.from('user_history').delete()
+        .eq('user_id', session.user.id).eq('category', 'routine_' + type)
+    }
   } else {
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return
-      supabaseClient
-        .from('user_categories')
-        .delete()
-        .eq('user_id', session.user.id)
-        .eq('category', cat)
-        .then(() => {})
-      supabaseClient
-        .from('user_history')
-        .delete()
-        .eq('user_id', session.user.id)
-        .eq('category', cat)
-        .then(() => {})
-    })
+    if (session) {
+      await supabaseClient.from('user_categories').delete()
+        .eq('user_id', session.user.id).eq('category', cat)
+      await supabaseClient.from('user_history').delete()
+        .eq('user_id', session.user.id).eq('category', cat)
+    }
   }
 }
 
@@ -1905,10 +1890,10 @@ document.getElementById('modal-reset-cancel').addEventListener('click', () => {
   pendingResetCategory = null;
 });
 
-document.getElementById('modal-reset-ok').addEventListener('click', () => {
+document.getElementById('modal-reset-ok').addEventListener('click', async () => {
   document.getElementById('modal-reset').style.display = 'none';
   if (pendingResetCategory) {
-    resetCat(pendingResetCategory);
+    await resetCat(pendingResetCategory);
     pendingResetCategory = null;
     renderHomeCards();
     renderHomeGrass();
@@ -1917,7 +1902,7 @@ document.getElementById('modal-reset-ok').addEventListener('click', () => {
     getRoutineSlots().forEach(type => localStorage.removeItem('sloo_routine_' + type));
     localStorage.removeItem('sloo_routine_slots');
     localStorage.removeItem('sloo_routine_unlocked');
-    CATEGORIES.forEach(k => resetCat(k));
+    await Promise.all(CATEGORIES.map(k => resetCat(k)));
     // 구 키도 정리
     ['sloo_category','sloo_type','sloo_fail_reason','sloo_level','sloo_days',
      'sloo_last_date','sloo_completed_today','sloo_maintain_count','sloo_energy',
