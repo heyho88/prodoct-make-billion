@@ -1903,6 +1903,16 @@ document.getElementById('modal-reset-ok').addEventListener('click', async () => 
     localStorage.removeItem('sloo_routine_slots');
     localStorage.removeItem('sloo_routine_unlocked');
     await Promise.all(CATEGORIES.map(k => resetCat(k)));
+    // routine_meta 삭제
+    const { data: { session } } = await supabaseClient.auth.getSession()
+    if (session) {
+      await supabaseClient.from('user_categories').delete()
+        .eq('user_id', session.user.id)
+        .eq('category', 'routine_meta')
+      // user_history 전체 삭제
+      await supabaseClient.from('user_history').delete()
+        .eq('user_id', session.user.id)
+    }
     // 구 키도 정리
     ['sloo_category','sloo_type','sloo_fail_reason','sloo_level','sloo_days',
      'sloo_last_date','sloo_completed_today','sloo_maintain_count','sloo_energy',
