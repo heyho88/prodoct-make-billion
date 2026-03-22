@@ -1924,6 +1924,7 @@ document.getElementById('modal-reset-ok').addEventListener('click', async () => 
       .forEach(k => localStorage.removeItem(k));
     document.querySelectorAll('.choice-card, .option').forEach(c => c.classList.remove('selected', 'active'));
     showLanding();
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     updateSidebar();
   }
 });
