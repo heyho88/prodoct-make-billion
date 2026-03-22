@@ -1902,6 +1902,10 @@ document.getElementById('modal-reset-ok').addEventListener('click', async () => 
     getRoutineSlots().forEach(type => localStorage.removeItem('sloo_routine_' + type));
     localStorage.removeItem('sloo_routine_slots');
     localStorage.removeItem('sloo_routine_unlocked');
+    // 활성 루틴 슬롯 Supabase 삭제
+    const slots = getRoutineSlots()
+    await Promise.all(slots.map(type => resetCat('routine_' + type)))
+    // 기존 코드
     await Promise.all(CATEGORIES.map(k => resetCat(k)));
     // routine_meta 삭제
     const { data: { session } } = await supabaseClient.auth.getSession()
