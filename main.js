@@ -97,9 +97,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const name = session.user.email.split('@')[0]
       btnLoginTxt.textContent  = name + ' ▾'
       btnLoginMob.textContent  = name + ' ▾ (로그아웃)'
+      document.getElementById('btn-reset').style.display = ''
     } else {
       btnLoginTxt.textContent  = '로그인'
       btnLoginMob.textContent  = '로그인'
+      document.getElementById('btn-reset').style.display = 'none'
     }
   }
 
@@ -397,6 +399,37 @@ function resetCat(cat) {
     const slots = getRoutineSlots().filter(s => s !== type);
     setRoutineSlots(slots);
     if (slots.length === 0) localStorage.removeItem('sloo_routine_unlocked');
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return
+      supabaseClient
+        .from('user_categories')
+        .delete()
+        .eq('user_id', session.user.id)
+        .eq('category', 'routine_' + getRoutineType(cat))
+        .then(() => {})
+      supabaseClient
+        .from('user_history')
+        .delete()
+        .eq('user_id', session.user.id)
+        .eq('category', 'routine_' + getRoutineType(cat))
+        .then(() => {})
+    })
+  } else {
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return
+      supabaseClient
+        .from('user_categories')
+        .delete()
+        .eq('user_id', session.user.id)
+        .eq('category', cat)
+        .then(() => {})
+      supabaseClient
+        .from('user_history')
+        .delete()
+        .eq('user_id', session.user.id)
+        .eq('category', cat)
+        .then(() => {})
+    })
   }
 }
 
@@ -2418,11 +2451,11 @@ init();
   if (!slider) return;
 
   const milestones = [
-    { day: 7,   text: "일주일. 아직 티가 안 나. 근데 쌓이고 있어." },
+    { day: 7,   text: "일주일. 아직 티는 안 나. 근데 쌓이고 있어." },
     { day: 30,  text: "한 달. 주변이 슬슬 눈치채기 시작해." },
-    { day: 66,  text: "습관이 굳어지는 날. 이제 안 하면 어색해." },
-    { day: 100, text: "석 달. 3개월 전 너랑 달라." },
-    { day: 180, text: "반년. 작년의 너를 기억해?" },
+    { day: 66,  text: "습관이 굳어지는 날. 이제 안 하면 어색하지." },
+    { day: 100, text: "세 달. 3개월 전 너랑 달라." },
+    { day: 180, text: "반년. 작년의 너가 기억나?" },
     { day: 365, text: "1년. 매일 1%가 만든 결과." }
   ];
 
