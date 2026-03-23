@@ -2623,7 +2623,7 @@ input:focus, textarea:focus {
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
-  overflow: visible;
+  overflow: hidden;
   margin-top: -20px;
 }
 
@@ -2648,7 +2648,7 @@ input:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 16px 24px 100px;
+  padding: 16px 24px 20px;
   overflow-y: auto;
 }
 
@@ -2850,15 +2850,11 @@ input:focus, textarea:focus {
 
 /* 하단 네비 */
 #ob-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
+  position: static;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px env(safe-area-inset-bottom, 30px);
+  padding: 16px 24px 12px;
   background: transparent;
 }
 
