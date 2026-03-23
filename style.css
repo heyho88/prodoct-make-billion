@@ -2890,10 +2890,12 @@ input:focus, textarea:focus {
   #screen-landing:has(#ob-wrap) {
     min-height: unset;
     height: calc(100dvh - 64px);
-    overflow: hidden;
   }
   #ob-wrap {
     height: 100%;
+  }
+  #ob-slides {
+    overflow: visible;
   }
   #ob-nav {
     position: sticky;
