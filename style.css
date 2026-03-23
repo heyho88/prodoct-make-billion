@@ -2624,7 +2624,7 @@ input:focus, textarea:focus {
   margin: 0 auto;
   width: 100%;
   overflow: hidden;
-  margin-top: -20px;
+  margin-top: -8px;
 }
 
 .ob-slide {
