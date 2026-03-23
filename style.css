@@ -2607,7 +2607,7 @@ input:focus, textarea:focus {
   flex-direction: column;
   justify-content: space-between;
   min-height: calc(100vh - 70px);
-  padding: 20px 24px 24px;
+  padding: 20px 24px 80px;
   box-sizing: border-box;
   animation: obFadeIn 0.35s ease;
 }
@@ -2774,10 +2774,17 @@ input:focus, textarea:focus {
 }
 
 .ob-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px;
+  background: rgba(8, 11, 20, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 20px;
 }
 
 .ob-dots { display: flex; gap: 6px; align-items: center; }
