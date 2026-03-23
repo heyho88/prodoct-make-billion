@@ -2600,6 +2600,8 @@ input:focus, textarea:focus {
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 .ob-slide {
@@ -2610,6 +2612,9 @@ input:focus, textarea:focus {
   padding: 20px 24px 24px;
   box-sizing: border-box;
   animation: obFadeIn 0.35s ease;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .ob-slide.active { display: flex; }
