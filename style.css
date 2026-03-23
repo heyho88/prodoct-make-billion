@@ -2591,29 +2591,26 @@ input:focus, textarea:focus {
 
 /* 컨테이너 */
 .onboarding-slides {
-  position: relative;
-  width: 100%;
   min-height: 100vh;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: transparent;
+  padding-top: 70px;
 }
 
 /* 개별 슬라이드 */
 .ob-slide {
-  position: absolute;
-  inset: 0;
-  display: flex;
+  display: none;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 60px 24px 36px;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  padding: 24px 24px 80px;
   background: transparent;
-  transform: translateX(100%);
-  transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-  overflow-y: auto;
+  box-sizing: border-box;
 }
 .ob-slide.active {
-  transform: translateX(0);
+  display: flex;
 }
 
 /* 콘텐츠 영역 */
