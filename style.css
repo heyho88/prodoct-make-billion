@@ -2889,17 +2889,15 @@ input:focus, textarea:focus {
 @media (max-width: 520px) {
   #screen-landing:has(#ob-wrap) {
     min-height: unset;
-    height: calc(100dvh - 64px);
   }
   #ob-wrap {
-    height: 100%;
+    height: calc(100dvh - 64px);
+    overflow: hidden;
   }
-  #ob-slides {
-    overflow: visible;
+  .ob-inner {
+    overscroll-behavior: contain;
   }
   #ob-nav {
-    position: sticky;
-    bottom: 0;
     padding-bottom: 30px;
   }
 }
