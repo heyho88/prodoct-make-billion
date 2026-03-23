@@ -2594,7 +2594,7 @@ input:focus, textarea:focus {
 #ob-wrap {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   background: transparent;
   position: relative;
 }
@@ -2847,11 +2847,16 @@ input:focus, textarea:focus {
 
 /* 하단 네비 */
 #ob-nav {
-  position: static;
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px 32px;
+  padding: 16px 24px;
   background: transparent;
 }
 
