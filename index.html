@@ -111,13 +111,152 @@
 
   <!-- 화면 1: 랜딩 -->
   <div class="screen active" id="screen-landing">
-    <div class="landing-inner">
+
+    <div id="ob-wrap">
+
+      <!-- 공통 상단 SLOO 로고 -->
+      <div id="ob-logo">SLOO</div>
+
+      <!-- 슬라이드 콘텐츠 영역 -->
+      <div id="ob-slides">
+
+        <!-- 슬라이드 1: 공감 -->
+        <div class="ob-slide active" id="ob-slide-1">
+          <div class="ob-inner">
+            <h1 class="ob-title">
+              변하고 싶은 마음은 있는데,<br>
+              <span class="ob-grad">잘 안 됐나요?</span>
+            </h1>
+            <div class="ob-sub-group">
+              <p class="ob-sub">헬스장 끊고 3일,<br>미라클모닝 도전하고 일주일...<br>괜찮아요, 당신만 그런 게 아니에요.</p>
+            </div>
+            <div class="ob-points">
+              <div class="ob-point"><span class="ob-star">✦</span>완벽하게 하거나, 아예 안 하거나</div>
+              <div class="ob-point"><span class="ob-star">✦</span>하루 빠지면 전부 포기</div>
+              <div class="ob-point"><span class="ob-star">✦</span>의지력 탓이라고 자책</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 슬라이드 2: 복리 -->
+        <div class="ob-slide" id="ob-slide-2">
+          <div class="ob-inner">
+            <div class="ob-formula-box">
+              <p class="ob-formula-label">매일 1%의 복리 효과</p>
+              <p class="ob-formula-eq">1.01<sup>365</sup> <span class="ob-dimmed">=</span> <span class="ob-grad">37.78</span></p>
+            </div>
+            <h1 class="ob-title">매일 1%만 성장하면</h1>
+            <p class="ob-sub">1년 뒤, 당신은</p>
+            <div class="ob-big-num"><span class="ob-grad" id="ob-counter">37.78</span>배</div>
+            <svg class="ob-graph" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#6C5CE7"/>
+                  <stop offset="100%" stop-color="#00D2D3"/>
+                </linearGradient>
+                <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#6C5CE7" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#6C5CE7" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <polygon id="ob-area" points="" fill="url(#areaGrad)" opacity="0"/>
+              <polyline id="ob-curve" points="" fill="none" stroke="url(#curveGrad)" stroke-width="3" stroke-linecap="round" opacity="0"/>
+              <text x="10" y="196" fill="rgba(255,255,255,0.4)" font-size="10">Day 1</text>
+              <text x="245" y="196" fill="rgba(255,255,255,0.4)" font-size="10">Day 365</text>
+              <text x="255" y="25" fill="#00D2D3" font-size="11" font-weight="bold">×37.78</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 슬라이드 3: 차별점 -->
+        <div class="ob-slide" id="ob-slide-3">
+          <div class="ob-inner">
+            <h1 class="ob-title">
+              망한 하루에도,<br>
+              <span class="ob-grad">딱 하나만 하면 그게 1%다</span>
+            </h1>
+            <!-- 기존 습관 앱 -->
+            <div class="ob-compare-card ob-bad">
+              <div class="ob-compare-header">
+                <div class="ob-compare-icon bad">✕</div>
+                <span class="ob-compare-name bad">기존 습관 앱</span>
+              </div>
+              <div class="ob-badges">
+                <span class="ob-badge green">성장</span>
+                <span class="ob-badge green">성장</span>
+                <span class="ob-badge green">성장</span>
+                <span class="ob-badge green">성장</span>
+                <span class="ob-badge red">패스</span>
+              </div>
+              <p class="ob-compare-flow bad">→ Streak 리셋 → 죄책감 → <strong>포기</strong></p>
+              <p class="ob-compare-note">4일간의 노력이 전부 사라진 느낌</p>
+            </div>
+            <!-- SLOO -->
+            <div class="ob-compare-card ob-good">
+              <div class="ob-compare-header">
+                <div class="ob-compare-icon good">S</div>
+                <span class="ob-compare-name good">SLOO</span>
+              </div>
+              <div class="ob-badges">
+                <span class="ob-badge purple">+1%</span>
+                <span class="ob-badge purple">+1%</span>
+                <span class="ob-badge purple">+1%</span>
+                <span class="ob-badge purple">+1%</span>
+                <span class="ob-badge gray">패스</span>
+              </div>
+              <p class="ob-compare-flow good">→ Streak은 리셋되지만</p>
+              <div class="ob-keep-box">누적 배수: <strong class="ob-cyan">×1.04</strong> 그대로 유지!</div>
+              <p class="ob-compare-note cyan">내가 쌓은 성장은 절대 사라지지 않는다</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 슬라이드 4: 행동과학 + CTA -->
+        <div class="ob-slide" id="ob-slide-4">
+          <div class="ob-inner">
+            <h1 class="ob-title">습관 형성엔<br>3가지가 필요해요.</h1>
+            <div class="ob-science">
+              <div class="ob-science-item">
+                <span class="ob-check">✓</span>
+                <span>작은 시작 <em>(BJ Fogg 행동설계 이론)</em></span>
+              </div>
+              <div class="ob-science-item">
+                <span class="ob-check">✓</span>
+                <span>즉각적인 보상 <em>(도파민 루프)</em></span>
+              </div>
+              <div class="ob-science-item">
+                <span class="ob-check">✓</span>
+                <span>복리로 쌓이는 구조</span>
+              </div>
+            </div>
+            <p class="ob-sub">SLOO는 이 3가지를 설계했어요.</p>
+            <button id="btn-start" class="ob-cta">나의 1% 시작하기 →</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 고정 하단 네비게이션 -->
+      <div id="ob-nav">
+        <button id="ob-prev" class="ob-nav-btn">← 이전</button>
+        <div id="ob-dots">
+          <span class="ob-dot active"></span>
+          <span class="ob-dot"></span>
+          <span class="ob-dot"></span>
+          <span class="ob-dot"></span>
+        </div>
+        <button id="ob-next" class="ob-nav-btn">다음 →</button>
+      </div>
+
+    </div>
+
+    <div class="landing-inner" style="display:none">
       <div class="brand-logo" aria-hidden="true">SLOO</div>
       <p class="landing-tagline">작심삼일인 사람들을 위한 아주 작은 습관 서비스</p>
       <h1 class="main-copy">매일 <span class="pct-highlight">1%</span>의 변화</h1>
       <p class="sub-copy">망한 하루에도 1%는 변화할 수 있어.</p>
       <p id="landing-done-msg" class="landing-done-msg" style="display:none">오늘 이미 완료했어 🌱<br>내일 자정 이후에 다시 켜봐</p>
-      <button class="cta-main cta-gradient" id="btn-start">나의 1% 시작하기</button>
+      <button class="cta-main cta-gradient" id="btn-start-old">나의 1% 시작하기</button>
     </div>
   </div>
 
@@ -897,5 +1036,53 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js"></script>
+<script>
+(function() {
+  let cur = 1;
+  const total = 4;
+
+  function goTo(n) {
+    if (n < 1 || n > total) return;
+    document.querySelectorAll('.ob-slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('ob-slide-' + n).classList.add('active');
+    document.querySelectorAll('#ob-dots .ob-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === n - 1);
+    });
+    const prev = document.getElementById('ob-prev');
+    const next = document.getElementById('ob-next');
+    prev.style.visibility = n === 1 ? 'hidden' : 'visible';
+    next.style.visibility = n === total ? 'hidden' : 'visible';
+    cur = n;
+    if (n === 2) initGraph();
+  }
+
+  function initGraph() {
+    const points = [];
+    const areaPoints = [];
+    for (let i = 0; i <= 100; i++) {
+      const x = (i / 100) * 280 + 10;
+      const yVal = Math.pow(1.01, (i / 100) * 365);
+      const norm = (yVal / 37.78) * 160;
+      const y = 180 - norm;
+      points.push(x + ',' + y);
+      areaPoints.push(x + ',' + y);
+    }
+    const curve = document.getElementById('ob-curve');
+    const area = document.getElementById('ob-area');
+    if (curve) {
+      curve.setAttribute('points', points.join(' '));
+      curve.style.opacity = '1';
+    }
+    if (area) {
+      area.setAttribute('points', '10,180 ' + areaPoints.join(' ') + ' 290,180');
+      area.style.opacity = '1';
+    }
+  }
+
+  document.getElementById('ob-next').addEventListener('click', () => goTo(cur + 1));
+  document.getElementById('ob-prev').addEventListener('click', () => goTo(cur - 1));
+  goTo(1);
+})();
+</script>
 </body>
 </html>

@@ -2584,3 +2584,294 @@ input:focus, textarea:focus {
   color: var(--text-muted);
   margin-top: 4px;
 }
+
+/* ════════════════════════════════
+   온보딩 슬라이드
+════════════════════════════════ */
+#ob-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: transparent;
+  position: relative;
+}
+
+#ob-logo {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  background: linear-gradient(90deg, #6C5CE7, #00D2D3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  z-index: 100;
+}
+
+#ob-slides {
+  flex: 1;
+  padding: 110px 24px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ob-slide { display: none; }
+.ob-slide.active {
+  display: block;
+  animation: obIn 0.4s ease-out;
+}
+
+@keyframes obIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.ob-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ob-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.3;
+  margin: 0;
+  text-align: center;
+}
+
+.ob-grad {
+  background: linear-gradient(90deg, #6C5CE7, #00D2D3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ob-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  text-align: center;
+  margin: 0;
+}
+
+.ob-points { display: flex; flex-direction: column; gap: 10px; }
+
+.ob-point {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+}
+
+.ob-star { color: #6C5CE7; font-size: 16px; }
+
+.ob-formula-box {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ob-formula-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin: 0 0 8px;
+}
+
+.ob-formula-eq {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  font-family: monospace;
+}
+
+.ob-dimmed { color: rgba(255,255,255,0.4); }
+
+.ob-big-num {
+  font-size: 60px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  text-align: center;
+}
+
+.ob-graph {
+  width: 100%;
+  height: auto;
+}
+
+.ob-compare-card {
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  text-align: left;
+}
+
+.ob-compare-card.ob-good {
+  border-color: rgba(108,92,231,0.3);
+  background: rgba(108,92,231,0.06);
+}
+
+.ob-compare-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ob-compare-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ob-compare-icon.bad { background: rgba(239,68,68,0.2); color: #f87171; }
+.ob-compare-icon.good {
+  background: linear-gradient(135deg, rgba(108,92,231,0.3), rgba(0,210,211,0.3));
+  color: #00D2D3;
+}
+
+.ob-compare-name { font-size: 14px; font-weight: 700; }
+.ob-compare-name.bad { color: #f87171; }
+.ob-compare-name.good {
+  background: linear-gradient(90deg, #6C5CE7, #00D2D3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ob-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+
+.ob-badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+.ob-badge.green { background: rgba(34,197,94,0.15); color: #4ade80; }
+.ob-badge.red { background: rgba(239,68,68,0.2); color: #f87171; }
+.ob-badge.purple { background: rgba(108,92,231,0.2); color: #a78bfa; }
+.ob-badge.gray { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); }
+
+.ob-compare-flow {
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+
+.ob-compare-flow.bad { color: #f87171; }
+.ob-compare-flow.good { color: rgba(255,255,255,0.6); }
+
+.ob-compare-note {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin: 4px 0 0;
+}
+
+.ob-compare-note.cyan { color: rgba(0,210,211,0.6); }
+
+.ob-keep-box {
+  background: linear-gradient(90deg, rgba(108,92,231,0.1), rgba(0,210,211,0.1));
+  border: 1px solid rgba(108,92,231,0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin: 6px 0;
+}
+
+.ob-cyan { color: #00D2D3; font-size: 18px; }
+
+.ob-science { display: flex; flex-direction: column; gap: 14px; }
+
+.ob-science-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+}
+
+.ob-science-item em {
+  color: rgba(255,255,255,0.4);
+  font-style: normal;
+  font-size: 13px;
+}
+
+.ob-check { color: #00D2D3; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+
+.ob-cta {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #F97316, #ef4444);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* 고정 하단 네비 */
+#ob-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 32px;
+  background: linear-gradient(to top, #080B14 60%, transparent);
+  z-index: 200;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.ob-nav-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+  min-width: 60px;
+}
+
+.ob-nav-btn:hover { color: #fff; }
+
+#ob-dots { display: flex; gap: 6px; align-items: center; }
+
+.ob-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.3s;
+}
+
+.ob-dot.active {
+  width: 24px;
+  background: linear-gradient(90deg, #6C5CE7, #00D2D3);
+}
