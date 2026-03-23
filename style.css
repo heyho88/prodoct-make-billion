@@ -2806,3 +2806,9 @@ input:focus, textarea:focus {
 }
 
 .ob-btn-next:hover, .ob-btn-prev:hover { color: #fff; }
+
+/* ── 슬라이드 1 텍스트 크기 오버라이드 ── */
+#ob-slide-1 .ob-content { gap: 28px; }
+#ob-slide-1 .ob-title { font-size: 36px; }
+#ob-slide-1 .ob-point-item { font-size: 16px; }
+#ob-slide-1 .ob-desc { font-size: 16px; }
