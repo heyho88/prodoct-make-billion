@@ -2617,7 +2617,7 @@ input:focus, textarea:focus {
 #ob-slides {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 140px);
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
@@ -2852,7 +2852,6 @@ input:focus, textarea:focus {
   justify-content: space-between;
   padding: 16px 24px 32px;
   background: transparent;
-  margin-bottom: 70px;
 }
 
 .ob-nav-btn {
