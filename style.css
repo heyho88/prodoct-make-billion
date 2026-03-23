@@ -2893,4 +2893,7 @@ input:focus, textarea:focus {
   #ob-wrap {
     height: 100%;
   }
+  #ob-nav {
+    padding-bottom: 60px;
+  }
 }
