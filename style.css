@@ -2887,20 +2887,15 @@ input:focus, textarea:focus {
 }
 
 @media (max-width: 520px) {
-  body {
-    min-height: 100dvh;
-  }
   #screen-landing:has(#ob-wrap) {
     min-height: unset;
     height: calc(100dvh - 64px);
     overflow: hidden;
   }
   #ob-wrap {
-    height: calc(100dvh - 64px);
-    flex-shrink: 0;
+    height: 100%;
   }
   #ob-nav {
-    flex-shrink: 0;
     padding-bottom: 30px;
   }
 }
