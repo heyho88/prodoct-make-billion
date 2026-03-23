@@ -2595,7 +2595,7 @@ input:focus, textarea:focus {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  background: #080B14;
+  background: transparent;
 }
 
 /* 개별 슬라이드 */
@@ -2606,7 +2606,7 @@ input:focus, textarea:focus {
   flex-direction: column;
   justify-content: space-between;
   padding: 60px 24px 36px;
-  background: #080B14;
+  background: transparent;
   transform: translateX(100%);
   transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
