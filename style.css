@@ -2608,17 +2608,22 @@ input:focus, textarea:focus {
 }
 
 #ob-slides {
-  flex: 1;
-  padding: 32px 24px 100px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
-  box-sizing: border-box;
 }
 
-.ob-slide { display: none; }
+.ob-slide {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+}
 .ob-slide.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
   animation: obIn 0.4s ease-out;
 }
 
@@ -2628,9 +2633,12 @@ input:focus, textarea:focus {
 }
 
 .ob-inner {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 110px 24px 20px;
+  overflow-y: auto;
 }
 
 .ob-title {
@@ -2829,20 +2837,14 @@ input:focus, textarea:focus {
   margin-top: 8px;
 }
 
-/* 고정 하단 네비 */
+/* 하단 네비 */
 #ob-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: static;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px 32px;
   background: linear-gradient(to top, #080B14 60%, transparent);
-  z-index: 200;
-  max-width: 480px;
-  margin: 0 auto;
 }
 
 .ob-nav-btn {
