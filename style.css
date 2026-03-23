@@ -2896,6 +2896,8 @@ input:focus, textarea:focus {
     height: 100%;
   }
   #ob-nav {
+    position: sticky;
+    bottom: 0;
     padding-bottom: 30px;
   }
 }
