@@ -2597,22 +2597,19 @@ input:focus, textarea:focus {
 }
 
 #ob-logo {
-  position: fixed;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.2em;
+  text-align: center;
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  z-index: 100;
+  margin-bottom: 8px;
 }
 
 #ob-slides {
   flex: 1;
-  padding: 110px 24px 100px;
+  padding: 32px 24px 100px;
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
