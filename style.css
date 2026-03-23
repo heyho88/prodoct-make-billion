@@ -2594,7 +2594,7 @@ input:focus, textarea:focus {
 #ob-wrap {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   background: transparent;
   position: relative;
 }
@@ -2617,10 +2617,11 @@ input:focus, textarea:focus {
 #ob-slides {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 140px);
+  flex: 1;
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
+  overflow: hidden;
 }
 
 .ob-slide {
