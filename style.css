@@ -2604,7 +2604,11 @@ input:focus, textarea:focus {
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 8px;
+  padding: 24px 24px 0;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #ob-slides {
@@ -2637,7 +2641,7 @@ input:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 110px 24px 20px;
+  padding: 16px 24px 20px;
   overflow-y: auto;
 }
 
