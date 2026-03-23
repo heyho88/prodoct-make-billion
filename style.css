@@ -2852,6 +2852,7 @@ input:focus, textarea:focus {
   justify-content: space-between;
   padding: 16px 24px 32px;
   background: transparent;
+  margin-bottom: 30px;
 }
 
 .ob-nav-btn {
