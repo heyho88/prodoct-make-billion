@@ -2589,27 +2589,28 @@ input:focus, textarea:focus {
    온보딩 슬라이드
 ════════════════════════════════ */
 .onboarding-slides {
-  position: relative;
-  width: 100%;
   min-height: 100vh;
   display: flex;
-  align-items: stretch;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 개별 슬라이드 */
 .ob-slide {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  padding: 64px 24px 32px;
+  padding: 80px 24px 40px;
   opacity: 0;
 }
 .ob-slide.active {
   display: flex;
   opacity: 1;
+}
+.ob-slide:not(.active) {
+  display: none;
 }
 
 /* 진입 애니메이션 */
