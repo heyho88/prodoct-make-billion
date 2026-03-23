@@ -2604,7 +2604,7 @@ input:focus, textarea:focus {
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  padding: 24px 24px 0;
+  padding: 8px 24px 0;
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
