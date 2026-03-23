@@ -111,141 +111,13 @@
 
   <!-- 화면 1: 랜딩 -->
   <div class="screen active" id="screen-landing">
-
-    <div id="ob-slides-wrap">
-
-      <!-- 슬라이드 1: 공감 -->
-      <div class="ob-slide active" id="ob-slide-1">
-        <div class="ob-content">
-          <div class="ob-brand">SLOO</div>
-          <h1 class="ob-title">
-            변하고 싶은 마음은 있는데,<br>
-            <span class="ob-gradient">잘 안 됐나요?</span>
-          </h1>
-          <p class="ob-desc">
-            헬스장 끊고 3일,<br>
-            미라클모닝 도전하고 일주일...<br>
-            괜찮아요, 당신만 그런 게 아니에요.
-          </p>
-          <div class="ob-points">
-            <div class="ob-point-item">✦ 완벽하게 하거나, 아예 안 하거나</div>
-            <div class="ob-point-item">✦ 하루 빠지면 전부 포기</div>
-            <div class="ob-point-item">✦ 의지력 탓이라고 자책</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 슬라이드 2: 복리 -->
-      <div class="ob-slide" id="ob-slide-2">
-        <div class="ob-content">
-          <div class="ob-brand">SLOO</div>
-          <div class="ob-formula-card">
-            <div class="ob-formula-label">매일 1%의 복리 효과</div>
-            <div class="ob-formula-eq">1.01<sup>365</sup> = <span class="ob-orange">37.78</span></div>
-          </div>
-          <h1 class="ob-title">매일 1%만 성장하면</h1>
-          <p class="ob-desc">1년 뒤, 당신은</p>
-          <div class="ob-big-num"><span class="ob-gradient">37.78</span>배</div>
-          <svg class="ob-graph" viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="graphGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#8B5CF6"/>
-                <stop offset="100%" stop-color="#22D3EE"/>
-              </linearGradient>
-            </defs>
-            <path d="M10,110 Q80,108 150,80 Q220,40 290,5" stroke="url(#graphGrad)" stroke-width="2.5" fill="none"/>
-            <text x="5" y="118" fill="rgba(255,255,255,0.5)" font-size="9">Day 1</text>
-            <text x="240" y="118" fill="rgba(255,255,255,0.5)" font-size="9">Day 365</text>
-            <text x="250" y="12" fill="#22D3EE" font-size="9">×37.78</text>
-          </svg>
-        </div>
-      </div>
-
-      <!-- 슬라이드 3: 차별점 -->
-      <div class="ob-slide" id="ob-slide-3">
-        <div class="ob-content">
-          <h1 class="ob-title">
-            망한 하루에도,<br>
-            <span class="ob-gradient">딱 하나만 하면 그게 1%다</span>
-          </h1>
-          <div class="ob-compare-card bad">
-            <div class="ob-compare-header">
-              <span class="ob-compare-badge bad">❌ 기존 습관 앱</span>
-            </div>
-            <div class="ob-badges">
-              <span class="ob-badge green">성장</span>
-              <span class="ob-badge green">성장</span>
-              <span class="ob-badge green">성장</span>
-              <span class="ob-badge green">성장</span>
-              <span class="ob-badge red">패스</span>
-            </div>
-            <p class="ob-compare-result bad">→ Streak 리셋 → 죄책감 → 포기</p>
-            <p class="ob-compare-sub">4일간의 노력이 전부 사라진 느낌</p>
-          </div>
-          <div class="ob-compare-card good">
-            <div class="ob-compare-header">
-              <span class="ob-compare-badge good">S SLOO</span>
-            </div>
-            <div class="ob-badges">
-              <span class="ob-badge purple">+1%</span>
-              <span class="ob-badge purple">+1%</span>
-              <span class="ob-badge purple">+1%</span>
-              <span class="ob-badge purple">+1%</span>
-              <span class="ob-badge gray">패스</span>
-            </div>
-            <p class="ob-compare-result good">→ Streak은 리셋되지만</p>
-            <div class="ob-keep-box">누적 배수: <strong>×1.04</strong> 그대로 유지!</div>
-            <p class="ob-compare-sub">내가 쌓은 성장은 절대 사라지지 않는다</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 슬라이드 4: 행동과학 + CTA -->
-      <div class="ob-slide" id="ob-slide-4">
-        <div class="ob-content">
-          <div class="ob-brand">SLOO</div>
-          <h1 class="ob-title">습관 형성엔<br>3가지가 필요해요.</h1>
-          <div class="ob-science-list">
-            <div class="ob-science-item">
-              <span class="ob-check">✓</span>
-              <span>작은 시작 <em>(BJ Fogg 행동설계 이론)</em></span>
-            </div>
-            <div class="ob-science-item">
-              <span class="ob-check">✓</span>
-              <span>즉각적인 보상 <em>(도파민 루프)</em></span>
-            </div>
-            <div class="ob-science-item">
-              <span class="ob-check">✓</span>
-              <span>복리로 쌓이는 구조</span>
-            </div>
-          </div>
-          <p class="ob-desc">SLOO는 이 3가지를 설계했어요.</p>
-          <button id="btn-start" class="ob-cta">나의 1% 시작하기 →</button>
-        </div>
-      </div>
-
-    </div><!-- /ob-slides-wrap -->
-
-    <!-- 공통 footer - 항상 화면 하단 고정 -->
-    <div id="ob-footer-fixed">
-      <button class="ob-btn-prev" id="ob-prev">← 이전</button>
-      <div class="ob-dots">
-        <span class="ob-dot active"></span>
-        <span class="ob-dot"></span>
-        <span class="ob-dot"></span>
-        <span class="ob-dot"></span>
-      </div>
-      <button class="ob-btn-next" id="ob-next">다음 →</button>
-    </div>
-
-    <!-- 기존 랜딩 (main.js 참조용) -->
-    <div class="landing-inner" style="display:none">
+    <div class="landing-inner">
       <div class="brand-logo" aria-hidden="true">SLOO</div>
       <p class="landing-tagline">작심삼일인 사람들을 위한 아주 작은 습관 서비스</p>
       <h1 class="main-copy">매일 <span class="pct-highlight">1%</span>의 변화</h1>
       <p class="sub-copy">망한 하루에도 1%는 변화할 수 있어.</p>
       <p id="landing-done-msg" class="landing-done-msg" style="display:none">오늘 이미 완료했어 🌱<br>내일 자정 이후에 다시 켜봐</p>
-      <button class="cta-main cta-gradient" id="btn-start-old">나의 1% 시작하기</button>
+      <button class="cta-main cta-gradient" id="btn-start">나의 1% 시작하기</button>
     </div>
   </div>
 
@@ -1025,31 +897,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js"></script>
-<script>
-let currentSlide = 1;
-const totalSlides = 4;
-
-function goTo(n) {
-  if (n < 1 || n > totalSlides) return;
-  document.querySelectorAll('.ob-slide').forEach(s => s.classList.remove('active'));
-  document.getElementById('ob-slide-' + n).classList.add('active');
-
-  document.querySelectorAll('#ob-footer-fixed .ob-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === n - 1);
-  });
-
-  const prev = document.getElementById('ob-prev');
-  const next = document.getElementById('ob-next');
-  prev.style.visibility = n === 1 ? 'hidden' : 'visible';
-  next.style.visibility = n === totalSlides ? 'hidden' : 'visible';
-
-  currentSlide = n;
-}
-
-document.getElementById('ob-next').addEventListener('click', () => goTo(currentSlide + 1));
-document.getElementById('ob-prev').addEventListener('click', () => goTo(currentSlide - 1));
-
-goTo(1);
-</script>
 </body>
 </html>
