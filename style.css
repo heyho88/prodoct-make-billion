@@ -2888,10 +2888,12 @@ input:focus, textarea:focus {
 
 @media (max-width: 520px) {
   #screen-landing:has(#ob-wrap) {
+    min-height: unset;
+    height: calc(100dvh - 64px);
     overflow: hidden;
   }
   #ob-wrap {
-    height: calc(100dvh - 64px);
+    height: 100%;
   }
   #ob-nav {
     padding-bottom: 30px;
