@@ -2885,3 +2885,12 @@ input:focus, textarea:focus {
   width: 24px;
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
 }
+
+@media (max-width: 520px) {
+  #screen-landing:has(#ob-wrap) {
+    height: calc(100dvh - 64px);
+  }
+  #ob-wrap {
+    height: 100%;
+  }
+}
