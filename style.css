@@ -2869,9 +2869,6 @@ input:focus, textarea:focus {
   min-width: 60px;
 }
 
-#ob-prev { justify-self: start; text-align: left; }
-#ob-next { justify-self: end; text-align: right; }
-
 .ob-nav-btn:hover { color: #fff; }
 
 #ob-dots { display: flex; gap: 6px; align-items: center; justify-content: center; }
