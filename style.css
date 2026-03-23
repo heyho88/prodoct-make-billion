@@ -2607,7 +2607,7 @@ input:focus, textarea:focus {
   flex-direction: column;
   justify-content: space-between;
   min-height: calc(100vh - 70px);
-  padding: 20px 24px 24px;
+  padding: 20px 24px 100px;
   box-sizing: border-box;
   animation: obFadeIn 0.35s ease;
 }
@@ -2806,6 +2806,20 @@ input:focus, textarea:focus {
 }
 
 .ob-btn-next:hover, .ob-btn-prev:hover { color: #fff; }
+
+#ob-footer-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 32px;
+  background: rgba(8,11,20,0.95);
+  backdrop-filter: blur(10px);
+  z-index: 200;
+}
 
 /* ── 슬라이드 1 텍스트 크기 오버라이드 ── */
 #ob-slide-1 .ob-content { gap: 28px; }

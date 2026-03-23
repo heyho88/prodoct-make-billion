@@ -133,15 +133,6 @@
             <div class="ob-point-item">✦ 의지력 탓이라고 자책</div>
           </div>
         </div>
-        <div class="ob-footer">
-          <div class="ob-dots">
-            <span class="ob-dot active"></span>
-            <span class="ob-dot"></span>
-            <span class="ob-dot"></span>
-            <span class="ob-dot"></span>
-          </div>
-          <button class="ob-btn-next" data-to="2">다음 →</button>
-        </div>
       </div>
 
       <!-- 슬라이드 2: 복리 -->
@@ -167,16 +158,6 @@
             <text x="240" y="118" fill="rgba(255,255,255,0.5)" font-size="9">Day 365</text>
             <text x="250" y="12" fill="#22D3EE" font-size="9">×37.78</text>
           </svg>
-        </div>
-        <div class="ob-footer">
-          <button class="ob-btn-prev" data-to="1">← 이전</button>
-          <div class="ob-dots">
-            <span class="ob-dot"></span>
-            <span class="ob-dot active"></span>
-            <span class="ob-dot"></span>
-            <span class="ob-dot"></span>
-          </div>
-          <button class="ob-btn-next" data-to="3">다음 →</button>
         </div>
       </div>
 
@@ -217,16 +198,6 @@
             <p class="ob-compare-sub">내가 쌓은 성장은 절대 사라지지 않는다</p>
           </div>
         </div>
-        <div class="ob-footer">
-          <button class="ob-btn-prev" data-to="2">← 이전</button>
-          <div class="ob-dots">
-            <span class="ob-dot"></span>
-            <span class="ob-dot"></span>
-            <span class="ob-dot active"></span>
-            <span class="ob-dot"></span>
-          </div>
-          <button class="ob-btn-next" data-to="4">다음 →</button>
-        </div>
       </div>
 
       <!-- 슬라이드 4: 행동과학 + CTA -->
@@ -251,18 +222,21 @@
           <p class="ob-desc">SLOO는 이 3가지를 설계했어요.</p>
           <button id="btn-start" class="ob-cta">나의 1% 시작하기 →</button>
         </div>
-        <div class="ob-footer">
-          <button class="ob-btn-prev" data-to="3">← 이전</button>
-          <div class="ob-dots">
-            <span class="ob-dot"></span>
-            <span class="ob-dot"></span>
-            <span class="ob-dot"></span>
-            <span class="ob-dot active"></span>
-          </div>
-        </div>
       </div>
 
     </div><!-- /ob-slides-wrap -->
+
+    <!-- 공통 footer - 항상 화면 하단 고정 -->
+    <div id="ob-footer-fixed">
+      <button class="ob-btn-prev" id="ob-prev">← 이전</button>
+      <div class="ob-dots">
+        <span class="ob-dot active"></span>
+        <span class="ob-dot"></span>
+        <span class="ob-dot"></span>
+        <span class="ob-dot"></span>
+      </div>
+      <button class="ob-btn-next" id="ob-next">다음 →</button>
+    </div>
 
     <!-- 기존 랜딩 (main.js 참조용) -->
     <div class="landing-inner" style="display:none">
@@ -1052,17 +1026,30 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="main.js"></script>
 <script>
-(function() {
-  function goTo(n) {
-    document.querySelectorAll('.ob-slide').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById('ob-slide-' + n);
-    if (target) target.classList.add('active');
-  }
-  document.addEventListener('click', function(e) {
-    const next = e.target.closest('[data-to]');
-    if (next) goTo(next.dataset.to);
+let currentSlide = 1;
+const totalSlides = 4;
+
+function goTo(n) {
+  if (n < 1 || n > totalSlides) return;
+  document.querySelectorAll('.ob-slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('ob-slide-' + n).classList.add('active');
+
+  document.querySelectorAll('#ob-footer-fixed .ob-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === n - 1);
   });
-})();
+
+  const prev = document.getElementById('ob-prev');
+  const next = document.getElementById('ob-next');
+  prev.style.visibility = n === 1 ? 'hidden' : 'visible';
+  next.style.visibility = n === totalSlides ? 'hidden' : 'visible';
+
+  currentSlide = n;
+}
+
+document.getElementById('ob-next').addEventListener('click', () => goTo(currentSlide + 1));
+document.getElementById('ob-prev').addEventListener('click', () => goTo(currentSlide - 1));
+
+goTo(1);
 </script>
 </body>
 </html>
