@@ -2602,7 +2602,7 @@ input:focus, textarea:focus {
   flex-direction: column;
   justify-content: space-between;
   min-height: calc(100vh - 70px);
-  padding: 32px 24px 32px;
+  padding: 8px 20px 12px;
   box-sizing: border-box;
   animation: obFadeIn 0.35s ease;
 }
@@ -2614,7 +2614,7 @@ input:focus, textarea:focus {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-.ob-content { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.ob-content { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 
 .ob-brand {
   font-size: 13px;
