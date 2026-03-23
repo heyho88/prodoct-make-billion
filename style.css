@@ -2887,13 +2887,14 @@ input:focus, textarea:focus {
 }
 
 @media (max-width: 520px) {
-  #screen-landing:has(#ob-wrap) {
-    overflow: hidden;
-  }
   #ob-wrap {
     height: 100dvh;
   }
   #ob-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding-bottom: 30px;
   }
 }
