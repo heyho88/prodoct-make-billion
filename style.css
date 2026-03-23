@@ -2848,7 +2848,7 @@ input:focus, textarea:focus {
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px 32px;
-  background: linear-gradient(to top, #080B14 60%, transparent);
+  background: transparent;
 }
 
 .ob-nav-btn {
