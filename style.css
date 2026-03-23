@@ -2588,10 +2588,15 @@ input:focus, textarea:focus {
 /* ════════════════════════════════
    온보딩 슬라이드
 ════════════════════════════════ */
+/* screen-landing 기본 모바일 패딩 무력화 */
+#screen-landing:has(#ob-slides-wrap) {
+  padding: 0 !important;
+}
+
 #ob-slides-wrap {
   width: 100%;
   min-height: 100vh;
-  padding-top: 70px;
+  padding-top: 0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
