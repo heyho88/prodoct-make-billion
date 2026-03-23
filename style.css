@@ -2891,7 +2891,7 @@ input:focus, textarea:focus {
     overflow: hidden;
   }
   #ob-wrap {
-    height: 100dvh;
+    height: calc(100dvh - 64px);
   }
   #ob-nav {
     padding-bottom: 30px;
