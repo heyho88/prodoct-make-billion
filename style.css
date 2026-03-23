@@ -2588,6 +2588,9 @@ input:focus, textarea:focus {
 /* ════════════════════════════════
    온보딩 슬라이드
 ════════════════════════════════ */
+#screen-landing:has(#ob-wrap) {
+  padding: 0 !important;
+}
 #ob-wrap {
   display: flex;
   flex-direction: column;
