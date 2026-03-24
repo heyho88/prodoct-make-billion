@@ -2896,11 +2896,4 @@ input:focus, textarea:focus {
     height: calc(100dvh - 64px);
     overflow: hidden;
   }
-  /* 모바일: 슬라이드 내에서 네비게이션 바를 하단에 고정 */
-  .ob-nav-inner {
-    position: sticky;
-    bottom: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(8, 11, 20, 0.95) 30%, rgba(8, 11, 20, 0.99) 100%);
-    z-index: 10;
-  }
 }
