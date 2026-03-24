@@ -135,6 +135,16 @@
               <div class="ob-point"><span class="ob-star">✦</span>의지력 탓이라고 자책</div>
             </div>
           </div>
+          <div class="ob-nav-inner">
+            <span></span>
+            <div class="ob-dots">
+              <span class="ob-dot active"></span>
+              <span class="ob-dot"></span>
+              <span class="ob-dot"></span>
+              <span class="ob-dot"></span>
+            </div>
+            <button class="ob-nav-btn" data-to="2">다음 →</button>
+          </div>
         </div>
 
         <!-- 슬라이드 2: 복리 -->
@@ -164,6 +174,16 @@
               <text x="245" y="196" fill="rgba(255,255,255,0.4)" font-size="10">Day 365</text>
               <text x="255" y="25" fill="#00D2D3" font-size="11" font-weight="bold">×37.78</text>
             </svg>
+          </div>
+          <div class="ob-nav-inner">
+            <button class="ob-nav-btn" data-to="1">← 이전</button>
+            <div class="ob-dots">
+              <span class="ob-dot"></span>
+              <span class="ob-dot active"></span>
+              <span class="ob-dot"></span>
+              <span class="ob-dot"></span>
+            </div>
+            <button class="ob-nav-btn" data-to="3">다음 →</button>
           </div>
         </div>
 
@@ -208,6 +228,16 @@
               <p class="ob-compare-note cyan">내가 쌓은 성장은 절대 사라지지 않는다</p>
             </div>
           </div>
+          <div class="ob-nav-inner">
+            <button class="ob-nav-btn" data-to="2">← 이전</button>
+            <div class="ob-dots">
+              <span class="ob-dot"></span>
+              <span class="ob-dot"></span>
+              <span class="ob-dot active"></span>
+              <span class="ob-dot"></span>
+            </div>
+            <button class="ob-nav-btn" data-to="4">다음 →</button>
+          </div>
         </div>
 
         <!-- 슬라이드 4: 행동과학 + CTA -->
@@ -231,20 +261,18 @@
             <p class="ob-sub">SLOO는 이 3가지를 설계했어요.</p>
             <button id="btn-start" class="ob-cta">나의 1% 시작하기 →</button>
           </div>
+          <div class="ob-nav-inner">
+            <button class="ob-nav-btn" data-to="3">← 이전</button>
+            <div class="ob-dots">
+              <span class="ob-dot"></span>
+              <span class="ob-dot"></span>
+              <span class="ob-dot"></span>
+              <span class="ob-dot active"></span>
+            </div>
+            <span></span>
+          </div>
         </div>
 
-      </div>
-
-      <!-- 고정 하단 네비게이션 -->
-      <div id="ob-nav">
-        <button id="ob-prev" class="ob-nav-btn">← 이전</button>
-        <div id="ob-dots">
-          <span class="ob-dot active"></span>
-          <span class="ob-dot"></span>
-          <span class="ob-dot"></span>
-          <span class="ob-dot"></span>
-        </div>
-        <button id="ob-next" class="ob-nav-btn">다음 →</button>
       </div>
 
     </div>
@@ -1044,13 +1072,6 @@
     if (n < 1 || n > total) return;
     document.querySelectorAll('.ob-slide').forEach(s => s.classList.remove('active'));
     document.getElementById('ob-slide-' + n).classList.add('active');
-    document.querySelectorAll('#ob-dots .ob-dot').forEach((d, i) => {
-      d.classList.toggle('active', i === n - 1);
-    });
-    const prev = document.getElementById('ob-prev');
-    const next = document.getElementById('ob-next');
-    prev.style.visibility = n === 1 ? 'hidden' : 'visible';
-    next.style.visibility = n === total ? 'hidden' : 'visible';
     cur = n;
     if (n === 2) initGraph();
   }
@@ -1068,18 +1089,15 @@
     }
     const curve = document.getElementById('ob-curve');
     const area = document.getElementById('ob-area');
-    if (curve) {
-      curve.setAttribute('points', points.join(' '));
-      curve.style.opacity = '1';
-    }
-    if (area) {
-      area.setAttribute('points', '10,180 ' + areaPoints.join(' ') + ' 290,180');
-      area.style.opacity = '1';
-    }
+    if (curve) { curve.setAttribute('points', points.join(' ')); curve.style.opacity = '1'; }
+    if (area) { area.setAttribute('points', '10,180 ' + areaPoints.join(' ') + ' 290,180'); area.style.opacity = '1'; }
   }
 
-  document.getElementById('ob-next').addEventListener('click', () => goTo(cur + 1));
-  document.getElementById('ob-prev').addEventListener('click', () => goTo(cur - 1));
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-to]');
+    if (btn) goTo(parseInt(btn.dataset.to));
+  });
+
   goTo(1);
 })();
 </script>
