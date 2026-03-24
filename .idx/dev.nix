@@ -34,6 +34,8 @@
         # npm-install = "npm install";
         # Open editors for the following files by default, if they exist:
         default.openFiles = [ "style.css" "main.js" "index.html" ];
+        # Git 자동 설정: push 시 자동으로 원격 브랜치와 연결
+        setup-git = "git config --global push.autoSetupRemote true";
       };
       # Runs when the workspace is (re)started
       onStart = {
