@@ -1023,12 +1023,8 @@ function init() {
   migrateFromLegacy();
   migrateRoutineIfNeeded();
   updateSidebar();
-  const hasAny = CATEGORIES.some(k => getCatData(k)?.active) || getRoutineSlots().length > 0;
-  if (hasAny) {
-    showHome();
-  } else {
-    showLanding();
-  }
+  // init은 세션 있는 경우에만 호출되어야 함
+  // 세션 없이 호출되면 아무것도 하지 않음 (DOMContentLoaded에서 ob-wrap 처리)
 }
 
 /* ── A/B 선택 화면 (운동) ── */
@@ -1883,7 +1879,7 @@ document.getElementById('btn-daily-mission').addEventListener('click', () => {
 /* ── 로고 클릭 ── */
 document.getElementById('nav-logo').addEventListener('click', e => {
   e.preventDefault();
-  init();
+  showHome();
 });
 
 /* ── 초기화 모달 ── */
@@ -2455,9 +2451,8 @@ function renderHomeGrass() {
 })();
 
 /* ════════════════════════
-   실행
+   실행 — 세션 확인은 DOMContentLoaded에서만 담당
 ════════════════════════ */
-init();
 
 /* ════════════════════════
    1% 복리 계산기
