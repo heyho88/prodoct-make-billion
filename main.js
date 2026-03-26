@@ -89,9 +89,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   console.log('Supabase 연결 완료')
 
+  // 세션 확인 전 ob-wrap 숨기기 (로그인 복귀 시 온보딩 깜빡임 방지)
+  const obWrap = document.getElementById('ob-wrap')
+  obWrap.style.display = 'none'
+
   const { data: { session: initSession } } = await supabaseClient.auth.getSession()
   if (initSession) {
+    // 세션 있음 → 로딩 화면 표시 후 데이터 로드
+    document.getElementById('ob-loading-text').textContent = '데이터를 불러오는 중...'
+    showScreen('screen-ob-loading')
     await loadUserData(initSession)
+  } else {
+    // 세션 없음 → 온보딩 슬라이드 표시
+    obWrap.style.display = 'flex'
   }
 
   /* ── Google 로그인 버튼 ── */
