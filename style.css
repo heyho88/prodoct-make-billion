@@ -2599,6 +2599,7 @@ input:focus, textarea:focus {
   height: 100%;
   background: transparent;
   position: relative;
+  width: 100%;
 }
 
 #ob-logo {
