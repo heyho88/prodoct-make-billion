@@ -1092,6 +1092,15 @@
         });
       });
     }
+    if (n === 3) {
+      const slide3 = document.getElementById('ob-slide-3');
+      slide3.classList.remove('anim-ready');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => slide3.classList.add('anim-ready'), 200);
+        });
+      });
+    }
     if (n === 1) {
       const slide1 = document.getElementById('ob-slide-1');
       slide1.classList.remove('anim-ready');

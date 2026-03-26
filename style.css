@@ -2892,6 +2892,28 @@ input:focus, textarea:focus {
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
 }
 
+/* 슬라이드 3 진입 애니메이션 */
+#ob-slide-3 .ob-title {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 900ms ease-out, transform 900ms ease-out;
+}
+#ob-slide-3 .ob-compare-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms ease-out, transform 700ms ease-out;
+}
+#ob-slide-3.anim-ready .ob-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+#ob-slide-3.anim-ready .ob-compare-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+#ob-slide-3.anim-ready .ob-title        { transition-delay: 200ms; }
+#ob-slide-3.anim-ready .ob-compare-card { transition-delay: 800ms; }
+
 /* 슬라이드 2 진입 애니메이션 */
 #ob-slide-2 .ob-formula-box,
 #ob-slide-2 .ob-title,
