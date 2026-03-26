@@ -716,7 +716,7 @@ function getGrowthMsg(n) {
   if (n >= 100) return "100일. 2.70배. 진짜 달라졌어.";
   if (n >= 30)  return "한 달. 이제 습관이 되고 있어.";
   if (n >= 7)   return "일주일 됐어. 1.07배의 너야.";
-  return "첫 번째 1%. 시작이 전부야.";
+  return "첫 번째 1%. 시작이 전부예요.";
 }
 function getPlantIcon(n) {
   if (n >= 101) return "🌲";
@@ -844,7 +844,7 @@ function renderHomeCards() {
       </div>
       ${catProgressHtml}
       ${doneToday
-        ? `<button class="home-cat-done-btn" disabled>오늘 1% 완료했어 🌱</button>`
+        ? `<button class="home-cat-done-btn" disabled>오늘 1% 완료했어요 🌱</button>`
         : `<button class="home-cat-mission-btn" data-cat="${cat}">오늘 미션 하기 →</button>`
       }
     </div>`;
