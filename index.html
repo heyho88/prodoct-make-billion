@@ -1084,7 +1084,11 @@
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           slide2.querySelectorAll('.ob-formula-box, .ob-title, .ob-sub, .ob-big-num, .ob-graph')
-            .forEach(el => el.style.transition = '');
+            .forEach(el => {
+              el.style.transition = '';
+              el.style.opacity = '';
+              el.style.transform = '';
+            });
 
           setTimeout(() => {
             slide2.classList.add('anim-ready');
