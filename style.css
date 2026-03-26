@@ -587,7 +587,8 @@ body {
 }
 .card:hover {
   background: var(--bg-card-hover);
-  border-color: rgba(249,115,22,0.2);
+  border-color: #00D2D3;
+  box-shadow: 0 0 0 1px rgba(0,210,211,0.15), 0 20px 60px rgba(0,0,0,0.2);
 }
 
 /* ── 광고 슬롯 ── */
@@ -727,6 +728,11 @@ body {
   padding: 18px;
   flex: 1;
   margin-bottom: 4px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.how-step-card:hover {
+  border-color: #00D2D3;
+  box-shadow: 0 0 0 1px rgba(0,210,211,0.15);
 }
 .how-step-card-final {
   background: rgba(0,210,211,0.08);
