@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#080B14">
+  <title>문의 — SLOO</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .privacy-page-wrap {
+      width: 100%;
+      max-width: 700px;
+      padding: 100px 24px 80px;
+      z-index: 1;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      margin-bottom: 36px;
+    }
+    .btn-back:hover {
+      color: var(--text-primary);
+      border-color: rgba(255,255,255,0.14);
+      background: var(--bg-card-hover);
+    }
+    .privacy-page-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="주 네비게이션">
+  <a href="index.html" class="nav-logo" aria-label="SLOO 홈으로 이동">
+    <img src="favicon.ico" alt="SLOO 로고" class="nav-logo-img">SLOO
+  </a>
+</nav>
+
+<main style="display:flex; flex-direction:column; align-items:center; width:100%;">
+  <div class="privacy-page-wrap">
+    <a href="index.html" class="btn-back" onclick="if(history.length>1){history.back();return false;}">← 돌아가기</a>
+
+    <div class="section-tag">문의</div>
+    <h1 class="privacy-page-title">제휴 및 서비스 문의</h1>
+
+    <div class="card">
+      <p style="font-size:13px; color:var(--text-muted); margin:0 0 20px;">SLOO와 협력하고 싶거나, 서비스 관련 문의가 있으시면 아래 양식을 이용해주세요.</p>
+      <form action="https://formspree.io/f/maqdlblk" method="POST" class="contact-form">
+        <input type="email" name="email" placeholder="답변받을 이메일" required aria-label="답변받을 이메일">
+        <textarea name="message" placeholder="문의 내용을 입력해주세요" required style="min-height:90px;" aria-label="문의 내용"></textarea>
+        <button type="submit" class="btn-submit">문의 보내기</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-copy">© 2026 SLOO. 매일 1% 변화로 성장합니다.</p>
+</footer>
+
+</body>
+</html>
