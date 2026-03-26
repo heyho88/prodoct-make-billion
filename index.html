@@ -163,6 +163,7 @@
               <text x="10" y="196" fill="rgba(255,255,255,0.4)" font-size="10">Day 1</text>
               <text x="245" y="196" fill="rgba(255,255,255,0.4)" font-size="10">Day 365</text>
               <text x="255" y="25" fill="#00D2D3" font-size="11" font-weight="bold">×37.78</text>
+              <text x="10" y="172" fill="#6C5CE7" font-size="11" font-weight="bold">×1</text>
             </svg>
           </div>
         </div>
@@ -181,13 +182,13 @@
                 <span class="ob-compare-name bad">기존 습관 앱</span>
               </div>
               <div class="ob-badges">
-                <span class="ob-badge green">성장</span>
-                <span class="ob-badge green">성장</span>
-                <span class="ob-badge green">성장</span>
-                <span class="ob-badge green">성장</span>
+                <span class="ob-badge green"><s>성장</s></span>
+                <span class="ob-badge green"><s>성장</s></span>
+                <span class="ob-badge green"><s>성장</s></span>
+                <span class="ob-badge green"><s>성장</s></span>
                 <span class="ob-badge red">패스</span>
               </div>
-              <p class="ob-compare-flow bad">→ Streak 리셋 → 죄책감 → <strong>포기</strong></p>
+              <p class="ob-compare-flow bad">→ <span class="ob-flow-dim">연속기록 리셋</span> → <span class="ob-flow-dim">죄책감</span> → <strong>포기</strong></p>
               <p class="ob-compare-note">4일간의 노력이 전부 사라진 느낌</p>
             </div>
             <!-- SLOO -->
@@ -203,8 +204,8 @@
                 <span class="ob-badge purple">+1%</span>
                 <span class="ob-badge gray">패스</span>
               </div>
-              <p class="ob-compare-flow good">→ Streak은 리셋되지만</p>
-              <div class="ob-keep-box">누적 배수: <strong class="ob-cyan">×1.04</strong> 그대로 유지!</div>
+              <p class="ob-compare-flow good"><span class="ob-grad">→</span> 연속기록은 리셋되지만</p>
+              <div class="ob-keep-box" style="white-space: nowrap;">누적 배수: <strong class="ob-cyan">×1.04</strong> 그대로 유지!</div>
               <p class="ob-compare-note cyan">내가 쌓은 성장은 절대 사라지지 않는다</p>
             </div>
           </div>
@@ -1038,7 +1039,68 @@
     cur = n;
     document.getElementById('ob-prev').classList.toggle('hidden', n === 1);
     document.getElementById('ob-next').classList.toggle('hidden', n === total);
-    if (n === 2) initGraph();
+    if (n === 2) {
+      const slide2 = document.getElementById('ob-slide-2');
+      const counter = document.getElementById('ob-counter');
+      slide2.classList.remove('anim-ready');
+      if (counter) counter.textContent = '1.00';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            slide2.classList.add('anim-ready');
+
+            // 곡선 좌표 생성
+            const points = [];
+            for (let i = 0; i <= 100; i++) {
+              const x = (i / 100) * 280 + 10;
+              const y = 180 - (Math.pow(1.01, (i / 100) * 365) / 37.78) * 160;
+              points.push(`${x},${y}`);
+            }
+            const pointsStr = points.join(' ');
+            const curve = document.getElementById('ob-curve');
+            const area = document.getElementById('ob-area');
+            curve.setAttribute('points', pointsStr);
+            area.setAttribute('points', `10,180 ${pointsStr} 290,180`);
+            const length = curve.getTotalLength();
+            curve.style.strokeDasharray = length;
+            curve.style.strokeDashoffset = length;
+            curve.style.opacity = '1';
+            area.style.opacity = '0';
+            setTimeout(() => {
+              curve.style.transition = 'stroke-dashoffset 1800ms cubic-bezier(0.4, 0, 0.2, 1)';
+              curve.style.strokeDashoffset = '0';
+              setTimeout(() => {
+                area.style.transition = 'opacity 1000ms ease-out';
+                area.style.opacity = '1';
+              }, 800);
+            }, 1500);
+
+            setTimeout(() => {
+              const duration = 2000;
+              const startTime = Date.now();
+              const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const value = 1 + (37.78 - 1) * eased;
+                if (counter) counter.textContent = value.toFixed(2);
+                if (progress < 1) requestAnimationFrame(animate);
+              };
+              requestAnimationFrame(animate);
+            }, 1000);
+          }, 200);
+        });
+      });
+    }
+    if (n === 1) {
+      const slide1 = document.getElementById('ob-slide-1');
+      slide1.classList.remove('anim-ready');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => slide1.classList.add('anim-ready'), 200);
+        });
+      });
+    }
   }
 
   function initGraph() {

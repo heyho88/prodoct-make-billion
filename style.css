@@ -2788,12 +2788,12 @@ input:focus, textarea:focus {
   -webkit-text-fill-color: transparent;
 }
 
-.ob-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.ob-badges { display: flex; gap: 4px; flex-wrap: nowrap; margin-bottom: 10px; }
 
 .ob-badge {
-  padding: 5px 10px;
+  padding: 5px 6px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   flex: 1;
   text-align: center;
@@ -2810,6 +2810,7 @@ input:focus, textarea:focus {
 }
 
 .ob-compare-flow.bad { color: #f87171; }
+.ob-flow-dim { color: rgba(255,255,255,0.4); }
 .ob-compare-flow.good { color: rgba(255,255,255,0.6); }
 
 .ob-compare-note {
@@ -2889,6 +2890,69 @@ input:focus, textarea:focus {
 .ob-dot.active {
   width: 24px;
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
+}
+
+/* 슬라이드 2 진입 애니메이션 */
+#ob-slide-2 .ob-formula-box,
+#ob-slide-2 .ob-title,
+#ob-slide-2 .ob-sub {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 900ms ease-out, transform 900ms ease-out;
+}
+#ob-slide-2 .ob-big-num {
+  opacity: 0;
+  transition: opacity 600ms ease-out;
+}
+#ob-slide-2 .ob-graph {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+}
+#ob-slide-2.anim-ready .ob-formula-box,
+#ob-slide-2.anim-ready .ob-title,
+#ob-slide-2.anim-ready .ob-sub {
+  opacity: 1;
+  transform: translateY(0);
+}
+#ob-slide-2.anim-ready .ob-big-num {
+  opacity: 1;
+}
+#ob-slide-2.anim-ready .ob-graph {
+  opacity: 1;
+  transform: translateY(0);
+}
+#ob-slide-2.anim-ready .ob-title       { transition-delay: 150ms; }
+#ob-slide-2.anim-ready .ob-sub         { transition-delay: 250ms; }
+#ob-slide-2.anim-ready .ob-big-num     { transition-delay: 400ms; }
+/* #ob-slide-2.anim-ready .ob-graph { transition-delay: 1500ms; } — JS로 직접 제어 */
+
+/* 슬라이드 1 진입 애니메이션 */
+#ob-slide-1 .ob-title {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 1000ms ease-out, transform 1000ms ease-out;
+}
+#ob-slide-1 .ob-sub-group,
+#ob-slide-1 .ob-points {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+}
+#ob-slide-1.anim-ready .ob-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+#ob-slide-1.anim-ready .ob-sub-group,
+#ob-slide-1.anim-ready .ob-points {
+  opacity: 1;
+  transform: translateY(0);
+}
+#ob-slide-1.anim-ready .ob-sub-group {
+  transition-delay: 600ms;
+}
+#ob-slide-1.anim-ready .ob-points {
+  transition-delay: 600ms;
 }
 
 .ob-arrow-btn {
