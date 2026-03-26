@@ -2892,6 +2892,37 @@ input:focus, textarea:focus {
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
 }
 
+/* 슬라이드 4 진입 애니메이션 */
+#ob-slide-4 .ob-title {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 900ms ease-out, transform 900ms ease-out;
+}
+#ob-slide-4 .ob-science-item {
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+#ob-slide-4 .ob-sub,
+#ob-slide-4 .ob-cta {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+#ob-slide-4.anim-ready .ob-title,
+#ob-slide-4.anim-ready .ob-science-item,
+#ob-slide-4.anim-ready .ob-sub,
+#ob-slide-4.anim-ready .ob-cta {
+  opacity: 1;
+  transform: translate(0);
+}
+#ob-slide-4.anim-ready .ob-title                      { transition-delay: 200ms; }
+#ob-slide-4.anim-ready .ob-science-item:nth-child(1)  { transition-delay: 700ms; }
+#ob-slide-4.anim-ready .ob-science-item:nth-child(2)  { transition-delay: 900ms; }
+#ob-slide-4.anim-ready .ob-science-item:nth-child(3)  { transition-delay: 1100ms; }
+#ob-slide-4.anim-ready .ob-sub                        { transition-delay: 1400ms; }
+#ob-slide-4.anim-ready .ob-cta                        { transition-delay: 1600ms; }
+
 /* 슬라이드 3 진입 애니메이션 */
 #ob-slide-3 .ob-title {
   opacity: 0;
