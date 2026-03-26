@@ -2854,7 +2854,7 @@ input:focus, textarea:focus {
 .ob-cta {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #F97316, #ef4444);
+  background: linear-gradient(90deg, #6C5CE7, #00D2D3);
   border: none;
   border-radius: 14px;
   color: #fff;

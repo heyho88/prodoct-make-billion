@@ -67,8 +67,10 @@ async function loadUserData(session) {
     const hasAny = getAllActiveCatKeys().length > 0
     if (hasAny) {
       showHome()
+    } else {
+      document.querySelectorAll('.ob1-card').forEach(c => c.classList.remove('selected'))
+      showScreen('screen-ob1')
     }
-    // 데이터 없으면 아무것도 안 함 (랜딩 페이지 그대로 유지)
     console.log('데이터 로드 완료')
     // UI 리렌더링
     const homeScreen = document.getElementById('screen-home')
@@ -86,6 +88,11 @@ async function loadUserData(session) {
 document.addEventListener('DOMContentLoaded', async () => {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   console.log('Supabase 연결 완료')
+
+  const { data: { session: initSession } } = await supabaseClient.auth.getSession()
+  if (initSession) {
+    await loadUserData(initSession)
+  }
 
   /* ── Google 로그인 버튼 ── */
   const btnLogin    = document.getElementById('btn-google-login')
