@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#080B14">
+  <title>SLOO의 철학 — SLOO</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .privacy-page-wrap {
+      width: 100%;
+      max-width: 700px;
+      padding: 100px 24px 80px;
+      z-index: 1;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      margin-bottom: 36px;
+    }
+    .btn-back:hover {
+      color: var(--text-primary);
+      border-color: rgba(255,255,255,0.14);
+      background: var(--bg-card-hover);
+    }
+    .privacy-page-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav" aria-label="주 네비게이션">
+  <a href="index.html" class="nav-logo" aria-label="SLOO 홈으로 이동">
+    <img src="favicon.ico" alt="SLOO 로고" class="nav-logo-img">SLOO
+  </a>
+</nav>
+
+<main style="display:flex; flex-direction:column; align-items:center; width:100%;">
+  <div class="privacy-page-wrap">
+    <a href="index.html" class="btn-back" onclick="if(history.length>1){history.back();return false;}">← 돌아가기</a>
+
+    <div class="section-tag">SLOO의 철학</div>
+    <h1 class="privacy-page-title">더 잘 유지하고 싶다면</h1>
+
+    <div class="articles-list">
+
+      <article class="article-card" itemscope itemtype="https://schema.org/Article">
+        <meta itemprop="datePublished" content="2026-03-01">
+        <meta itemprop="author" content="SLOO">
+        <div class="article-meta">
+          <span class="article-category" itemprop="articleSection">습관 설계</span>
+          <span class="article-read-time">읽는 시간 약 3분</span>
+        </div>
+        <h3 itemprop="headline">미라클모닝 책 사고 3일 만에 포기한 사람에게</h3>
+        <p class="article-summary" itemprop="description">의지력이 부족한 게 아니라 첫 설계가 잘못된 거야.</p>
+        <div class="article-body" id="article-body-1" itemprop="articleBody">
+          <p>새벽 5시 알람. 첫날은 일어났다. 둘째 날도 겨우 일어났다. 셋째 날 알람을 끄고 다시 잠들었다. 그리고 그 책은 책장 어딘가에 꽂혀 있다.</p>
+          <p>이게 의지력 문제라고 생각했다면, 틀렸다.</p>
+          <p>미라클모닝이 실패하는 이유는 하나다. 변화의 크기가 너무 크다. 평소 8시에 일어나던 사람한테 5시 기상을 요구하는 건, 걷지도 못하는 사람한테 마라톤을 뛰라는 것과 같다.</p>
+          <p>인간의 뇌는 변화를 위협으로 인식한다. 변화가 클수록 저항도 크다. 그래서 3일을 못 버티는 게 당연하다.</p>
+          <h4>그럼 어떻게 해야 하나.</h4>
+          <p>8시에 일어나던 사람은 7시 55분부터 시작하면 된다. 5분. 뇌가 위협으로 인식하지 않을 만큼 작은 변화. 일주일 후엔 7시 50분. 한 달 후엔 7시 30분. 석 달 후엔 7시. 티가 안 난다. 본인도 모른다. 그렇지만 쌓인다. 그게 1%다.</p>
+        </div>
+        <button class="article-toggle" onclick="toggleArticle('article-body-1', this)" aria-expanded="false">더 읽기 ↓</button>
+      </article>
+
+      <article class="article-card" itemscope itemtype="https://schema.org/Article">
+        <meta itemprop="datePublished" content="2026-03-01">
+        <meta itemprop="author" content="SLOO">
+        <div class="article-meta">
+          <span class="article-category" itemprop="articleSection">마음가짐</span>
+          <span class="article-read-time">읽는 시간 약 3분</span>
+        </div>
+        <h3 itemprop="headline">오늘 하루 완전히 망했을 때 읽는 글</h3>
+        <p class="article-summary" itemprop="description">망한 하루도 1%는 가능하다.</p>
+        <div class="article-body" id="article-body-2" itemprop="articleBody">
+          <p>아침부터 늦잠. 약속 지각. 하려던 일 하나도 못 했다. 저녁엔 그냥 누워서 폰만 봤다. 오늘은 완전히 망했다.</p>
+          <p>이런 날 자기계발 앱을 켜는 사람은 없다. 켜봤자 "오늘 운동했나요?" 같은 질문이 기다리고 있으니까. 안 했으니까 안 켠다. 안 켜니까 기록이 끊긴다. 기록이 끊기니까 "에이 다 망했어"가 된다.</p>
+          <h4>근데 생각해봐.</h4>
+          <p>오늘 하루가 망한 거랑, 오늘의 1%를 못 한 건 다른 얘기다. 하루가 아무리 엉망이어도 이 미션 하나만 하면, 오늘은 1%짜리 성공이다. 그 1%가 365번 쌓이면 37.78배다.</p>
+        </div>
+        <button class="article-toggle" onclick="toggleArticle('article-body-2', this)" aria-expanded="false">더 읽기 ↓</button>
+      </article>
+
+      <article class="article-card" itemscope itemtype="https://schema.org/Article">
+        <meta itemprop="datePublished" content="2026-03-01">
+        <meta itemprop="author" content="SLOO">
+        <div class="article-meta">
+          <span class="article-category" itemprop="articleSection">습관 설계</span>
+          <span class="article-read-time">읽는 시간 약 3분</span>
+        </div>
+        <h3 itemprop="headline">헬스장을 세 번 끊어본 사람에게</h3>
+        <p class="article-summary" itemprop="description">오늘의 목표는 헬스장이 아니야.</p>
+        <div class="article-body" id="article-body-3" itemprop="articleBody">
+          <p>헬스장을 끊었다. 이번엔 진짜 할 거라고 생각했다. 일주일은 갔다. 2주차부터 슬슬 빠지기 시작했다. 한 달 후엔 안 가고 있었다. 세 번을 반복했다.</p>
+          <h4>근데 진짜 문제는 따로 있었다.</h4>
+          <p>목표가 처음부터 너무 컸던 거다. 스탠퍼드 행동설계 연구소의 BJ Fogg는 동기가 오르내리는 게 인간의 본성이기 때문에, 행동을 작게 만들어서 동기에 의존하지 않아야 한다고 말했다.</p>
+          <p>오늘의 목표는 운동복 입기. 그것만. 운동복을 입었으면 오늘의 1%는 끝이다. 헬스장 안 가도 된다. 진짜로. SLOO는 강요하지 않는다.</p>
+        </div>
+        <button class="article-toggle" onclick="toggleArticle('article-body-3', this)" aria-expanded="false">더 읽기 ↓</button>
+      </article>
+
+      <article class="article-card" itemscope itemtype="https://schema.org/Article">
+        <meta itemprop="datePublished" content="2026-03-01">
+        <meta itemprop="author" content="SLOO">
+        <div class="article-meta">
+          <span class="article-category" itemprop="articleSection">성장</span>
+          <span class="article-read-time">읽는 시간 약 3분</span>
+        </div>
+        <h3 itemprop="headline">1%가 티도 안 나는 이유, 그래도 계속해야 하는 이유</h3>
+        <p class="article-summary" itemprop="description">복리는 보이지 않는 곳에서 쌓인다.</p>
+        <div class="article-body" id="article-body-4" itemprop="articleBody">
+          <p>7일째 매일 1%를 쌓았다. 근데 아무것도 안 변한 것 같다. 당연하다. 1.01^7 = 1.07배. 7% 성장. 눈에 안 보인다. 그래서 대부분 여기서 그만둔다.</p>
+          <h4>복리의 잔인한 점이 여기 있다.</h4>
+          <ul>
+            <li>30일: 1.35배 — 주변이 눈치채기 시작</li>
+            <li>66일: 1.93배 — 본인도 느끼기 시작</li>
+            <li>100일: 2.70배 — 3개월 전 내가 기억 안 남</li>
+            <li>180일: 5.95배 — 반년 전 나랑 다른 사람</li>
+            <li>365일: 37.78배 — 설명이 필요 없음</li>
+          </ul>
+          <p>티가 안 나는 게 정상이다. 보이기 시작할 때쯤엔 이미 엄청나게 쌓여 있다. 그래서 계속해야 한다.</p>
+        </div>
+        <button class="article-toggle" onclick="toggleArticle('article-body-4', this)" aria-expanded="false">더 읽기 ↓</button>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-copy">© 2026 SLOO. 매일 1% 변화로 성장합니다.</p>
+</footer>
+
+<script>
+function toggleArticle(id, btn) {
+  const body = document.getElementById(id);
+  const isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? '더 읽기 ↓' : '접기 ↑';
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+</script>
+
+</body>
+</html>
