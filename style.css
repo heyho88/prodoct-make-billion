@@ -2307,8 +2307,8 @@ input:focus, textarea:focus {
 }
 #disqus-toggle-btn:hover {
   background: var(--bg-card-hover);
-  border-color: var(--border-accent);
-  color: #F97316;
+  border-color: #00D2D3;
+  color: #00D2D3;
 }
 
 /* ── SNS 공유 버튼 ── */
