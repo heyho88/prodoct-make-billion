@@ -243,16 +243,16 @@ const ENERGY_MISSIONS = {
 };
 
 const EMPATHY_MSGS = [
-  "며칠 잘 하다 무너졌어도 괜찮아. 오늘 이 미션 하나면 1%야.",
-  "하루가 아무리 바빠도 이 미션은 30초야. 그게 오늘의 1%.",
-  "오늘 하루가 망했어도 괜찮아. 이 미션 하나로 1%는 지켜.",
-  "귀찮은 하루가 맞아. 그래도 이것만. 30초면 돼."
+  "며칠 잘 하다 무너졌어도 괜찮아요. 오늘 이 미션 하나면 1%예요.",
+  "하루가 아무리 바빠도 이 미션은 30초예요. 그게 오늘의 1%예요.",
+  "오늘 하루가 망했어도 괜찮아요. 이 미션 하나로 1%는 지켜요.",
+  "귀찮은 하루가 맞아요. 그래도 이것만. 30초면 돼요."
 ];
 
 const MAINTAIN_MSGS = {
-  1: '잘 지키고 있어. 이게 습관이 되는 거야.',
-  2: '이틀째야. 흔들리지 않고 있어.',
-  3: '3일째 유지 중. 이 정도면 진짜 잡힌 거야.'
+  1: '잘 지키고 있어요. 이게 습관이 되는 거예요.',
+  2: '이틀째예요. 흔들리지 않고 있어요.',
+  3: '3일째 유지 중이에요. 이 정도면 진짜 잡힌 거예요.'
 };
 
 /* ── 카테고리 메타 ── */
@@ -712,10 +712,10 @@ function showScreen(id) {
 /* ── 성장 헬퍼 ── */
 function multStr(n) { return Math.pow(1.01, n).toFixed(2); }
 function getGrowthMsg(n) {
-  if (n >= 365) return "1년. 37.78배. 말이 필요 없어.";
-  if (n >= 100) return "100일. 2.70배. 진짜 달라졌어.";
-  if (n >= 30)  return "한 달. 이제 습관이 되고 있어.";
-  if (n >= 7)   return "일주일 됐어. 1.07배의 너야.";
+  if (n >= 365) return "1년. 37.78배. 말이 필요 없어요.";
+  if (n >= 100) return "100일. 2.70배. 진짜 달라졌어요.";
+  if (n >= 30)  return "한 달. 이제 습관이 되고 있어요.";
+  if (n >= 7)   return "일주일 됐어요. 1.07배가 됐어요.";
   return "첫 번째 1%. 시작이 전부예요.";
 }
 function getPlantIcon(n) {
@@ -1064,7 +1064,7 @@ function showMainChoice() {
     const currentMission = getExerciseMission(data.type, data.level);
     const nextMission = data.level < 7
       ? getExerciseMission(data.type, data.level + 1)
-      : '최고 레벨! 다음 카테고리를 추가해봐';
+      : '최고 레벨! 다음 카테고리를 추가해보세요';
     el.querySelector('.card-grow-preview').textContent = nextMission;
     el.querySelector('.card-maintain-preview').textContent = currentMission;
     if (data.level >= 7) {
@@ -1151,7 +1151,7 @@ function showFirstMission(energy, mental) {
     missionText = ENERGY_MISSIONS[e + '-' + m] || '';
   }
   document.getElementById('first-empathy-msg').textContent = cat === 'sleep'
-    ? (isSleepMaxLevel(data) ? '목표를 달성했어. 유지만 하면 돼 🎉' : '취침 시간을 조금씩 앞당겨보자. 5분씩이면 충분해.')
+    ? (isSleepMaxLevel(data) ? '목표를 달성했어요. 유지만 하면 돼요 🎉' : '취침 시간을 조금씩 앞당겨보세요. 5분씩이면 충분해요.')
     : EMPATHY_MSGS[data?.fail_reason || 0];
   document.getElementById('first-mission-text').textContent = missionText;
   document.getElementById('first-result-msg').textContent = '';
@@ -1734,7 +1734,7 @@ document.getElementById('btn-first-pass').addEventListener('click', () => {
     updateSidebar();
   }
   const msg = document.getElementById('first-result-msg');
-  msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
+  msg.textContent = '오늘은 쉬어가도 돼요. 내일 다시 켜보세요.';
   msg.className = 'result-msg pass-msg show';
   document.getElementById('first-action-btns').style.display = 'none';
   document.getElementById('btn-first-home').style.display = '';
@@ -1832,7 +1832,7 @@ document.getElementById('btn-mission-pass').addEventListener('click', () => {
     updateSidebar();
   }
   const msg = document.getElementById('mission-result');
-  msg.textContent = '오늘은 쉬어가도 돼. 내일 다시 켜면 돼.';
+  msg.textContent = '오늘은 쉬어가도 돼요. 내일 다시 켜보세요.';
   msg.className = 'result-msg pass-msg show';
   document.getElementById('mission-action-btns').style.display = 'none';
   document.getElementById('btn-mission-back').style.display = 'none';
@@ -2165,10 +2165,10 @@ function updateSidebar() {
 
   // ── 오늘의 성장 패널 ──
   const TODAY_PANEL_MSGS = [
-    '아직 시작 전이야. 오늘 1%를 시작해봐. 🌱',
-    '오늘 1% 했어. 충분해. 🌱',
-    '오늘 2% 했어. 욕심쟁이네. 😄',
-    '오늘 3% 했어. 이러다 37.78배 금방 되겠는데. 🔥'
+    '아직 시작 전이에요. 오늘 1%를 시작해보세요. 🌱',
+    '오늘 1% 했어요. 충분해요. 🌱',
+    '오늘 2% 했어요. 욕심쟁이네요. 😄',
+    '오늘 3% 했어요. 이러다 37.78배 금방 되겠는데요. 🔥'
   ];
   const allKeys = getAllActiveCatKeys();
   const completedToday = allKeys.filter(k => {
@@ -2468,16 +2468,16 @@ init();
   if (!slider) return;
 
   const milestones = [
-    { day: 7,   text: "일주일. 아직 티는 안 나. 근데 쌓이고 있어." },
-    { day: 30,  text: "한 달. 주변이 슬슬 눈치채기 시작해." },
-    { day: 66,  text: "습관이 굳어지는 날. 이제 안 하면 어색하지." },
-    { day: 100, text: "세 달. 3개월 전 너랑 달라." },
-    { day: 180, text: "반년. 작년의 너가 기억나?" },
+    { day: 7,   text: "일주일. 아직 티는 안 나요. 근데 쌓이고 있어요." },
+    { day: 30,  text: "한 달. 주변이 슬슬 눈치채기 시작해요." },
+    { day: 66,  text: "습관이 굳어지는 날. 이제 안 하면 어색해요." },
+    { day: 100, text: "세 달. 3개월 전과 달라졌어요." },
+    { day: 180, text: "반년. 작년의 내가 기억나요?" },
     { day: 365, text: "1년. 매일 1%가 만든 결과." }
   ];
 
   function getCompareText(days) {
-    let result = "시작했어. 이게 전부야.";
+    let result = "시작했어요. 이게 전부예요.";
     for (const m of milestones) {
       if (days >= m.day) result = m.text;
       else break;
