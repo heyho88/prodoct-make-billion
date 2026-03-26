@@ -2888,6 +2888,29 @@ input:focus, textarea:focus {
   background: linear-gradient(90deg, #6C5CE7, #00D2D3);
 }
 
+.ob-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.ob-arrow-btn:hover { background: rgba(255,255,255,0.15); }
+.ob-arrow-btn.hidden { display: none; }
+#ob-prev { left: 12px; }
+#ob-next { right: 12px; }
+
 @media (max-width: 520px) {
   #screen-landing:has(#ob-wrap) {
     min-height: unset;
