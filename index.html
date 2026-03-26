@@ -1042,38 +1042,52 @@
     if (n === 2) {
       const slide2 = document.getElementById('ob-slide-2');
       const counter = document.getElementById('ob-counter');
+      const curve = document.getElementById('ob-curve');
+      const area = document.getElementById('ob-area');
+
+      // transition 끊고 즉시 초기화
       slide2.classList.remove('anim-ready');
+      slide2.querySelectorAll('.ob-formula-box, .ob-title, .ob-sub, .ob-big-num, .ob-graph')
+        .forEach(el => {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+          el.style.transform = '';
+        });
+
+      // 그래프 초기화
+      if (curve) {
+        // 좌표가 없으면 먼저 설정
+        if (!curve.getAttribute('points') || curve.getAttribute('points') === '') {
+          const pts = [];
+          for (let i = 0; i <= 100; i++) {
+            const x = (i / 100) * 280 + 10;
+            const y = 180 - (Math.pow(1.01, (i / 100) * 365) / 37.78) * 160;
+            pts.push(`${x},${y}`);
+          }
+          const pStr = pts.join(' ');
+          curve.setAttribute('points', pStr);
+          if (area) area.setAttribute('points', `10,180 ${pStr} 290,180`);
+        }
+        const length = curve.getTotalLength();
+        curve.style.strokeDasharray = length;
+        curve.style.transition = 'none';
+        curve.style.strokeDashoffset = length;
+        curve.style.opacity = '1';
+      }
+      if (area) {
+        area.style.transition = 'none';
+        area.style.opacity = '0';
+      }
       if (counter) counter.textContent = '1.00';
+
+      // 다음 프레임에서 transition 복원 후 애니메이션 시작
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
+          slide2.querySelectorAll('.ob-formula-box, .ob-title, .ob-sub, .ob-big-num, .ob-graph')
+            .forEach(el => el.style.transition = '');
+
           setTimeout(() => {
             slide2.classList.add('anim-ready');
-
-            // 곡선 좌표 생성
-            const points = [];
-            for (let i = 0; i <= 100; i++) {
-              const x = (i / 100) * 280 + 10;
-              const y = 180 - (Math.pow(1.01, (i / 100) * 365) / 37.78) * 160;
-              points.push(`${x},${y}`);
-            }
-            const pointsStr = points.join(' ');
-            const curve = document.getElementById('ob-curve');
-            const area = document.getElementById('ob-area');
-            curve.setAttribute('points', pointsStr);
-            area.setAttribute('points', `10,180 ${pointsStr} 290,180`);
-            const length = curve.getTotalLength();
-            curve.style.strokeDasharray = length;
-            curve.style.strokeDashoffset = length;
-            curve.style.opacity = '1';
-            area.style.opacity = '0';
-            setTimeout(() => {
-              curve.style.transition = 'stroke-dashoffset 1800ms cubic-bezier(0.4, 0, 0.2, 1)';
-              curve.style.strokeDashoffset = '0';
-              setTimeout(() => {
-                area.style.transition = 'opacity 1000ms ease-out';
-                area.style.opacity = '1';
-              }, 800);
-            }, 1500);
 
             setTimeout(() => {
               const duration = 2000;
@@ -1088,6 +1102,20 @@
               };
               requestAnimationFrame(animate);
             }, 1000);
+
+            setTimeout(() => {
+              if (curve) {
+                curve.style.transition = 'stroke-dashoffset 1800ms cubic-bezier(0.4, 0, 0.2, 1)';
+                curve.style.strokeDashoffset = '0';
+              }
+              setTimeout(() => {
+                if (area) {
+                  area.style.transition = 'opacity 1000ms ease-out';
+                  area.style.opacity = '1';
+                }
+              }, 800);
+            }, 1500);
+
           }, 200);
         });
       });
