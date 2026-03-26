@@ -2599,6 +2599,7 @@ input:focus, textarea:focus {
   height: 100%;
   background: transparent;
   position: relative;
+  width: 100%;
 }
 
 #ob-logo {
@@ -2905,11 +2906,13 @@ input:focus, textarea:focus {
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
+  flex-shrink: 0;
+  pointer-events: auto;
 }
 .ob-arrow-btn:hover { background: rgba(255,255,255,0.15); }
 .ob-arrow-btn.hidden { display: none; }
-#ob-prev { left: 12px; }
-#ob-next { right: 12px; }
+#ob-prev { left: 4px; }
+#ob-next { right: 4px; }
 
 @media (max-width: 520px) {
   #screen-landing:has(#ob-wrap) {
