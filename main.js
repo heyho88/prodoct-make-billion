@@ -1009,12 +1009,11 @@ function startCatOnboarding(cat) {
    랜딩 화면
 ════════════════════════ */
 function showLanding() {
-  // TODO: 테스트 완료 후 날짜 제한 다시 활성화 필요
-  // const alreadyDone = ... (multi-cat: no single "alreadyDone")
   const btn = document.getElementById('btn-start');
   const msg = document.getElementById('landing-done-msg');
   btn.disabled = false;
   msg.style.display = 'none';
+  document.getElementById('ob-wrap').style.display = 'flex';
   showScreen('screen-landing');
 }
 
