@@ -1803,16 +1803,17 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
   document.getElementById('mission-action-btns').style.display = 'none';
   document.getElementById('btn-mission-back').style.display = 'none';
 
+  const missionOverlayMsg = currentChoice === 'grow' ? '한 단계 성장했어요! 🌱' : '오늘도 지켰어요! 🔄';
   showGrowthAnimation(oldGc, data.growth_count, () => {
     const msg = document.getElementById('mission-result');
     if (currentChoice === 'grow') {
       const levelText = cat === 'sleep'
         ? ''
         : ` 레벨 ${data.level} 달성! 🎉`;
-      msg.innerHTML = `오늘도 완료하셨어요! ✅<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신.${levelText}</small>`;
+      msg.innerHTML = `한 단계 성장했어요! 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신.${levelText}</small>`;
     } else {
       const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
-      msg.innerHTML = `오늘도 지켰어요. 0.5% 성장했어요 🌱<br><small>${subMsg}</small>`;
+      msg.innerHTML = `오늘도 지켰어요! 🔄<br><small>${subMsg}</small>`;
     }
     msg.className = 'result-msg done-msg show';
 
@@ -1831,7 +1832,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
       document.getElementById('mg-max-level').style.display = '';
     }
     document.getElementById('btn-mission-home').style.display = '';
-  });
+  }, missionOverlayMsg);
 });
 
 /* ── 미션: 패스 ── */
