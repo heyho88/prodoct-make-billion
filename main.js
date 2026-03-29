@@ -1719,7 +1719,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
     const tc = data.total_count;
     const gc = data.growth_count;
     const msg = document.getElementById('first-result-msg');
-    msg.innerHTML = `${getCompletionHeadline(cat)}<br><small>${tc}회째. 1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신.</small>`;
+    msg.innerHTML = `${overlayMsg}<br><small>${tc}회째. 1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신.</small>`;
     msg.className = 'result-msg done-msg show';
 
     document.getElementById('fg-plant').textContent = getPlantIcon(gc);
@@ -1733,7 +1733,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
     }
     document.getElementById('first-growth-card').classList.add('show');
     document.getElementById('btn-first-home').style.display = '';
-  });
+  }, overlayMsg);
 });
 
 /* ── 첫 미션: 패스 ── */
