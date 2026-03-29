@@ -957,6 +957,8 @@ function startCatMission(cat) {
   } else if (cat === 'health' || cat === 'sleep' || isRoutineCat(cat)) {
     if (data.last_date === today()) {
       showMainChoice();
+    } else if (!data.last_date) {
+      showFirstMission();
     } else {
       showMissionScreen('grow');
     }
