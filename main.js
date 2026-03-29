@@ -2587,8 +2587,10 @@ function toggleDisqus() {
   function share(title) {
     if (navigator.share) {
       navigator.share({ title, url: SLOO_URL }).catch(() => {});
-    } else {
+    } else if (navigator.clipboard) {
       navigator.clipboard.writeText(SLOO_URL).then(showToast).catch(showToast);
+    } else {
+      showToast();
     }
   }
 
