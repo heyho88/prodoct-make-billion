@@ -711,6 +711,23 @@ function showScreen(id) {
 
 /* ── 성장 헬퍼 ── */
 function multStr(n) { return Math.pow(1.01, n).toFixed(2); }
+
+function getCompletionCase(cat) {
+  const thisTc = getCatData(cat)?.total_count || 0;
+  if (thisTc >= 2) return 'repeat';
+  const otherHasAny = getAllActiveCatKeys()
+    .filter(k => k !== cat)
+    .some(k => (getCatData(k)?.total_count || 0) > 0);
+  return otherHasAny ? 'new-cat' : 'very-first';
+}
+
+function getCompletionHeadline(cat) {
+  switch (getCompletionCase(cat)) {
+    case 'very-first': return '첫 발걸음을 내디뎠어요! 🎉';
+    case 'new-cat':    return '또 하나의 변화가 시작됐어요! 🌱';
+    default:           return '오늘도 완료하셨어요! ✅';
+  }
+}
 function getGrowthMsg(n) {
   if (n >= 365) return "1년. 37.78배. 말이 필요 없어요.";
   if (n >= 100) return "100일. 2.70배. 진짜 달라졌어요.";
@@ -1701,7 +1718,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
     const tc = data.total_count;
     const gc = data.growth_count;
     const msg = document.getElementById('first-result-msg');
-    msg.innerHTML = `오늘 1% 완료 🌱<br><small>${tc}회째. 1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신.</small>`;
+    msg.innerHTML = `${getCompletionHeadline(cat)}<br><small>${tc}회째. 1.01<sup>${gc}</sup> = ${multStr(gc)}배의 당신.</small>`;
     msg.className = 'result-msg done-msg show';
 
     document.getElementById('fg-plant').textContent = getPlantIcon(gc);
@@ -1791,7 +1808,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
       const levelText = cat === 'sleep'
         ? ''
         : ` 레벨 ${data.level} 달성! 🎉`;
-      msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신.${levelText}</small>`;
+      msg.innerHTML = `오늘도 완료하셨어요! ✅<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신.${levelText}</small>`;
     } else {
       const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
       msg.innerHTML = `오늘도 지켰어요. 0.5% 성장했어요 🌱<br><small>${subMsg}</small>`;
