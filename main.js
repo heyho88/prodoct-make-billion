@@ -749,7 +749,7 @@ function getGrowthStage(n) {
   return           { emoji: '🌱',   stage: 0 };
 }
 
-function showGrowthAnimation(oldGc, newGc, callback) {
+function showGrowthAnimation(oldGc, newGc, callback, overlayMsg = null) {
   const oldStage = getGrowthStage(oldGc);
   const newStage = getGrowthStage(newGc);
   const levelUp  = newStage.stage > oldStage.stage;
@@ -777,7 +777,7 @@ function showGrowthAnimation(oldGc, newGc, callback) {
   } else {
     plantEl.textContent = newStage.emoji;
     plantEl.classList.add('plant-pulse');
-    msgEl.textContent   = '오늘도 지켰어요 💪';
+    msgEl.textContent   = overlayMsg || '오늘도 지켰어요 💪';
     msgEl.classList.add('show');
     setTimeout(() => { overlay.style.display = 'none'; callback(); }, 1300);
   }
@@ -1714,6 +1714,7 @@ document.getElementById('btn-first-done').addEventListener('click', () => {
 
   document.getElementById('first-action-btns').style.display = 'none';
 
+  const overlayMsg = getCompletionHeadline(cat);
   showGrowthAnimation(oldGc, data.growth_count, () => {
     const tc = data.total_count;
     const gc = data.growth_count;
