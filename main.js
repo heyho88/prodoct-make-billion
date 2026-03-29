@@ -1936,10 +1936,7 @@ document.getElementById('modal-reset-ok').addEventListener('click', async () => 
      'sloo_last_date','sloo_completed_today','sloo_maintain_count','sloo_energy',
      'sloo_mental','sloo_growth_count','sloo_total_count','sloo_history','sloo_maintain_streak']
       .forEach(k => localStorage.removeItem(k));
-    document.querySelectorAll('.choice-card, .option').forEach(c => c.classList.remove('selected', 'active'));
-    showLanding();
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    updateSidebar();
+    window.location.reload();
   }
 });
 
