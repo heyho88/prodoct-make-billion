@@ -753,14 +753,14 @@ function showGrowthAnimation(oldGc, newGc, callback) {
     setTimeout(() => {
       plantEl.textContent = newStage.emoji;
       plantEl.className   = 'growth-anim-plant plant-grow-in';
-      msgEl.textContent   = '한 단계 성장했어! 🎉';
+      msgEl.textContent   = '한 단계 성장했어요! 🎉';
       msgEl.classList.add('show');
     }, 480);
     setTimeout(() => { overlay.style.display = 'none'; callback(); }, 1400);
   } else {
     plantEl.textContent = newStage.emoji;
     plantEl.classList.add('plant-pulse');
-    msgEl.textContent   = '오늘도 지켰어 💪';
+    msgEl.textContent   = '오늘도 지켰어요 💪';
     msgEl.classList.add('show');
     setTimeout(() => { overlay.style.display = 'none'; callback(); }, 1300);
   }
@@ -768,12 +768,12 @@ function showGrowthAnimation(oldGc, newGc, callback) {
 
 function getNextMissionPreview(data, cat) {
   if (cat === 'sleep') {
-    if (isSleepMaxLevel(data)) return '목표 취침 시간을 매일 지켜보자 🎉';
+    if (isSleepMaxLevel(data)) return '목표 취침 시간을 매일 지켜봐요 🎉';
     return `다음 목표: ${data.current_target}에 자보기`;
   }
   if (!data.type || !MISSIONS[data.type]) return null;
   const lv = data.level || 1;
-  if (lv >= 7) return '이 루틴은 완전히 잡혔어. 새로운 도전을 추가해볼까? 🔥';
+  if (lv >= 7) return '이 루틴은 완전히 잡혔어요. 새로운 도전을 추가해볼까요? 🔥';
   return getExerciseMission(data.type, lv + 1);
 }
 
@@ -894,7 +894,7 @@ function renderHomeCards() {
     </div>`;
 
     const unlockBanner = canAdd
-      ? `<div class="routine-unlock-banner">7일 연속 달성! 새로운 루틴을 추가할 수 있어 🎉</div>`
+      ? `<div class="routine-unlock-banner">7일 연속 달성! 새로운 루틴을 추가할 수 있어요 🎉</div>`
       : '';
     const addBtn = availableTypes.length > 0
       ? `<button class="routine-add-btn ${canAdd ? 'can-add' : 'locked'}" data-can-add="${canAdd}">
@@ -1106,7 +1106,7 @@ function showMissionScreen(choice) {
     missionText = getExerciseMission(data.type, data.level);
   }
   document.getElementById('mission-empathy').textContent = cat === 'sleep'
-    ? (isSleepMaxLevel(data) ? '목표를 달성했어. 유지만 하면 돼 🎉' : '취침 시간을 조금씩 앞당겨보자.')
+    ? (isSleepMaxLevel(data) ? '목표를 달성했어요. 유지만 하면 돼요 🎉' : '취침 시간을 조금씩 앞당겨봐요.')
     : EMPATHY_MSGS[data.fail_reason || 0];
   document.getElementById('mission-text').textContent = missionText;
   const badge = document.getElementById('mission-choice-badge');
@@ -1793,7 +1793,7 @@ document.getElementById('btn-mission-done').addEventListener('click', () => {
       msg.innerHTML = `오늘 1% 완료 🌱<br><small>${data.total_count}회째. ${multStr(data.growth_count)}배의 당신.${levelText}</small>`;
     } else {
       const subMsg = MAINTAIN_MSGS[data.maintain_count] || MAINTAIN_MSGS[3];
-      msg.innerHTML = `오늘도 지켰어. 0.5% 성장했어 🌱<br><small>${subMsg}</small>`;
+      msg.innerHTML = `오늘도 지켰어요. 0.5% 성장했어요 🌱<br><small>${subMsg}</small>`;
     }
     msg.className = 'result-msg done-msg show';
 
